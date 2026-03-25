@@ -33,7 +33,21 @@ Page({
   },
 
   onShow() {
+    // 检查是否有从首页传入的筛选参数
+    this.checkGlobalFilter()
     this.checkLogin()
+  },
+
+  // 检查全局筛选参数（从首页跳转过来）
+  checkGlobalFilter() {
+    if (app.globalData.foodFilter) {
+      const filter = app.globalData.foodFilter
+      this.setData({
+        currentStatus: filter.status || 'all'
+      })
+      // 清除全局参数，避免重复触发
+      app.globalData.foodFilter = null
+    }
   },
 
   // 检查登录状态
@@ -58,7 +72,43 @@ Page({
     return `${year}-${month}-${day} ${hour}:${minute}:${second}`
   },
 
-  // 加载食材列表
+  // 计算过期倒计时
+  getExpireCountdown(expireDate) {
+    if (!expireDate) return ''
+    
+    const now = new Date()
+    const expire = new Date(expireDate)
+    const diffTime = expire - now
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    
+    if (diffDays < 0) {
+      return `已过期${Math.abs(diffDays)}天`
+    } else if (diffDays === 0) {
+      return '今天过期'
+    } else {
+      return `剩余${diffDays}天`
+    }
+  },
+
+  // 根据过期日期计算状态
+  getStatusByExpireDate(expireDate) {
+    if (!expireDate) return { status: 'fresh', statusText: '新鲜' }
+    
+    const now = new Date()
+    const expire = new Date(expireDate)
+    const diffTime = expire - now
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    
+    if (diffDays < 0) {
+      return { status: 'expired', statusText: '已过期' }
+    } else if (diffDays <= 3) {
+      return { status: 'expiring', statusText: '临期' }
+    } else {
+      return { status: 'fresh', statusText: '新鲜' }
+    }
+  },
+
+  // 加载食材列表 - 修复：状态筛选生效
   async loadFoodList() {
     try {
       const params = {}
@@ -72,14 +122,23 @@ Page({
       const res = await foodService.getFoodList(params)
       let list = res.data?.list || []
       
-      // 格式化日期时间
+      // 格式化数据并计算状态
       list = list.map(item => {
+        const statusInfo = this.getStatusByExpireDate(item.expireDate)
         return {
           ...item,
           createdAt: this.formatDateTime(item.createdAt),
-          updatedAt: this.formatDateTime(item.updatedAt)
+          updatedAt: this.formatDateTime(item.updatedAt),
+          status: statusInfo.status,
+          statusText: statusInfo.statusText,
+          expireCountdown: this.getExpireCountdown(item.expireDate)
         }
       })
+      
+      // 状态筛选（前端筛选）
+      if (this.data.currentStatus !== 'all') {
+        list = list.filter(item => item.status === this.data.currentStatus)
+      }
       
       this.setData({
         foodList: list
@@ -105,7 +164,7 @@ Page({
     this.loadFoodList()
   },
 
-  // 选择状态
+  // 选择状态 - 修复：筛选生效
   selectStatus(e) {
     this.setData({
       currentStatus: e.currentTarget.dataset.value

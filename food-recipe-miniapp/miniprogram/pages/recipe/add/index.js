@@ -127,9 +127,20 @@ Page({
     })
   },
 
-  // 取消
+  // 取消 - 修复：如果没有上一页则跳转到菜谱列表
   onCancel() {
-    wx.navigateBack()
+    // 获取页面栈
+    const pages = getCurrentPages()
+    
+    if (pages.length > 1) {
+      // 有上一页，正常返回
+      wx.navigateBack()
+    } else {
+      // 没有上一页，跳转到菜谱列表
+      wx.switchTab({
+        url: '/pages/recipe/list/index'
+      })
+    }
   },
 
   // 保存

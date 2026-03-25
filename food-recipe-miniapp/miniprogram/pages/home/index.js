@@ -43,12 +43,34 @@ Page({
     }
   },
 
-  // 获取推荐菜谱
+  // 获取推荐菜谱 - 优先展示收藏，默认6个
   async loadRecommendRecipes() {
     try {
-      const res = await recipeService.getRecipeList({ limit: 4 })
+      // 先尝试获取收藏的菜谱
+      let recipes = []
+      
+      // 获取收藏列表
+      const favRes = await recipeService.getFavorites()
+      const favorites = favRes.data?.list || []
+      
+      // 如果收藏不足6个，补充推荐菜谱
+      if (favorites.length < 6) {
+        // 获取推荐菜谱，补充到6个
+        const needCount = 6 - favorites.length
+        const recommendRes = await recipeService.getRecipeList({ limit: needCount })
+        const recommends = recommendRes.data?.list || []
+        
+        // 合并，去重（避免收藏也在推荐中）
+        const favIds = favorites.map(f => f.id)
+        const uniqueRecommends = recommends.filter(r => !favIds.includes(r.id))
+        
+        recipes = [...favorites, ...uniqueRecommends].slice(0, 6)
+      } else {
+        recipes = favorites.slice(0, 6)
+      }
+      
       this.setData({
-        recommendRecipes: res.data?.list || []
+        recommendRecipes: recipes
       })
     } catch (error) {
       console.error('获取推荐菜谱失败:', error)
@@ -60,8 +82,16 @@ Page({
     this.loadRecommendRecipes()
   },
 
-  // 跳转到食材列表
+  // 跳转到食材列表 - 修复：点击临期提醒时自动过滤
   goToFoodList() {
+    // 如果有临期食材，传递筛选参数
+    const filterExpiring = this.data.expiringCount > 0
+    
+    if (filterExpiring) {
+      // 使用全局数据传递筛选参数
+      app.globalData.foodFilter = { status: 'expiring' }
+    }
+    
     wx.switchTab({
       url: '/pages/food/list/index'
     })

@@ -12,11 +12,19 @@
       <image-uploader images="{{images}}" maxCount="1" type="food" bind:change="onImageChange"/>
     </view>
 
-    <!-- 扫描录入 -->
+    <!-- 扫描录入 - 优化后 -->
     <view class="scan-section" wx:if="{{!isEdit}}">
-      <view class="scan-btn" bindtap="scanFood">
-        <text class="scan-icon">📷</text>
-        <text class="scan-text">扫描录入</text>
+      <view class="scan-card" bindtap="scanFood">
+        <view class="scan-icon-wrap">
+          <text class="scan-icon">📷</text>
+        </view>
+        <view class="scan-content">
+          <text class="scan-title">扫描录入</text>
+          <text class="scan-desc">拍照识别食材信息，快速添加</text>
+        </view>
+        <view class="scan-arrow">
+          <text class="arrow-icon">›</text>
+        </view>
       </view>
     </view>
 
@@ -90,7 +98,7 @@
       <text class="form-label">过期日期</text>
       <picker mode="date" bindchange="onExpireDateChange" value="{{form.expireDate}}">
         <view class="picker">
-          <text class="picker-text">{{form.expireDate || '请选择过期日期'}}</text>
+          <text class="picker-text {{form.expireDate ? '' : 'placeholder'}}">{{form.expireDate || '请选择过期日期'}}</text>
           <text class="picker-arrow">📅</text>
         </view>
       </picker>

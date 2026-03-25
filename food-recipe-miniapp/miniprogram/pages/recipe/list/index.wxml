@@ -8,9 +8,6 @@
     <view class="btn btn-secondary btn-filter" bindtap="goToFilter">
       <text>筛选</text>
     </view>
-    <view class="btn btn-accent btn-add" bindtap="goToAddRecipe">
-      <text class="btn-icon">+</text>
-    </view>
   </view>
 
   <!-- 标签切换 -->
@@ -64,6 +61,13 @@
     <text class="empty-text">{{currentTab === 'favorite' ? '暂无收藏菜谱' : '暂无匹配菜谱，快去添加食材吧~'}}</text>
     <view class="empty-actions" wx:if="{{currentTab === 'recommend'}}">
       <text class="action-link" bindtap="goToFoodList">去添加食材 ></text>
+    </view>
+  </view>
+
+  <!-- 悬浮添加按钮 - 优化后 -->
+  <view class="fab-btn" bindtap="goToAddRecipe">
+    <view class="fab-inner">
+      <text class="fab-icon">+</text>
     </view>
   </view>
 </view>

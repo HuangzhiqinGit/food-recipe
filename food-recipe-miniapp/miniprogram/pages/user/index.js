@@ -3,6 +3,7 @@ const { showConfirm, showSuccess } = require('../../utils/util')
 const foodService = require('../../services/foodService')
 const recipeService = require('../../services/recipeService')
 const authService = require('../../services/authService')
+const uploadService = require('../../services/uploadService')
 
 Page({
   data: {
@@ -35,7 +36,7 @@ Page({
     }
   },
 
-  // 微信登录 - 自动登录（用户不存在则自动注册）
+  // 微信登录 - 自动登录并获取用户信息
   wxLogin() {
     console.log('======== 点击登录按钮，开始自动登录 ========')
     
@@ -52,8 +53,8 @@ Page({
           return
         }
         
-        // 直接调用后端登录接口（后端会自动注册用户）
-        this.doLogin(loginRes.code)
+        // 获取微信用户信息
+        this.getWxUserProfile(loginRes.code)
       },
       fail: (err) => {
         console.error('wx.login 失败:', err)
@@ -62,15 +63,32 @@ Page({
       }
     })
   },
+
+  // 获取微信用户信息 - 新增
+  getWxUserProfile(code) {
+    wx.getUserProfile({
+      desc: '用于完善用户资料',
+      success: (res) => {
+        const wxUserInfo = res.userInfo
+        console.log('获取到微信用户信息:', wxUserInfo)
+        this.doLogin(code, wxUserInfo)
+      },
+      fail: () => {
+        // 用户拒绝授权，使用默认信息登录
+        console.log('用户拒绝授权，使用默认信息登录')
+        this.doLogin(code, { nickName: '微信用户', avatarUrl: '' })
+      }
+    })
+  },
   
-  // 执行登录请求
-  doLogin(code) {
-    console.log('调用后端登录接口, code:', code)
+  // 执行登录请求 - 修改：保存微信昵称和头像
+  doLogin(code, wxUserInfo) {
+    console.log('调用后端登录接口, code:', code, '用户信息:', wxUserInfo)
     
     const data = {
       code: code,
-      nickname: '微信用户',
-      avatarUrl: ''
+      nickname: wxUserInfo.nickName,
+      avatarUrl: wxUserInfo.avatarUrl
     }
     
     authService.login(data)
@@ -101,6 +119,58 @@ Page({
           duration: 2000
         })
       })
+  },
+
+  // 修改头像 - 新增
+  changeAvatar() {
+    wx.chooseMedia({
+      count: 1,
+      mediaType: ['image'],
+      sourceType: ['album', 'camera'],
+      success: async (res) => {
+        const tempFilePath = res.tempFiles[0].tempFilePath
+        
+        wx.showLoading({ title: '上传中...' })
+        
+        try {
+          const result = await uploadService.uploadImage(tempFilePath, 'avatar')
+          
+          if (result.code === 200 && result.data) {
+            const newAvatarUrl = result.data.url
+            
+            // 更新本地数据
+            const userInfo = { ...this.data.userInfo, avatarUrl: newAvatarUrl }
+            this.setData({ userInfo })
+            
+            // 更新全局数据
+            app.globalData.userInfo = userInfo
+            
+            // 调用后端更新用户信息
+            await this.updateUserInfo({ avatarUrl: newAvatarUrl })
+            
+            wx.showToast({ title: '头像更新成功', icon: 'success' })
+          }
+        } catch (error) {
+          console.error('上传头像失败:', error)
+          wx.showToast({ title: '上传失败', icon: 'none' })
+        } finally {
+          wx.hideLoading()
+        }
+      }
+    })
+  },
+
+  // 更新用户信息 - 新增
+  async updateUserInfo(data) {
+    try {
+      // 调用后端接口更新用户信息
+      // 这里假设后端有 /user/update 接口
+      // 如果后端暂时没有，可以注释掉这部分
+      // await authService.updateUserInfo(data)
+      console.log('更新用户信息:', data)
+    } catch (error) {
+      console.error('更新用户信息失败:', error)
+    }
   },
 
   // 加载统计数据

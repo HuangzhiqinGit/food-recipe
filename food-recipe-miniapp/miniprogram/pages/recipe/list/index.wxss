@@ -1,8 +1,9 @@
 .container {
   padding: 24rpx;
   padding-bottom: 120rpx;
-  background: var(--bg-page);
+  background: #f8f9fa;
   min-height: 100vh;
+  position: relative;
 }
 
 /* 操作栏 */
@@ -13,35 +14,75 @@
 }
 
 .action-bar .btn {
-  height: 72rpx;
-  border-radius: 36rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 28rpx;
+  font-weight: 500;
 }
 
 .btn-match {
   flex: 1;
-  background: var(--accent);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #fff;
+  box-shadow: 0 8rpx 24rpx rgba(102, 126, 234, 0.3);
+}
+
+.btn-match:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.2);
 }
 
 .btn-filter {
-  width: 120rpx;
-  background: #F5F5F5;
-  color: var(--text-secondary);
+  width: 140rpx;
+  background: #fff;
+  color: #6b7280;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.06);
 }
 
-.btn-add {
-  width: 72rpx;
-  background: var(--accent);
-  color: #fff;
-  font-size: 40rpx;
+.btn-filter:active {
+  background: #f3f4f6;
 }
 
 .btn-icon {
   margin-right: 8rpx;
+  font-size: 28rpx;
+}
+
+/* 悬浮添加按钮 - 优化后 */
+.fab-btn {
+  position: fixed;
+  bottom: 120rpx;
+  right: 40rpx;
+  width: 120rpx;
+  height: 120rpx;
+  z-index: 100;
+}
+
+.fab-inner {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12rpx 40rpx rgba(102, 126, 234, 0.5);
+  transition: all 0.3s;
+}
+
+.fab-btn:active .fab-inner {
+  transform: scale(0.95) rotate(45deg);
+  box-shadow: 0 8rpx 30rpx rgba(102, 126, 234, 0.4);
+}
+
+.fab-icon {
+  color: #fff;
+  font-size: 56rpx;
+  font-weight: 200;
+  line-height: 1;
 }
 
 /* 标签栏 */
@@ -49,24 +90,26 @@
   display: flex;
   margin-bottom: 24rpx;
   background: #fff;
-  border-radius: 12rpx;
+  border-radius: 16rpx;
   overflow: hidden;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
 }
 
 .tab-item {
   flex: 1;
-  height: 80rpx;
+  height: 88rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 28rpx;
-  color: var(--text-secondary);
+  color: #9ca3af;
   position: relative;
+  transition: all 0.2s;
 }
 
 .tab-item.active {
-  color: var(--primary);
-  font-weight: 500;
+  color: #667eea;
+  font-weight: 600;
 }
 
 .tab-item.active::after {
@@ -75,10 +118,10 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 40rpx;
-  height: 4rpx;
-  background: var(--primary);
-  border-radius: 2rpx;
+  width: 60rpx;
+  height: 6rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 3rpx;
 }
 
 /* 菜谱列表 */
@@ -86,32 +129,38 @@
   display: flex;
   flex-wrap: wrap;
   gap: 24rpx;
+  padding-bottom: 120rpx;
 }
 
 .recipe-card {
   width: calc(50% - 12rpx);
   background: #fff;
-  border-radius: 16rpx;
+  border-radius: 20rpx;
   overflow: hidden;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
   position: relative;
+  transition: transform 0.2s;
+}
+
+.recipe-card:active {
+  transform: scale(0.98);
 }
 
 .recipe-image {
   width: 100%;
-  height: 200rpx;
-  background: #f5f5f5;
+  height: 220rpx;
+  background: #f3f4f6;
 }
 
 .recipe-info {
-  padding: 16rpx;
+  padding: 20rpx;
 }
 
 .recipe-name {
   display: block;
   font-size: 30rpx;
-  font-weight: 500;
-  color: var(--text-primary);
+  font-weight: 600;
+  color: #1f2937;
   margin-bottom: 12rpx;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -122,34 +171,45 @@
   display: flex;
   gap: 12rpx;
   margin-bottom: 8rpx;
+  flex-wrap: wrap;
 }
 
 .tag {
-  padding: 4rpx 12rpx;
-  border-radius: 8rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
   font-size: 22rpx;
+  font-weight: 500;
 }
 
 .tag-primary {
-  background: rgba(76, 175, 80, 0.1);
-  color: var(--primary);
+  background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+  color: #6366f1;
 }
 
 .tag-accent {
-  background: rgba(255, 152, 0, 0.1);
-  color: var(--accent);
+  background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+  color: #ec4899;
 }
 
 .match-rate {
   font-size: 24rpx;
-  color: var(--primary);
+  color: #10b981;
+  font-weight: 500;
 }
 
 .favorite-icon {
   position: absolute;
-  top: 12rpx;
-  right: 12rpx;
-  font-size: 32rpx;
+  top: 16rpx;
+  right: 16rpx;
+  font-size: 36rpx;
+  background: rgba(255, 255, 255, 0.9);
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
 }
 
 /* 空状态 */
@@ -169,12 +229,13 @@
 
 .empty-text {
   font-size: 28rpx;
-  color: var(--text-hint);
+  color: #9ca3af;
   margin-bottom: 24rpx;
   text-align: center;
 }
 
 .action-link {
   font-size: 28rpx;
-  color: var(--primary);
+  color: #667eea;
+  font-weight: 500;
 }
