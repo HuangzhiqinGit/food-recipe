@@ -285,5 +285,20 @@ Page({
         wx.showToast({ title: '登录失败，请重试', icon: 'none' })
       }
     })
+  },
+  
+  // 图片加载失败处理
+  onImageError(e) {
+    const index = e.currentTarget.dataset.index
+    const foodList = this.data.foodList
+    
+    console.error(`食材图片 ${index} 加载失败:`, foodList[index].imageUrl)
+    
+    // 设置默认图片
+    foodList[index].imageUrl = '/assets/images/empty-food.png'
+    
+    this.setData({
+      foodList: foodList
+    })
   }
 })

@@ -58,12 +58,28 @@ Component({
 
       for (const file of tempFiles) {
         try {
+          console.log('开始上传图片:', file.tempFilePath)
           const result = await uploadService.uploadImage(file.tempFilePath, this.data.type)
+          console.log('上传结果:', result)
+          
           if (result.code === 200 && result.data) {
-            newImages.push(result.data.url)
+            // 兼容不同的返回数据结构
+            const imageUrl = result.data.url || result.data.imageUrl || result.data.fileUrl || result.data
+            console.log('获取到图片URL:', imageUrl)
+            
+            if (imageUrl && typeof imageUrl === 'string') {
+              newImages.push(imageUrl)
+            } else {
+              console.error('图片URL格式不正确:', imageUrl)
+              wx.showToast({ title: '图片URL格式错误', icon: 'none' })
+            }
+          } else {
+            console.error('上传返回异常:', result)
+            wx.showToast({ title: result.message || '上传失败', icon: 'none' })
           }
         } catch (error) {
           console.error('上传失败:', error)
+          wx.showToast({ title: '上传失败', icon: 'none' })
         }
       }
 
@@ -71,8 +87,10 @@ Component({
 
       if (newImages.length > 0) {
         const allImages = [...this.data.images, ...newImages]
+        console.log('所有图片:', allImages)
         this.setData({ images: allImages })
         this.triggerEvent('change', { images: allImages })
+        wx.showToast({ title: '上传成功', icon: 'success' })
       } else {
         wx.showToast({ title: '上传失败', icon: 'none' })
       }
@@ -93,6 +111,13 @@ Component({
         current: this.data.images[index],
         urls: this.data.images
       })
+    },
+    
+    // 图片加载失败
+    onImageError(e) {
+      const index = e.currentTarget.dataset.index
+      console.error(`图片 ${index} 加载失败:`, this.data.images[index])
+      wx.showToast({ title: '图片加载失败', icon: 'none' })
     }
   }
 })

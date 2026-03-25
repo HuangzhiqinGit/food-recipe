@@ -64,5 +64,9 @@
     }
   },
   "requiredBackgroundModes": [],
-  "usingComponents": {}
+  "usingComponents": {},
+  "networkTimeout": {
+    "request": 10000,
+    "downloadFile": 10000
+  }
 }

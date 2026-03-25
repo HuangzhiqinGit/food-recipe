@@ -3,6 +3,17 @@ const { getFoodStatus } = require('../../utils/util')
 const foodService = require('../../services/foodService')
 const recipeService = require('../../services/recipeService')
 
+// 默认菜谱示例图片
+const DEFAULT_RECIPE_IMAGES = {
+  '家常菜': 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=300&fit=crop',
+  '素食': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop',
+  '荤菜': 'https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=400&h=300&fit=crop',
+  '汤品': 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=300&fit=crop',
+  '早餐': 'https://images.unsplash.com/photo-1493770348161-369560ae357d?w=400&h=300&fit=crop',
+  '快手菜': 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop',
+  '默认': 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&h=300&fit=crop'
+}
+
 Page({
   data: {
     userInfo: {},
@@ -69,6 +80,22 @@ Page({
         recipes = favorites.slice(0, 6)
       }
       
+      // 为菜谱添加默认图片
+      recipes = recipes.map(recipe => {
+        let imageUrl = recipe.coverImage || (recipe.images && recipe.images[0])
+        
+        // 如果没有图片，根据类型使用默认图片
+        if (!imageUrl) {
+          const typeName = recipe.typeName || '默认'
+          imageUrl = DEFAULT_RECIPE_IMAGES[typeName] || DEFAULT_RECIPE_IMAGES['默认']
+        }
+        
+        return {
+          ...recipe,
+          displayImage: imageUrl
+        }
+      })
+      
       this.setData({
         recommendRecipes: recipes
       })
@@ -102,6 +129,19 @@ Page({
     const id = e.currentTarget.dataset.id
     wx.navigateTo({
       url: `/pages/recipe/detail/index?id=${id}`
+    })
+  },
+  
+  // 图片加载失败处理
+  onImageError(e) {
+    const index = e.currentTarget.dataset.index
+    const recipes = this.data.recommendRecipes
+    
+    // 使用默认图片替换
+    recipes[index].displayImage = DEFAULT_RECIPE_IMAGES['默认']
+    
+    this.setData({
+      recommendRecipes: recipes
     })
   }
 })

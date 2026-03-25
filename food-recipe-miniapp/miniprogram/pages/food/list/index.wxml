@@ -66,7 +66,7 @@
       data-item="{{item}}"
     >
       <!-- 食材图片 -->
-      <image class="food-image" src="{{item.imageUrl || '/assets/images/empty-food.png'}}" mode="aspectFill"/>
+      <image class="food-image" src="{{item.imageUrl || '/assets/images/empty-food.png'}}" mode="aspectFill" binderror="onImageError" data-index="{{index}}"/>
       
       <view class="food-content">
         <view class="food-header">

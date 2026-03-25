@@ -36,7 +36,8 @@
       <view class="recipe-grid">
         <view class="recipe-card" wx:for="{{recommendRecipes}}" wx:key="id"
               bindtap="goToRecipeDetail" data-id="{{item.id}}">
-          <image class="recipe-image" src="{{item.coverImage || item.images[0] || '/assets/images/default-recipe.png'}}" mode="aspectFill"/>
+          <image class="recipe-image" src="{{item.displayImage}}" mode="aspectFill" 
+                 data-index="{{index}}" binderror="onImageError"/>
           <view class="recipe-content">
             <text class="recipe-name">{{item.name}}</text>
             <view class="recipe-tags">
