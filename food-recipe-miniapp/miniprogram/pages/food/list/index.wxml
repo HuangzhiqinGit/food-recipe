@@ -1,0 +1,110 @@
+<view class="container">
+  <!-- 未登录提示 -->
+  <view class="login-tip" wx:if="{{!isLogin}}">
+    <text class="tip-icon">🔒</text>
+    <text class="tip-text">请先登录后查看食材</text>
+    <view class="login-btn-wrapper" bindtap="goToLogin" hover-class="login-btn-hover">
+      <text class="login-btn-text">微信一键登录</text>
+    </view>
+    <text class="login-sub-tip">点击自动登录，新用户自动注册</text>
+  </view>
+
+  <!-- 已登录内容 -->
+  <block wx:else>
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <text class="search-icon">🔍</text>
+      <input 
+        class="search-input" 
+        placeholder="搜索食材" 
+        value="{{keyword}}"
+        bindinput="onSearchInput"
+      />
+    </view>
+    <view class="add-btn" bindtap="goToAddFood">
+      <text class="add-icon">+</text>
+    </view>
+  </view>
+
+  <!-- 状态筛选 -->
+  <scroll-view class="status-scroll" scroll-x>
+    <view class="status-list">
+      <view 
+        class="status-item {{currentStatus === item.value ? 'active' : ''}}"
+        wx:for="{{statusList}}"
+        wx:key="value"
+        bindtap="selectStatus"
+        data-value="{{item.value}}"
+      >
+        {{item.label}}
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 分类标签 -->
+  <scroll-view class="category-scroll" scroll-x>
+    <view class="category-list">
+      <view 
+        class="category-item {{currentCategory === item.value ? 'active' : ''}}"
+        wx:for="{{categories}}"
+        wx:key="value"
+        bindtap="selectCategory"
+        data-value="{{item.value}}"
+      >
+        {{item.label}}
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 食材列表 -->
+  <view class="food-list" wx:if="{{foodList.length > 0}}">
+    <view 
+      class="food-card" 
+      wx:for="{{foodList}}" 
+      wx:key="id"
+      bindtap="goToDetail"
+      data-id="{{item.id}}"
+      bindlongpress="showActionSheet"
+      data-item="{{item}}"
+    >
+      <!-- 食材图片 -->
+      <image class="food-image" src="{{item.imageUrl || '/assets/images/empty-food.png'}}" mode="aspectFill"/>
+      
+      <view class="food-content">
+        <view class="food-header">
+          <view class="food-name-wrap">
+            <text class="status-dot status-dot-{{item.status === 0 ? 'fresh' : item.status === 1 ? 'warning' : 'danger'}}"></text>
+            <text class="food-name">{{item.name}}</text>
+          </view>
+          <text class="arrow">></text>
+        </view>
+        <view class="food-info">
+          <text class="info-text">{{item.quantity}}{{item.unit}} | {{item.location}}</text>
+        </view>
+        <view class="food-meta">
+          <text class="meta-text" wx:if="{{item.creatorName}}">创建人: {{item.creatorName}}</text>
+          <text class="meta-text" wx:if="{{item.createdAt}}">{{item.createdAt}}</text>
+        </view>
+        <view class="food-status">
+          <text class="tag tag-{{item.status === 0 ? 'primary' : item.status === 1 ? 'accent' : 'danger'}}">
+            {{item.statusText}}
+          </text>
+          <text class="expire-text" wx:if="{{item.expireDate}}">过期: {{item.expireDate}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:else>
+    <image class="empty-icon" src="/assets/images/empty-food.png" mode="aspectFit"/>
+    <text class="empty-text">暂无食材，快去添加吧~</text>
+    <view class="quick-add-list">
+      <text class="quick-add-item" bindtap="quickAdd" data-name="鸡蛋">+ 鸡蛋</text>
+      <text class="quick-add-item" bindtap="quickAdd" data-name="番茄">+ 番茄</text>
+      <text class="quick-add-item" bindtap="quickAdd" data-name="鸡胸肉">+ 鸡胸肉</text>
+    </view>
+  </view>
+  </block>
+</view>

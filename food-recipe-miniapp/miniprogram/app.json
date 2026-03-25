@@ -1,0 +1,68 @@
+{
+  "pages": [
+    "pages/home/index",
+    "pages/food/list/index",
+    "pages/food/edit/index",
+    "pages/food/detail/index",
+    "pages/recipe/list/index",
+    "pages/recipe/detail/index",
+    "pages/recipe/filter/index",
+    "pages/recipe/add/index",
+    "pages/shopping/list/index",
+    "pages/user/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "dark",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "家庭食材管理",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F5F5F5"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#4CAF50",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "首页",
+        "iconPath": "assets/icons/ic_home.png",
+        "selectedIconPath": "assets/icons/ic_home_active.png"
+      },
+      {
+        "pagePath": "pages/food/list/index",
+        "text": "食材",
+        "iconPath": "assets/icons/ic_food.png",
+        "selectedIconPath": "assets/icons/ic_food_active.png"
+      },
+      {
+        "pagePath": "pages/recipe/list/index",
+        "text": "菜谱",
+        "iconPath": "assets/icons/ic_recipe.png",
+        "selectedIconPath": "assets/icons/ic_recipe_active.png"
+      },
+      {
+        "pagePath": "pages/shopping/list/index",
+        "text": "清单",
+        "iconPath": "assets/icons/ic_shopping.png",
+        "selectedIconPath": "assets/icons/ic_shopping_active.png"
+      },
+      {
+        "pagePath": "pages/user/index",
+        "text": "我的",
+        "iconPath": "assets/icons/ic_user.png",
+        "selectedIconPath": "assets/icons/ic_user_active.png"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents",
+  "permission": {
+    "scope.userLocation": {
+      "desc": "您的位置信息将用于小程序位置接口的效果展示"
+    }
+  },
+  "requiredBackgroundModes": [],
+  "usingComponents": {}
+}

@@ -1,0 +1,17 @@
+<view class="recipe-card" bindtap="onTap">
+  <image class="recipe-image" src="{{recipe.coverImage || '/assets/images/recipe-default.png'}}" mode="aspectFill" lazy-load/>
+  <view class="recipe-info">
+    <text class="recipe-name">{{recipe.name}}</text>
+    <view class="recipe-tags">
+      <text class="difficulty-tag {{getDifficultyClass(recipe.difficulty)}}">{{getDifficultyText(recipe.difficulty)}}</text>
+      <text class="time-tag">⏱ {{recipe.cookTime}}分钟</text>
+    </view>
+    <view class="recipe-meta">
+      <text class="ingredients-count">{{(recipe.ingredients && recipe.ingredients.length) || 0}}种食材</text>
+      <text class="calories" wx:if="{{recipe.calories}}">{{recipe.calories}}千卡</text>
+    </view>
+  </view>
+  <view wx:if="{{showFavorite}}" class="favorite-btn {{recipe.isFavorite ? 'active' : ''}}" catchtap="onFavoriteTap">
+    <text class="favorite-icon">{{recipe.isFavorite ? '★' : '☆'}}</text>
+  </view>
+</view>

@@ -1,0 +1,82 @@
+/* 食材卡片组件 */
+
+.food-card {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.food-icon {
+  font-size: 56rpx;
+  margin-right: 20rpx;
+}
+
+.food-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.food-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.food-name {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.expire-badge {
+  font-size: 22rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  background: #E8F5E9;
+  color: #4CAF50;
+}
+
+.expire-badge.warning {
+  background: #FFF3E0;
+  color: #FF9800;
+}
+
+.expire-badge.expired {
+  background: #FFEBEE;
+  color: #F44336;
+}
+
+.food-meta {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.category-tag {
+  font-size: 22rpx;
+  color: #4CAF50;
+  background: rgba(76, 175, 80, 0.1);
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+}
+
+.quantity {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.location {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.arrow {
+  font-size: 40rpx;
+  color: #ccc;
+  margin-left: 16rpx;
+}

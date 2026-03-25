@@ -1,0 +1,192 @@
+.container {
+  padding: 32rpx;
+  padding-bottom: 160rpx;
+  min-height: 100vh;
+  background: var(--bg-page);
+}
+
+.page-header {
+  margin-bottom: 48rpx;
+}
+
+.page-title {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* 表单 */
+.form {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+}
+
+.form-item {
+  margin-bottom: 32rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  font-size: 28rpx;
+  color: var(--text-primary);
+}
+
+.required {
+  color: var(--danger);
+}
+
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.add-link {
+  font-size: 26rpx;
+  color: var(--primary);
+}
+
+.form-input {
+  height: 80rpx;
+  background: #F5F5F5;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+}
+
+.form-textarea {
+  height: 160rpx;
+  background: #F5F5F5;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  font-size: 28rpx;
+}
+
+/* 选择器 */
+.picker {
+  height: 80rpx;
+  background: #F5F5F5;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.picker-text {
+  font-size: 28rpx;
+  color: var(--text-primary);
+}
+
+.picker-arrow {
+  font-size: 24rpx;
+  color: var(--text-hint);
+}
+
+/* 食材列表 */
+.ingredient-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.ingredient-item {
+  display: flex;
+  gap: 12rpx;
+  align-items: center;
+}
+
+.ingredient-input {
+  height: 72rpx;
+  background: #F5F5F5;
+  border-radius: 8rpx;
+  padding: 0 16rpx;
+  font-size: 26rpx;
+}
+
+.name-input {
+  flex: 1;
+}
+
+.qty-input {
+  width: 100rpx;
+}
+
+.unit-input {
+  width: 80rpx;
+}
+
+/* 步骤列表 */
+.step-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.step-item {
+  display: flex;
+  gap: 12rpx;
+  align-items: flex-start;
+}
+
+.step-number {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--primary);
+  min-width: 40rpx;
+  padding-top: 16rpx;
+}
+
+.step-input {
+  flex: 1;
+  height: 120rpx;
+  background: #F5F5F5;
+  border-radius: 8rpx;
+  padding: 16rpx;
+  font-size: 26rpx;
+}
+
+.delete-btn {
+  font-size: 32rpx;
+  padding: 8rpx;
+}
+
+/* 底部按钮 */
+.footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  background: #fff;
+  display: flex;
+  gap: 24rpx;
+  box-shadow: 0 -2rpx 8rpx rgba(0, 0, 0, 0.06);
+}
+
+.footer .btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-secondary {
+  background: #F5F5F5;
+  color: var(--text-primary);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}

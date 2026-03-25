@@ -1,0 +1,97 @@
+/* 菜谱卡片组件 */
+
+.recipe-card {
+  display: flex;
+  background: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.recipe-image {
+  width: 200rpx;
+  height: 160rpx;
+  flex-shrink: 0;
+}
+
+.recipe-info {
+  flex: 1;
+  padding: 20rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.recipe-name {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recipe-tags {
+  display: flex;
+  gap: 12rpx;
+  margin-top: 8rpx;
+}
+
+.difficulty-tag {
+  font-size: 20rpx;
+  padding: 4rpx 10rpx;
+  border-radius: 6rpx;
+}
+
+.difficulty-tag.easy {
+  background: #E8F5E9;
+  color: #4CAF50;
+}
+
+.difficulty-tag.medium {
+  background: #FFF3E0;
+  color: #FF9800;
+}
+
+.difficulty-tag.hard {
+  background: #FFEBEE;
+  color: #F44336;
+}
+
+.time-tag {
+  font-size: 20rpx;
+  color: #666;
+  background: #F5F5F5;
+  padding: 4rpx 10rpx;
+  border-radius: 6rpx;
+}
+
+.recipe-meta {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 8rpx;
+}
+
+.ingredients-count,
+.calories {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.favorite-btn {
+  width: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.favorite-icon {
+  font-size: 40rpx;
+  color: #ccc;
+}
+
+.favorite-btn.active .favorite-icon {
+  color: #FF6B6B;
+}

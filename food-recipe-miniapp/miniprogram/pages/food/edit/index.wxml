@@ -1,0 +1,105 @@
+<view class="container">
+  <!-- 页面标题 -->
+  <view class="page-header">
+    <text class="page-title">{{isEdit ? '编辑食材' : '新增食材'}}</text>
+  </view>
+
+  <!-- 表单 -->
+  <view class="form">
+    <!-- 食材图片 -->
+    <view class="form-item">
+      <text class="form-label">食材图片</text>
+      <image-uploader images="{{images}}" maxCount="1" type="food" bind:change="onImageChange"/>
+    </view>
+
+    <!-- 扫描录入 -->
+    <view class="scan-section" wx:if="{{!isEdit}}">
+      <view class="scan-btn" bindtap="scanFood">
+        <text class="scan-icon">📷</text>
+        <text class="scan-text">扫描录入</text>
+      </view>
+    </view>
+
+    <!-- 食材名称 -->
+    <view class="form-item">
+      <text class="form-label">食材名称 <text class="required">*</text></text>
+      <input 
+        class="form-input" 
+        placeholder="请输入食材名称（如：鸡蛋）"
+        value="{{form.name}}"
+        bindinput="onNameInput"
+      />
+    </view>
+
+    <!-- 常用食材快捷标签 -->
+    <view class="quick-tags" wx:if="{{!isEdit}}">
+      <text class="quick-label">常用:</text>
+      <text 
+        class="quick-tag" 
+        wx:for="{{commonFoods}}" 
+        wx:key="*this"
+        bindtap="selectCommonFood"
+        data-name="{{item}}"
+      >{{item}}</text>
+    </view>
+
+    <!-- 分类 -->
+    <view class="form-item">
+      <text class="form-label">分类 <text class="required">*</text></text>
+      <picker bindchange="onCategoryChange" value="{{categoryIndex}}" range="{{categories}}" range-key="label">
+        <view class="picker">
+          <text class="picker-text">{{categories[categoryIndex].label}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 数量 -->
+    <view class="form-item">
+      <text class="form-label">数量/余量 <text class="required">*</text></text>
+      <view class="quantity-row">
+        <input 
+          class="form-input quantity-input" 
+          placeholder="请输入数量"
+          type="digit"
+          value="{{form.quantity}}"
+          bindinput="onQuantityInput"
+        />
+        <picker bindchange="onUnitChange" value="{{unitIndex}}" range="{{units}}">
+          <view class="picker unit-picker">
+            <text class="picker-text">{{units[unitIndex]}}</text>
+            <text class="picker-arrow">▼</text>
+          </view>
+        </picker>
+      </view>
+    </view>
+
+    <!-- 存放位置 -->
+    <view class="form-item">
+      <text class="form-label">存放位置</text>
+      <picker bindchange="onLocationChange" value="{{locationIndex}}" range="{{locations}}">
+        <view class="picker">
+          <text class="picker-text">{{locations[locationIndex]}}</text>
+          <text class="picker-arrow">▼</text>
+        </view>
+      </picker>
+    </view>
+
+    <!-- 过期日期 -->
+    <view class="form-item">
+      <text class="form-label">过期日期</text>
+      <picker mode="date" bindchange="onExpireDateChange" value="{{form.expireDate}}">
+        <view class="picker">
+          <text class="picker-text">{{form.expireDate || '请选择过期日期'}}</text>
+          <text class="picker-arrow">📅</text>
+        </view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="footer">
+    <button class="btn btn-secondary" bindtap="onCancel">取消</button>
+    <button class="btn btn-primary" bindtap="onSave">保存</button>
+  </view>
+</view>

@@ -1,0 +1,14 @@
+<view class="shopping-item {{item.completed ? 'completed' : ''}}">
+  <view class="checkbox" bindtap="onToggle">
+    <view class="check-circle {{item.completed ? 'checked' : ''}}">
+      <text wx:if="{{item.completed}}">✓</text>
+    </view>
+  </view>
+  <view class="item-content" bindtap="onEdit">
+    <text class="item-name">{{item.name}}</text>
+    <text class="item-quantity" wx:if="{{item.quantity}}">{{item.quantity}}{{item.unit || '个'}}</text>
+  </view>
+  <view class="item-actions">
+    <text class="delete-btn" bindtap="onDelete">🗑️</text>
+  </view>
+</view>

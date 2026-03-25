@@ -1,0 +1,147 @@
+.container {
+  padding: 32rpx;
+  padding-bottom: 160rpx;
+  min-height: 100vh;
+  background: var(--bg-page);
+}
+
+.page-header {
+  margin-bottom: 48rpx;
+}
+
+.page-title {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* 表单 */
+.form {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+}
+
+.form-item {
+  margin-bottom: 32rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  color: var(--text-primary);
+  margin-bottom: 16rpx;
+}
+
+.required {
+  color: var(--danger);
+}
+
+.form-input {
+  height: 80rpx;
+  background: #F5F5F5;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+}
+
+/* 快捷标签 */
+.quick-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: -8rpx;
+  margin-bottom: 24rpx;
+  padding-left: 16rpx;
+}
+
+.quick-label {
+  font-size: 24rpx;
+  color: var(--text-hint);
+  margin-right: 16rpx;
+}
+
+.quick-tag {
+  padding: 8rpx 20rpx;
+  background: rgba(76, 175, 80, 0.1);
+  color: var(--primary);
+  border-radius: 24rpx;
+  font-size: 24rpx;
+  margin-right: 12rpx;
+  margin-bottom: 8rpx;
+}
+
+/* 选择器 */
+.picker {
+  height: 80rpx;
+  background: #F5F5F5;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.picker-text {
+  font-size: 28rpx;
+  color: var(--text-primary);
+}
+
+.picker-arrow {
+  font-size: 24rpx;
+  color: var(--text-hint);
+}
+
+/* 数量行 */
+.quantity-row {
+  display: flex;
+  gap: 16rpx;
+}
+
+.quantity-input {
+  flex: 1;
+}
+
+.unit-picker {
+  width: 160rpx;
+  justify-content: center;
+}
+
+/* 底部按钮 */
+.footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  background: #fff;
+  display: flex;
+  gap: 24rpx;
+  box-shadow: 0 -2rpx 8rpx rgba(0, 0, 0, 0.06);
+}
+
+.footer .btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer .btn-secondary {
+  background: #F5F5F5;
+  color: var(--text-primary);
+}
+
+.footer .btn-primary {
+  background: var(--primary);
+  color: #fff;
+}

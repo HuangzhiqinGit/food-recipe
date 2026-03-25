@@ -1,0 +1,69 @@
+<view class="container">
+  <!-- 顶部操作栏 -->
+  <view class="action-bar">
+    <view class="btn btn-accent btn-match" bindtap="matchByInventory">
+      <text class="btn-icon">🔍</text>
+      <text>按库存找菜谱</text>
+    </view>
+    <view class="btn btn-secondary btn-filter" bindtap="goToFilter">
+      <text>筛选</text>
+    </view>
+    <view class="btn btn-accent btn-add" bindtap="goToAddRecipe">
+      <text class="btn-icon">+</text>
+    </view>
+  </view>
+
+  <!-- 标签切换 -->
+  <view class="tab-bar">
+    <view 
+      class="tab-item {{currentTab === 'recommend' ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab="recommend"
+    >
+      随机推荐
+    </view>
+    <view 
+      class="tab-item {{currentTab === 'favorite' ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab="favorite"
+    >
+      我的收藏
+    </view>
+  </view>
+
+  <!-- 菜谱列表 -->
+  <view class="recipe-list" wx:if="{{recipeList.length > 0}}">
+    <view 
+      class="recipe-card" 
+      wx:for="{{recipeList}}" 
+      wx:key="id"
+      bindtap="goToDetail"
+      data-id="{{item.id}}"
+    >
+      <image 
+        class="recipe-image" 
+        src="{{item.image || '/assets/images/default-recipe.png'}}" 
+        mode="aspectFill"
+        lazy-load
+      />
+      <view class="recipe-info">
+        <text class="recipe-name">{{item.name}}</text>
+        <view class="recipe-tags">
+          <text class="tag tag-primary">{{item.typeName}}</text>
+          <text class="tag tag-accent">{{item.durationName}}</text>
+        </view>
+        <text class="match-rate" wx:if="{{item.matchRate}}">匹配度: {{item.matchRate}}%</text>
+      </view>
+      <view class="favorite-icon" wx:if="{{item.isFavorite}}">⭐</view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:else>
+    <image class="empty-icon" src="/assets/images/empty-recipe.png" mode="aspectFit"/>
+    <text class="empty-text">{{currentTab === 'favorite' ? '暂无收藏菜谱' : '暂无匹配菜谱，快去添加食材吧~'}}</text>
+    <view class="empty-actions" wx:if="{{currentTab === 'recommend'}}">
+      <text class="action-link" bindtap="goToFoodList">去添加食材 ></text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,43 @@
+services:
+  # MySQL数据库
+  mysql:
+    image: mysql:8.0
+    container_name: food-recipe-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: FoodRecipe123!
+      MYSQL_DATABASE: food_recipe
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./src/main/resources/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - food-recipe-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pFoodRecipe123!"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  # 后端服务
+  server:
+    build: .
+    container_name: food-recipe-server
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - food-recipe-network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+
+networks:
+  food-recipe-network:
+    driver: bridge

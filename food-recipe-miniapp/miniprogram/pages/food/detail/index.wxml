@@ -1,0 +1,75 @@
+<view class="container">
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading-container">
+    <loading />
+  </view>
+
+  <!-- 内容区域 -->
+  <block wx:elif="{{food}}">
+    <!-- 食材头部信息 -->
+    <view class="food-header">
+      <view class="food-icon">{{getCategoryIcon(food.category)}}</view>
+      <view class="food-info">
+        <text class="food-name">{{food.name}}</text>
+        <view class="food-category">
+          <text class="category-tag">{{getCategoryName(food.category)}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 状态卡片 -->
+    <view class="status-card {{getStatusLabel(getRemainingDays(food.expireDate)).type}}">
+      <view class="status-icon">
+        <text wx:if="{{getStatusLabel(getRemainingDays(food.expireDate)).type === 'expired'}}">⚠️</text>
+        <text wx:elif="{{getStatusLabel(getRemainingDays(food.expireDate)).type === 'warning'}}">⏰</text>
+        <text wx:else>✅</text>
+      </view>
+      <view class="status-text">
+        <text class="status-label">{{getStatusLabel(getRemainingDays(food.expireDate)).text}}</text>
+        <text wx:if="{{food.expireDate}}" class="expire-date">过期日期：{{food.expireDate}}</text>
+      </view>
+    </view>
+
+    <!-- 详细信息卡片 -->
+    <view class="detail-card">
+      <view class="card-title">详细信息</view>
+      
+      <view class="detail-item">
+        <text class="item-label">数量</text>
+        <text class="item-value">{{food.quantity}} {{food.unit}}</text>
+      </view>
+      
+      <view class="detail-item">
+        <text class="item-label">存放位置</text>
+        <text class="item-value">{{food.location}}</text>
+      </view>
+      
+      <view class="detail-item">
+        <text class="item-label">添加时间</text>
+        <text class="item-value">{{food.createTime}}</text>
+      </view>
+      
+      <view class="detail-item" wx:if="{{food.updateTime}}">
+        <text class="item-label">更新时间</text>
+        <text class="item-value">{{food.updateTime}}</text>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-buttons">
+      <button class="btn btn-primary" bindtap="goToEdit">
+        <text class="btn-icon">✏️</text>
+        <text>编辑</text>
+      </button>
+      <button class="btn btn-danger" bindtap="deleteFood">
+        <text class="btn-icon">🗑️</text>
+        <text>删除</text>
+      </button>
+    </view>
+  </block>
+
+  <!-- 空状态 -->
+  <view wx:else class="empty-container">
+    <empty-state title="食材不存在" description="该食材可能已被删除" />
+  </view>
+</view>

@@ -1,0 +1,92 @@
+<view class="container">
+  <!-- 菜品图片轮播 -->
+  <view class="image-section">
+    <swiper class="recipe-swiper" indicator-dots="{{images.length > 1}}" autoplay="{{false}}">
+      <swiper-item wx:for="{{images}}" wx:key="*this">
+        <image class="recipe-image" src="{{item}}" mode="aspectFill"/>
+      </swiper-item>
+    </swiper>
+    <image wx:if="{{images.length === 0}}" class="recipe-image" src="{{recipe.image || '/assets/images/default-recipe.png'}}" mode="aspectFill"/>
+  </view>
+
+  <!-- 菜谱信息 -->
+  <view class="info-section">
+    <text class="recipe-name">{{recipe.name}}</text>
+    <view class="recipe-tags">
+      <text class="tag tag-primary">{{recipe.typeName}}</text>
+      <text class="tag tag-accent">{{recipe.durationName}}</text>
+    </view>
+  </view>
+
+  <!-- 所需食材 -->
+  <view class="section">
+    <view class="section-title">所需食材</view>
+    <view class="ingredients-list">
+      <view class="ingredient-item" wx:for="{{ingredients}}" wx:key="name">
+        <text class="ingredient-name">• {{item.name}} {{item.quantity}}{{item.unit}}</text>
+        <text class="ingredient-status {{item.hasStock ? 'has-stock' : 'no-stock'}}">
+          {{item.hasStock ? '已备 ✅' : '缺 ❌'}}
+        </text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 烹饪步骤 -->
+  <view class="section">
+    <view class="section-title">烹饪步骤</view>
+    <view class="steps-list">
+      <view class="step-item" wx:for="{{steps}}" wx:key="index">
+        <text class="step-number">{{index + 1}}.</text>
+        <text class="step-content">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 小贴士 -->
+  <view class="section" wx:if="{{recipe.tips}}">
+    <view class="section-title">小贴士</view>
+    <text class="tips-content">{{recipe.tips}}</text>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="footer">
+    <button class="btn btn-primary btn-cook" bindtap="startCooking">
+      <text class="btn-icon">👨‍🍳</text>
+      <text>开始烹饪</text>
+    </button>
+    <button class="btn btn-secondary btn-shopping" bindtap="addToShopping">
+      <text class="btn-icon">🛒</text>
+      <text>缺的食材加入清单</text>
+    </button>
+    <button class="btn btn-favorite {{recipe.isFavorite ? 'active' : ''}}" bindtap="toggleFavorite">
+      <text class="btn-icon">{{recipe.isFavorite ? '⭐' : '☆'}}</text>
+      <text>{{recipe.isFavorite ? '已收藏' : '收藏'}}</text>
+    </button>
+  </view>
+</view>
+
+<!-- 烹饪确认弹窗 -->
+<view class="modal" wx:if="{{showCookModal}}">
+  <view class="modal-mask" bindtap="hideCookModal"></view>
+  <view class="modal-content">
+    <view class="modal-header">
+      <text class="modal-title">开始烹饪</text>
+      <text class="modal-close" bindtap="hideCookModal">✕</text>
+    </view>
+    <view class="modal-body">
+      <text class="modal-desc">将自动扣减以下食材库存：</text>
+      <view class="cook-ingredients">
+        <view class="cook-item" wx:for="{{cookIngredients}}" wx:key="name">
+          <text class="cook-name">{{item.name}} {{item.quantity}}{{item.unit}}</text>
+          <text class="cook-status {{item.hasStock ? 'has-stock' : 'no-stock'}}">
+            {{item.hasStock ? '库存充足' : '库存不足'}}
+          </text>
+        </view>
+      </view>
+    </view>
+    <view class="modal-footer">
+      <button class="btn btn-secondary" bindtap="hideCookModal">取消</button>
+      <button class="btn btn-primary" bindtap="confirmCook">确认烹饪</button>
+    </view>
+  </view>
+</view>

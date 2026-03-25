@@ -1,0 +1,85 @@
+.container {
+  padding: 32rpx;
+  padding-bottom: 160rpx;
+  min-height: 100vh;
+  background: var(--bg-page);
+}
+
+/* 筛选组 */
+.filter-section {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+}
+
+.filter-group {
+  margin-bottom: 48rpx;
+}
+
+.filter-group:last-child {
+  margin-bottom: 0;
+}
+
+.filter-label {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 24rpx;
+}
+
+/* 选项 */
+.filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.filter-option {
+  padding: 16rpx 32rpx;
+  background: #F5F5F5;
+  border-radius: 32rpx;
+  font-size: 28rpx;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.filter-option.active {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* 底部按钮 */
+.footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  background: #fff;
+  display: flex;
+  gap: 24rpx;
+  box-shadow: 0 -2rpx 8rpx rgba(0, 0, 0, 0.06);
+}
+
+.footer .btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-secondary {
+  background: #F5F5F5;
+  color: var(--text-primary);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}

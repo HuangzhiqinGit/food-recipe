@@ -1,0 +1,41 @@
+<view class="container">
+  <view class="filter-section">
+    <!-- 荤素类型 -->
+    <view class="filter-group">
+      <text class="filter-label">荤素类型</text>
+      <view class="filter-options">
+        <view 
+          class="filter-option {{selectedType === item.value ? 'active' : ''}}"
+          wx:for="{{typeOptions}}"
+          wx:key="value"
+          bindtap="selectType"
+          data-value="{{item.value}}"
+        >
+          {{item.label}}
+        </view>
+      </view>
+    </view>
+
+    <!-- 烹饪时长 -->
+    <view class="filter-group">
+      <text class="filter-label">烹饪时长</text>
+      <view class="filter-options">
+        <view 
+          class="filter-option {{selectedDuration === item.value ? 'active' : ''}}"
+          wx:for="{{durationOptions}}"
+          wx:key="value"
+          bindtap="selectDuration"
+          data-value="{{item.value}}"
+        >
+          {{item.label}}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="footer">
+    <button class="btn btn-secondary" bindtap="resetFilter">重置</button>
+    <button class="btn btn-primary" bindtap="confirmFilter">确认筛选</button>
+  </view>
+</view>
