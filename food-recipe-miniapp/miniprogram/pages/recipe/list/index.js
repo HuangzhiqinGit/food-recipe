@@ -1,5 +1,6 @@
 const { showSuccess } = require('../../../utils/util')
 const recipeService = require('../../../services/recipeService')
+const imageService = require('../../../services/imageService')
 
 // 默认菜谱示例图片
 const DEFAULT_RECIPE_IMAGES = {
@@ -28,7 +29,7 @@ Page({
     this.loadRecipeList()
   },
 
-  // 加载菜谱列表
+  // 加载菜谱列表 - 处理图片签名
   async loadRecipeList() {
     try {
       const { currentTab, filterType, filterDuration } = this.data
@@ -63,6 +64,9 @@ Page({
         }
       })
       
+      // 处理OSS图片签名
+      list = await imageService.processRecipeImages(list)
+      
       this.setData({
         recipeList: list
       })
@@ -79,7 +83,7 @@ Page({
     this.loadRecipeList()
   },
 
-  // 按库存匹配
+  // 按库存匹配 - 处理图片签名
   async matchByInventory() {
     try {
       wx.showLoading({ title: '匹配中...' })
@@ -101,6 +105,9 @@ Page({
           displayImage: imageUrl
         }
       })
+      
+      // 处理OSS图片签名
+      list = await imageService.processRecipeImages(list)
       
       this.setData({
         recipeList: list,

@@ -2,6 +2,7 @@ const app = getApp()
 const { getFoodStatus } = require('../../utils/util')
 const foodService = require('../../services/foodService')
 const recipeService = require('../../services/recipeService')
+const imageService = require('../../services/imageService')
 
 // 默认菜谱示例图片
 const DEFAULT_RECIPE_IMAGES = {
@@ -54,7 +55,7 @@ Page({
     }
   },
 
-  // 获取推荐菜谱 - 优先展示收藏，默认6个
+  // 获取推荐菜谱 - 优先展示收藏，默认6个，处理图片签名
   async loadRecommendRecipes() {
     try {
       // 先尝试获取收藏的菜谱
@@ -95,6 +96,9 @@ Page({
           displayImage: imageUrl
         }
       })
+      
+      // 处理OSS图片签名
+      recipes = await imageService.processRecipeImages(recipes)
       
       this.setData({
         recommendRecipes: recipes

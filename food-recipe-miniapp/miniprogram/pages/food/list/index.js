@@ -2,6 +2,7 @@ const app = getApp()
 const { debounce, showConfirm, showSuccess } = require('../../../utils/util')
 const foodService = require('../../../services/foodService')
 const authService = require('../../../services/authService')
+const imageService = require('../../../services/imageService')
 
 Page({
   data: {
@@ -108,7 +109,7 @@ Page({
     }
   },
 
-  // 加载食材列表 - 修复：状态筛选生效
+  // 加载食材列表 - 修复：状态筛选生效，图片添加签名
   async loadFoodList() {
     try {
       const params = {}
@@ -139,6 +140,9 @@ Page({
       if (this.data.currentStatus !== 'all') {
         list = list.filter(item => item.status === this.data.currentStatus)
       }
+      
+      // 处理图片签名
+      list = await imageService.processFoodImages(list)
       
       this.setData({
         foodList: list
