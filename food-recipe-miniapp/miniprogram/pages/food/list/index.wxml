@@ -22,9 +22,6 @@
         bindinput="onSearchInput"
       />
     </view>
-    <view class="add-btn" bindtap="goToAddFood">
-      <text class="add-icon">+</text>
-    </view>
   </view>
 
   <!-- 状态筛选 -->
@@ -105,6 +102,13 @@
       <text class="quick-add-item" bindtap="quickAdd" data-name="鸡蛋">+ 鸡蛋</text>
       <text class="quick-add-item" bindtap="quickAdd" data-name="番茄">+ 番茄</text>
       <text class="quick-add-item" bindtap="quickAdd" data-name="鸡胸肉">+ 鸡胸肉</text>
+    </view>
+  </view>
+  
+  <!-- 悬浮添加按钮 -->
+  <view class="fab-btn" bindtap="goToAddFood">
+    <view class="fab-inner">
+      <text class="fab-icon">+</text>
     </view>
   </view>
   </block>

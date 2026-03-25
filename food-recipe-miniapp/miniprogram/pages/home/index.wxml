@@ -1,47 +1,49 @@
 <view class="container">
-  <!-- 欢迎语 -->
-  <view class="welcome-section">
-    <text class="welcome-text">你好，{{userInfo.nickname || '美食家'}}！</text>
-    <text class="welcome-subtext">今天想吃点啥？</text>
+  <!-- 渐变头部 -->
+  <view class="header">
+    <view class="header-content">
+      <text class="welcome-text">你好，{{userInfo.nickname || '美食家'}}！</text>
+      <text class="welcome-subtext">今天想吃点啥？</text>
+    </view>
   </view>
 
-  <!-- 临期提醒卡片 -->
-  <view class="warning-card" wx:if="{{expiringCount > 0}}" bindtap="goToFoodList">
-    <view class="warning-content">
-      <text class="warning-icon">⚠️</text>
+  <!-- 内容区域 - 卡片式 -->
+  <view class="content">
+    <!-- 临期提醒卡片 -->
+    <view class="warning-card" wx:if="{{expiringCount > 0}}" bindtap="goToFoodList">
+      <view class="warning-icon-wrap">
+        <text class="warning-icon">⚠️</text>
+      </view>
       <view class="warning-info">
         <text class="warning-title">临期食材提醒</text>
         <text class="warning-desc">有{{expiringCount}}个食材即将过期</text>
       </view>
-      <text class="warning-arrow">></text>
-    </view>
-  </view>
-
-  <view class="safe-card" wx:else>
-    <text class="safe-icon">✅</text>
-    <text class="safe-text">暂无临期食材，放心做饭～</text>
-  </view>
-
-  <!-- 今日菜谱推荐 -->
-  <view class="recipe-section">
-    <view class="section-header">
-      <text class="section-title">今日菜谱推荐</text>
-      <text class="refresh-btn" bindtap="refreshRecipes">换一批</text>
+      <text class="warning-arrow">›</text>
     </view>
 
-    <view class="recipe-grid">
-      <view 
-        class="recipe-item" 
-        wx:for="{{recommendRecipes}}" 
-        wx:key="id"
-        bindtap="goToRecipeDetail"
-        data-id="{{item.id}}"
-      >
-        <image class="recipe-image" src="{{item.coverImage || item.images[0] || '/assets/images/default-recipe.png'}}" mode="aspectFill" lazy-load/>
-        <text class="recipe-name">{{item.name}}</text>
-        <view class="recipe-tags">
-          <text class="tag tag-primary">{{item.typeName}}</text>
-          <text class="tag tag-accent">{{item.durationName}}</text>
+    <view class="safe-card" wx:else>
+      <text class="safe-icon">✅</text>
+      <text class="safe-text">暂无临期食材，放心做饭～</text>
+    </view>
+
+    <!-- 今日菜谱推荐 -->
+    <view class="recipe-section">
+      <view class="section-header">
+        <text class="section-title">今日菜谱推荐</text>
+        <text class="refresh-btn" bindtap="refreshRecipes">换一批 ›</text>
+      </view>
+
+      <view class="recipe-grid">
+        <view class="recipe-card" wx:for="{{recommendRecipes}}" wx:key="id"
+              bindtap="goToRecipeDetail" data-id="{{item.id}}">
+          <image class="recipe-image" src="{{item.coverImage || item.images[0] || '/assets/images/default-recipe.png'}}" mode="aspectFill"/>
+          <view class="recipe-content">
+            <text class="recipe-name">{{item.name}}</text>
+            <view class="recipe-tags">
+              <text class="tag tag-primary">{{item.typeName}}</text>
+              <text class="tag tag-accent">{{item.durationName}}</text>
+            </view>
+          </view>
         </view>
       </view>
     </view>
