@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.UUID;
 
 @Slf4j
@@ -76,9 +77,14 @@ public class OssService {
 
             ossClient.putObject(bucketName, newFilename, inputStream, metadata);
 
-            // 返回文件URL
-            String fileUrl = domain + "/" + newFilename;
-            return Result.success(fileUrl);
+            // 生成带签名的URL（有效期1小时）
+            // 如果Bucket是公共读，可以直接使用 fileUrl
+            // 如果Bucket是私有，需要使用签名URL
+            Date expiration = new Date(System.currentTimeMillis() + 3600 * 1000); // 1小时有效期
+            String signedUrl = ossClient.generatePresignedUrl(bucketName, newFilename, expiration).toString();
+            
+            log.info("文件上传成功，返回签名URL: {}", signedUrl);
+            return Result.success(signedUrl);
 
         } catch (IOException e) {
             log.error("文件上传失败", e);
