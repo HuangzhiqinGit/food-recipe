@@ -1,161 +1,260 @@
 <view class="container">
-  <!-- 顶部Tab切换 -->
-  <view class="tab-bar">
-    <view class="tab-item {{currentTab === 'current' ? 'active' : ''}}" bindtap="switchTab" data-tab="current">
-      <text class="tab-text">当前</text>
-    </view>
-    <view class="tab-item {{currentTab === 'history' ? 'active' : ''}}" bindtap="switchTab" data-tab="history">
-      <text class="tab-text">历史</text>
+  <!-- 渐变头部 -->
+  <view class="header"
+    >
+    <view class="header-content"
+    >
+      <text class="header-title">购物清单</text>
+      <text class="header-subtitle">管理您的采购计划</text>
     </view>
   </view>
 
-  <!-- 当前清单 -->
-  <block wx:if="{{currentTab === 'current'}}">
-    <!-- 统计信息 -->
-    <view class="stats-bar" wx:if="{{shoppingList.length > 0}}">
-      <text class="stats-text">共 {{totalCount}} 项 | 已购 {{purchasedCount}} 项 | 未购 {{unpurchasedCount}} 项</text>
-    </view>
-
-    <!-- 分类筛选 -->
-    <scroll-view class="category-scroll" scroll-x wx:if="{{shoppingList.length > 0}}">
-      <view class="category-list">
-        <view 
-          class="category-item {{currentCategory === 'all' ? 'active' : ''}}"
-          bindtap="selectCategory"
-          data-value="all"
-        >全部</view>
-        <view 
-          class="category-item {{currentCategory === item.value ? 'active' : ''}}"
-          wx:for="{{categories}}"
-          wx:key="value"
-          bindtap="selectCategory"
-          data-value="{{item.value}}"
-        >{{item.label}}</view>
-      </view>
-    </scroll-view>
-
-    <!-- 未购买列表 -->
-    <view class="section-title" wx:if="{{unpurchasedList.length > 0}}">未购买</view>
-    <view class="shopping-list" wx:if="{{unpurchasedList.length > 0}}">
-      <view 
-        class="shopping-item" 
-        wx:for="{{unpurchasedList}}" 
-        wx:key="id"
+  <!-- 内容区 -->
+  <view class="content"
+  >
+    <!-- Tab切换 -->
+    <view class="tab-bar"
+    >
+      <view class="tab-item {{currentTab === 'current' ? 'active' : ''}}" bindtap="switchTab" data-tab="current"
       >
-        <view class="checkbox" bindtap="toggleStatus" data-id="{{item.id}}">
-          <text class="check-icon">⬜</text>
-        </view>
-        <view class="item-content">
-          <view class="item-header">
-            <text class="item-name">{{item.foodName}}</text>
-            <text class="item-category" wx:if="{{item.category}}">{{getCategoryName(item.category)}}</text>
-          </view>
-          <text class="item-quantity">{{item.quantity}}</text>
-        </view>
-        <text class="delete-btn" bindtap="deleteItem" data-id="{{item.id}}">🗑️</text>
+        <text class="tab-text">当前清单</text>
       </view>
-    </view>
-
-    <!-- 已购买列表 -->
-    <view class="section-title" wx:if="{{purchasedList.length > 0}}">已购买</view>
-    <view class="shopping-list" wx:if="{{purchasedList.length > 0}}">
-      <view 
-        class="shopping-item purchased" 
-        wx:for="{{purchasedList}}" 
-        wx:key="id"
+      <view class="tab-item {{currentTab === 'history' ? 'active' : ''}}" bindtap="switchTab" data-tab="history"
       >
-        <view class="checkbox" bindtap="toggleStatus" data-id="{{item.id}}">
-          <text class="check-icon">☑️</text>
-        </view>
-        <view class="item-content">
-          <view class="item-header">
-            <text class="item-name strikethrough">{{item.foodName}}</text>
-            <text class="item-category" wx:if="{{item.category}}">{{getCategoryName(item.category)}}</text>
-          </view>
-          <text class="item-quantity strikethrough">{{item.quantity}}</text>
-        </view>
-        <text class="delete-btn" bindtap="deleteItem" data-id="{{item.id}}">🗑️</text>
+        <text class="tab-text">历史记录</text>
       </view>
     </view>
 
-    <!-- 一键入库按钮 -->
-    <view class="batch-stock-section" wx:if="{{purchasedList.length > 0}}">
-      <button class="batch-stock-btn" bindtap="showStockModal">一键入库</button>
-    </view>
+    <!-- 当前清单 -->
+    <block wx:if="{{currentTab === 'current'}}">
+      <!-- 统计卡片 -->
+      <view class="stats-card" wx:if="{{shoppingList.length > 0}}"
+      >
+        <view class="stats-row"
+        >
+          <view class="stats-item"
+          >
+            <text class="stats-num">{{totalCount}}</text>
+            <text class="stats-label">总数</text>
+          </view>
+          <view class="stats-divider"></view>
+          <view class="stats-item"
+          >
+            <text class="stats-num purchased">{{purchasedCount}}</text>
+            <text class="stats-label">已购</text>
+          </view>
+          <view class="stats-divider"></view>
+          <view class="stats-item"
+          >
+            <text class="stats-num pending">{{unpurchasedCount}}</text>
+            <text class="stats-label">未购</text>
+          </view>
+        </view>
+      </view>
 
-    <!-- 空状态 -->
-    <view class="empty-state" wx:if="{{shoppingList.length === 0}}">
-      <image class="empty-icon" src="/assets/images/empty-shopping.png" mode="aspectFit"/>
-      <text class="empty-text">购买清单为空</text>
-      <text class="empty-tip">点击右下角添加食材</text>
-    </view>
+      <!-- 分类筛选 -->
+      <scroll-view class="category-scroll" scroll-x wx:if="{{shoppingList.length > 0}}"
+      >
+        <view class="category-list"
+        >
+          <view class="category-item {{currentCategory === 'all' ? 'active' : ''}}" bindtap="selectCategory" data-value="all"
+          >全部</view>
+          <view class="category-item {{currentCategory === item.value ? 'active' : ''}}" wx:for="{{categories}}" wx:key="value" bindtap="selectCategory" data-value="{{item.value}}"
+          >{{item.label}}</view>
+        </view>
+      </scroll-view>
 
-    <!-- 添加按钮 -->
-    <view class="fab-btn" bindtap="showAddModal">
+      <!-- 未购买列表 -->
+      <view class="section-card" wx:if="{{unpurchasedList.length > 0}}"
+      >
+        <view class="section-header"
+        >
+          <text class="section-icon">🛒</text>
+          <text class="section-title">未购买</text>
+          <text class="section-count">{{unpurchasedList.length}}</text>
+        </view>
+        <view class="shopping-list"
+        >
+          <view class="shopping-item" wx:for="{{unpurchasedList}}" wx:key="id"
+          >
+            <view class="checkbox" bindtap="toggleStatus" data-id="{{item.id}}"
+            >
+              <view class="check-circle"
+              ></view>
+            </view>
+            <view class="item-content"
+            >
+              <view class="item-header"
+              >
+                <text class="item-name">{{item.foodName}}</text>
+                <view class="item-tag tag-{{item.category}}" wx:if="{{item.category}}"
+                >{{getCategoryName(item.category)}}</view>
+              </view>
+              <text class="item-quantity">{{item.quantity}}</text>
+            </view>
+            <view class="delete-btn" bindtap="deleteItem" data-id="{{item.id}}"
+            >
+              <text class="delete-icon">🗑️</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 已购买列表 -->
+      <view class="section-card" wx:if="{{purchasedList.length > 0}}"
+      >
+        <view class="section-header"
+        >
+          <text class="section-icon">✅</text>
+          <text class="section-title">已购买</text>
+          <text class="section-count">{{purchasedList.length}}</text>
+        </view>
+        <view class="shopping-list"
+        >
+          <view class="shopping-item purchased" wx:for="{{purchasedList}}" wx:key="id"
+          >
+            <view class="checkbox" bindtap="toggleStatus" data-id="{{item.id}}"
+            >
+              <view class="check-circle checked"
+              >
+                <text class="check-mark">✓</text>
+              </view>
+            </view>
+            <view class="item-content"
+            >
+              <view class="item-header"
+              >
+                <text class="item-name strikethrough">{{item.foodName}}</text>
+                <view class="item-tag tag-{{item.category}}" wx:if="{{item.category}}"
+                >{{getCategoryName(item.category)}}</view>
+              </view>
+              <text class="item-quantity strikethrough">{{item.quantity}}</text>
+            </view>
+            <view class="delete-btn" bindtap="deleteItem" data-id="{{item.id}}"
+            >
+              <text class="delete-icon">🗑️</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 一键入库按钮 -->
+      <view class="batch-stock-section" wx:if="{{purchasedList.length > 0}}"
+      >
+        <view class="batch-stock-btn" bindtap="showStockModal"
+        >
+          <text class="btn-icon">📦</text>
+          <text class="btn-text">一键入库</text>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{shoppingList.length === 0}}"
+      >
+        <view class="empty-icon-wrap"
+        >
+          <text class="empty-icon">🛒</text>
+        </view>
+        <text class="empty-title">购买清单为空</text>
+        <text class="empty-tip">点击右下角添加食材</text>
+      </view>
+    </block>
+
+    <!-- 历史清单 -->
+    <block wx:if="{{currentTab === 'history'}}"
+    >
+      <view class="history-list" wx:if="{{historyList.length > 0}}"
+      >
+        <view class="history-card" wx:for="{{historyList}}" wx:key="id"
+        >
+          <view class="history-header"
+          >
+            <view class="history-date-wrap"
+            >
+              <text class="history-date">{{item.createdAt}}</text>
+              <view class="history-badge"
+              >
+                <text class="history-count">{{item.totalItems}}件</text>
+              </view>
+            </view>
+            <view class="history-btn" bindtap="repurchase" data-id="{{item.id}}"
+            >
+              <text class="btn-icon">🔄</text>
+              <text>再次购买</text>
+            </view>
+          </view>
+          
+          <view class="history-items"
+          >
+            <text class="history-item-name" wx:for="{{item.items}}" wx:for-item="food" wx:key="foodName"
+            >{{food.foodName}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{historyList.length === 0}}"
+      >
+        <view class="empty-icon-wrap"
+        >
+          <text class="empty-icon">📋</text>
+        </view>
+        <text class="empty-title">暂无历史记录</text>
+      </view>
+    </block>
+  </view>
+
+  <!-- 悬浮添加按钮 -->
+  <view class="fab-btn" bindtap="showAddModal">
+    <view class="fab-inner"
+    >
       <text class="fab-icon">+</text>
     </view>
-  </block>
-
-  <!-- 历史清单 -->
-  <block wx:if="{{currentTab === 'history'}}">
-    <view class="history-list" wx:if="{{historyList.length > 0}}">
-      <view 
-        class="history-item" 
-        wx:for="{{historyList}}" 
-        wx:key="id"
-      >
-        <view class="history-header">
-          <text class="history-date">{{item.createdAt}}</text>
-          <text class="history-count">共{{item.totalItems}}件</text>
-        </view>
-        <view class="history-items">
-          <text class="history-item-name" wx:for="{{item.items}}" wx:for-item="food" wx:key="foodName">{{food.foodName}}</text>
-        </view>
-        <view class="history-actions">
-          <text class="history-btn" bindtap="repurchase" data-id="{{item.id}}">再次购买</text>
-        </view>
-      </view>
-    </view>
-
-    <!-- 空状态 -->
-    <view class="empty-state" wx:if="{{historyList.length === 0}}">
-      <image class="empty-icon" src="/assets/images/empty-shopping.png" mode="aspectFit"/>
-      <text class="empty-text">暂无历史记录</text>
-    </view>
-  </block>
+  </view>
 </view>
 
 <!-- 添加弹窗 -->
 <view class="modal" wx:if="{{showAddModal}}">
   <view class="modal-mask" bindtap="hideAddModal"></view>
-  <view class="modal-content">
-    <view class="modal-header">
+  <view class="modal-content"
+  >
+    <view class="modal-header"
+    >
       <text class="modal-title">添加食材</text>
       <text class="modal-close" bindtap="hideAddModal">✕</text>
     </view>
-    <view class="modal-body">
-      <input 
-        class="modal-input" 
-        placeholder="食材名称"
-        value="{{newItem.name}}"
-        bindinput="onNewNameInput"
-      />
-      <input 
-        class="modal-input" 
-        placeholder="数量（如：2个）"
-        value="{{newItem.quantity}}"
-        bindinput="onNewQuantityInput"
-      />
-      <picker bindchange="onCategoryChange" value="{{newItemCategoryIndex}}" range="{{categories}}" range-key="label">
-        <view class="picker">
-          <text class="picker-text">{{categories[newItemCategoryIndex].label}}</text>
-          <text class="picker-arrow">▼</text>
-        </view>
-      </picker>
+    <view class="modal-body"
+    >
+      <view class="input-wrap"
+      >
+        <text class="input-label">食材名称</text>
+        <input class="modal-input" placeholder="请输入食材名称" value="{{newItem.name}}" bindinput="onNewNameInput" />
+      </view>
+      
+      <view class="input-wrap"
+      >
+        <text class="input-label">数量</text>
+        <input class="modal-input" placeholder="如：2个、500g" value="{{newItem.quantity}}" bindinput="onNewQuantityInput" />
+      </view>
+      
+      <view class="input-wrap"
+      >
+        <text class="input-label">分类</text>
+        <picker bindchange="onCategoryChange" value="{{newItemCategoryIndex}}" range="{{categories}}" range-key="label"
+        >
+          <view class="picker"
+          >
+            <text class="picker-text">{{categories[newItemCategoryIndex].label}}</text>
+            <text class="picker-arrow">▶</text>
+          </view>
+        </picker>
+      </view>
     </view>
-    <view class="modal-footer">
-      <button class="btn btn-secondary" bindtap="hideAddModal">取消</button>
-      <button class="btn btn-primary" bindtap="confirmAdd">确定</button>
+    
+    <view class="modal-footer"
+    >
+      <view class="btn btn-secondary" bindtap="hideAddModal">取消</view>
+      <view class="btn btn-primary" bindtap="confirmAdd">确定</view>
     </view>
   </view>
 </view>
@@ -163,44 +262,63 @@
 <!-- 入库弹窗 -->
 <view class="modal" wx:if="{{showStockModal}}">
   <view class="modal-mask" bindtap="hideStockModal"></view>
-  <view class="modal-content">
-    <view class="modal-header">
+  <view class="modal-content"
+  >
+    <view class="modal-header"
+    >
       <text class="modal-title">一键入库</text>
       <text class="modal-close" bindtap="hideStockModal">✕</text>
     </view>
-    <view class="modal-body">
-      <text class="modal-desc">已选择 {{selectedCount}} 个食材</text>
-      
-      <text class="modal-label">存放位置</text>
-      <view class="location-options">
-        <view 
-          class="location-item {{stockLocation === 'refrigerated' ? 'active' : ''}}"
-          bindtap="selectLocation"
-          data-value="refrigerated"
-        >冷藏</view>
-        <view 
-          class="location-item {{stockLocation === 'frozen' ? 'active' : ''}}"
-          bindtap="selectLocation"
-          data-value="frozen"
-        >冷冻</view>
-        <view 
-          class="location-item {{stockLocation === 'room' ? 'active' : ''}}"
-          bindtap="selectLocation"
-          data-value="room"
-        >常温</view>
+    
+    <view class="modal-body"
+    >
+      <view class="stock-info"
+      >
+        <text class="stock-num">{{selectedCount}}</text>
+        <text class="stock-text">个食材待入库</text>
       </view>
       
-      <text class="modal-label">过期日期</text>
-      <picker mode="date" bindchange="onExpireDateChange" value="{{stockExpireDate}}">
-        <view class="picker">
-          <text class="picker-text">{{stockExpireDate || '请选择过期日期'}}</text>
-          <text class="picker-arrow">📅</text>
+      <view class="input-wrap"
+      >
+        <text class="input-label">存放位置</text>
+        <view class="location-options"
+        >
+          <view class="location-item {{stockLocation === 'refrigerated' ? 'active' : ''}}" bindtap="selectLocation" data-value="refrigerated"
+          >
+            <text class="location-icon">❄️</text>
+            <text>冷藏</text>
+          </view>
+          <view class="location-item {{stockLocation === 'frozen' ? 'active' : ''}}" bindtap="selectLocation" data-value="frozen"
+          >
+            <text class="location-icon">🧊</text>
+            <text>冷冻</text>
+          </view>
+          <view class="location-item {{stockLocation === 'room' ? 'active' : ''}}" bindtap="selectLocation" data-value="room"
+          >
+            <text class="location-icon">🏠</text>
+            <text>常温</text>
+          </view>
         </view>
-      </picker>
+      </view>
+      
+      <view class="input-wrap"
+      >
+        <text class="input-label">过期日期</text>
+        <picker mode="date" bindchange="onExpireDateChange" value="{{stockExpireDate}}"
+        >
+          <view class="picker"
+          >
+            <text class="picker-text {{stockExpireDate ? '' : 'placeholder'}}">{{stockExpireDate || '请选择过期日期'}}</text>
+            <text class="picker-arrow">📅</text>
+          </view>
+        </picker>
+      </view>
     </view>
-    <view class="modal-footer">
-      <button class="btn btn-secondary" bindtap="hideStockModal">取消</button>
-      <button class="btn btn-primary" bindtap="confirmStock">确认入库</button>
+    
+    <view class="modal-footer"
+    >
+      <view class="btn btn-secondary" bindtap="hideStockModal">取消</view>
+      <view class="btn btn-primary" bindtap="confirmStock">确认入库</view>
     </view>
   </view>
 </view>
