@@ -81,9 +81,7 @@ public class OssService {
             ossClient.putObject(bucketName, newFilename, inputStream, metadata);
 
             // 生成带签名的URL（有效期1小时）
-            // 如果Bucket是公共读，可以直接使用 fileUrl
-            // 如果Bucket是私有，需要使用签名URL
-            Date expiration = new Date(System.currentTimeMillis() + 3600 * 1000); // 1小时有效期
+            Date expiration = new Date(System.currentTimeMillis() + 3600 * 1000);
             String signedUrl = ossClient.generatePresignedUrl(bucketName, newFilename, expiration).toString();
             
             log.info("文件上传成功，返回签名URL: {}", signedUrl);
@@ -101,8 +99,6 @@ public class OssService {
 
     /**
      * 生成带签名的URL（从存储的OSS路径）
-     * @param fileUrl 存储的OSS URL（如 https://bucket.oss-cn-xxxx.aliyuncs.com/folder/uuid.jpg）
-     * @return 带签名的临时URL
      */
     public Result<String> generateSignedUrl(String fileUrl) {
         if (!isOssConfigured()) {
@@ -114,26 +110,29 @@ public class OssService {
             return Result.success(fileUrl);
         }
         
+        OSS ossClient = null;
         try {
             // 从URL中提取对象名
             String objectName = extractObjectName(fileUrl);
-            if (objectName == null) {
+            if (objectName == null || objectName.isEmpty()) {
                 log.warn("无法从URL提取对象名: {}", fileUrl);
                 return Result.success(fileUrl);
             }
             
-            OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+            ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
             
             // 生成签名URL（有效期1小时）
             Date expiration = new Date(System.currentTimeMillis() + 3600 * 1000);
             String signedUrl = ossClient.generatePresignedUrl(bucketName, objectName, expiration).toString();
             
-            ossClient.shutdown();
-            
             return Result.success(signedUrl);
         } catch (Exception e) {
             log.error("生成签名URL失败: {}", fileUrl, e);
             return Result.success(fileUrl);
+        } finally {
+            if (ossClient != null) {
+                ossClient.shutdown();
+            }
         }
     }
     
@@ -164,7 +163,7 @@ public class OssService {
                 }
                 
                 String objectName = extractObjectName(fileUrl);
-                if (objectName != null) {
+                if (objectName != null && !objectName.isEmpty()) {
                     String signedUrl = ossClient.generatePresignedUrl(bucketName, objectName, expiration).toString();
                     signedUrls.add(signedUrl);
                 } else {
@@ -182,29 +181,45 @@ public class OssService {
             }
         }
     }
-    
+
     /**
-     * 从URL中提取对象名
+     * 生成图片访问URL（带签名）
+     * @param fileUrl 存储的OSS URL
+     * @param expireMinutes 有效期（分钟）
+     * @return 带签名的临时URL
      */
-    private String extractObjectName(String fileUrl) {
+    public String generateImageUrl(String fileUrl, int expireMinutes) {
+        if (!isOssConfigured()) {
+            return fileUrl;
+        }
+        
+        // 如果URL已经是签名URL，直接返回
+        if (fileUrl.contains("?") && fileUrl.contains("Signature=")) {
+            return fileUrl;
+        }
+        
+        OSS ossClient = null;
         try {
-            // 处理格式: https://bucket.oss-cn-xxxx.aliyuncs.com/folder/uuid.jpg
-            // 或: https://domain.com/folder/uuid.jpg
-            
-            if (fileUrl.startsWith(domain)) {
-                return fileUrl.substring(domain.length() + 1); // +1 for the leading /
+            String objectName = extractObjectName(fileUrl);
+            if (objectName == null || objectName.isEmpty()) {
+                log.warn("无法从URL提取对象名: {}", fileUrl);
+                return fileUrl;
             }
             
-            // 尝试从完整URL中提取路径部分
-            URL url = new URL(fileUrl);
-            String path = url.getPath();
-            if (path.startsWith("/")) {
-                path = path.substring(1);
-            }
-            return path;
+            ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+            
+            // 生成签名URL
+            Date expiration = new Date(System.currentTimeMillis() + expireMinutes * 60 * 1000L);
+            String signedUrl = ossClient.generatePresignedUrl(bucketName, objectName, expiration).toString();
+            
+            return signedUrl;
         } catch (Exception e) {
-            log.error("提取对象名失败: {}", fileUrl, e);
-            return null;
+            log.error("生成图片签名URL失败: {}", fileUrl, e);
+            return fileUrl;
+        } finally {
+            if (ossClient != null) {
+                ossClient.shutdown();
+            }
         }
     }
 
@@ -218,55 +233,22 @@ public class OssService {
             return Result.error("文件删除功能未启用");
         }
 
+        OSS ossClient = null;
         try {
             // 从URL中提取文件名
             String objectName = extractObjectName(fileUrl);
+            
+            if (objectName == null || objectName.isEmpty()) {
+                return Result.error("无法从URL提取对象名");
+            }
 
-            OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+            ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
             ossClient.deleteObject(bucketName, objectName);
-            ossClient.shutdown();
-
+            
             return Result.success();
         } catch (Exception e) {
             log.error("文件删除失败", e);
             return Result.error("文件删除失败: " + e.getMessage());
-        }
-    }
-
-    /**
-     * 生成图片的签名访问URL
-     * @param fileUrl 完整的OSS URL或存储路径
-     * @param expireMinutes URL有效期（分钟）
-     * @return 带签名的临时URL
-     */
-    public String generateImageUrl(String fileUrl, int expireMinutes) {
-        if (!isOssConfigured()) {
-            log.warn("OSS未配置，无法生成签名URL");
-            return fileUrl;
-        }
-
-        if (fileUrl == null || fileUrl.isEmpty()) {
-            return null;
-        }
-
-        OSS ossClient = null;
-        try {
-            // 从URL中提取对象名（存储路径）
-            String objectName = extractObjectName(fileUrl);
-            
-            // 创建OSS客户端
-            ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
-            
-            // 生成签名URL
-            Date expiration = new Date(System.currentTimeMillis() + expireMinutes * 60 * 1000L);
-            String signedUrl = ossClient.generatePresignedUrl(bucketName, objectName, expiration).toString();
-            
-            log.debug("生成图片签名URL: {}, 有效期: {}分钟", objectName, expireMinutes);
-            return signedUrl;
-            
-        } catch (Exception e) {
-            log.error("生成图片签名URL失败: {}", fileUrl, e);
-            return fileUrl;
         } finally {
             if (ossClient != null) {
                 ossClient.shutdown();
@@ -275,32 +257,11 @@ public class OssService {
     }
     
     /**
-     * 批量生成图片签名URL
-     */
-    public void batchGenerateImageUrls(java.util.List<? extends Object> items, java.util.function.Function<Object, String> getter, java.util.function.BiConsumer<Object, String> setter, int expireMinutes) {
-        if (items == null || items.isEmpty()) {
-            return;
-        }
-        
-        for (Object item : items) {
-            String originalUrl = getter.apply(item);
-            if (originalUrl != null && !originalUrl.isEmpty()) {
-                String signedUrl = generateImageUrl(originalUrl, expireMinutes);
-                setter.accept(item, signedUrl);
-            }
-        }
-    }
-
-    /**
      * 从URL中提取对象名（存储路径）
-     * 支持格式：
-     * 1. https://bucket.oss-cn-xx.aliyuncs.com/folder/filename.jpg
-     * 2. https://custom-domain.com/folder/filename.jpg
-     * 3. folder/filename.jpg (已经是对象名)
      */
     private String extractObjectName(String fileUrl) {
         if (fileUrl == null || fileUrl.isEmpty()) {
-            return "";
+            return null;
         }
         
         // 如果URL包含?，去掉查询参数部分（签名部分）
@@ -309,20 +270,24 @@ public class OssService {
             fileUrl = fileUrl.substring(0, queryIndex);
         }
         
-        // 如果URL以http开头，提取路径部分
-        if (fileUrl.startsWith("http://") || fileUrl.startsWith("https://")) {
-            // 找到域名后的第一个/
-            int pathStart = fileUrl.indexOf("/", 8); // 跳过 https://
-            if (pathStart > 0) {
-                String path = fileUrl.substring(pathStart + 1);
-                // 如果路径以bucket名开头，去掉bucket名
-                if (path.startsWith(bucketName + "/")) {
-                    path = path.substring(bucketName.length() + 1);
+        try {
+            // 如果URL以http开头，提取路径部分
+            if (fileUrl.startsWith("http://") || fileUrl.startsWith("https://")) {
+                URL url = new URL(fileUrl);
+                String path = url.getPath();
+                
+                // 去掉开头的/
+                if (path.startsWith("/")) {
+                    path = path.substring(1);
                 }
+                
                 return path;
             }
+        } catch (Exception e) {
+            log.error("解析URL失败: {}", fileUrl, e);
         }
         
+        // 如果不是URL格式，直接返回（可能已经是对象名）
         return fileUrl;
     }
 }

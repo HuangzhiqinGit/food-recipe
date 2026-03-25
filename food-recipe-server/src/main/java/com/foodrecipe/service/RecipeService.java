@@ -11,25 +11,25 @@ import com.foodrecipe.entity.Food;
 import com.foodrecipe.entity.Recipe;
 import com.foodrecipe.mapper.FavoriteMapper;
 import com.foodrecipe.mapper.RecipeMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class RecipeService extends ServiceImpl<RecipeMapper, Recipe> {
 
-    @Autowired
-    private FavoriteMapper favoriteMapper;
-
-    @Autowired
-    private FoodService foodService;
+    private final FavoriteMapper favoriteMapper;
+    private final FoodService foodService;
+    private final OssService ossService;
 
     public List<Recipe> getRecipeList(Long userId, String type, String duration, 
                                        Boolean match, Boolean isFavorite) {
@@ -52,11 +52,13 @@ public class RecipeService extends ServiceImpl<RecipeMapper, Recipe> {
             list = list(wrapper);
         }
 
-        // 补充信息
+        // 补充信息并处理图片URL
         for (Recipe recipe : list) {
             recipe.setTypeName(getTypeName(recipe.getType()));
             recipe.setDurationName(getDurationName(recipe.getDuration()));
             recipe.setIsFavorite(checkFavorite(userId, recipe.getId()));
+            // 处理图片URL（60分钟有效期）
+            processRecipeImageUrl(recipe);
         }
 
         // 按库存匹配
@@ -65,6 +67,37 @@ public class RecipeService extends ServiceImpl<RecipeMapper, Recipe> {
         }
 
         return list;
+    }
+    
+    /**
+     * 处理菜谱图片URL，生成签名URL
+     */
+    private void processRecipeImageUrl(Recipe recipe) {
+        if (recipe == null) return;
+        
+        // 处理主图
+        if (recipe.getImage() != null && !recipe.getImage().isEmpty()) {
+            recipe.setImage(ossService.generateImageUrl(recipe.getImage(), 60));
+        }
+        
+        // 处理图片数组（如果有）
+        if (recipe.getImages() != null && !recipe.getImages().isEmpty()) {
+            try {
+                JSONArray images = JSON.parseArray(recipe.getImages());
+                JSONArray signedImages = new JSONArray();
+                for (int i = 0; i < images.size(); i++) {
+                    String imgUrl = images.getString(i);
+                    if (imgUrl != null && !imgUrl.isEmpty()) {
+                        signedImages.add(ossService.generateImageUrl(imgUrl, 60));
+                    } else {
+                        signedImages.add(imgUrl);
+                    }
+                }
+                recipe.setImages(signedImages.toJSONString());
+            } catch (Exception e) {
+                log.error("处理菜谱图片数组失败: {}", recipe.getId(), e);
+            }
+        }
     }
 
     public List<Recipe> matchWithInventory(Long userId, List<Recipe> recipes) {
@@ -125,6 +158,8 @@ public class RecipeService extends ServiceImpl<RecipeMapper, Recipe> {
             recipe.setTypeName(getTypeName(recipe.getType()));
             recipe.setDurationName(getDurationName(recipe.getDuration()));
             recipe.setIsFavorite(checkFavorite(userId, id));
+            // 处理图片URL
+            processRecipeImageUrl(recipe);
 
             // 增加浏览次数
             recipe.setViewCount(recipe.getViewCount() + 1);
