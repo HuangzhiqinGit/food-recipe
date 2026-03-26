@@ -42,13 +42,15 @@
         </view>
       </view>
 
-      <!-- 分类筛选 -->
-      <scroll-view class="category-scroll" scroll-x wx:if="{{shoppingList.length > 0}}">
-        <view class="category-list">
-          <view class="category-item {{currentCategory === 'all' ? 'active' : ''}}" bindtap="selectCategory" data-value="all">全部</view>
-          <view class="category-item {{currentCategory === item.value ? 'active' : ''}}" wx:for="{{categories}}" wx:key="value" bindtap="selectCategory" data-value="{{item.value}}">{{item.label}}</view>
-        </view>
-      </scroll-view>
+      <!-- 分类筛选：固定"全部"+滚动其他 -->
+      <view class="category-filter" wx:if="{{shoppingList.length > 0}}">
+        <view class="category-item all-item {{currentCategory === 'all' ? 'active' : ''}}" bindtap="selectCategory" data-value="all">全部</view>
+        <scroll-view class="category-scroll" scroll-x>
+          <view class="category-list">
+            <view class="category-item {{currentCategory === item.value ? 'active' : ''}}" wx:for="{{categories}}" wx:key="value" bindtap="selectCategory" data-value="{{item.value}}">{{item.label}}</view>
+          </view>
+        </scroll-view>
+      </view>
     </block>
   </view>
 
