@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家庭食材菜谱小程序 - 优化后页面预览</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+        }
+        
+        .page-section {
+            margin-bottom: 40px;
+        }
+        
+        .page-title {
+            color: white;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            padding-left: 10px;
+            border-left: 4px solid #fff;
+        }
+        
+        .phones-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+        
+        /* 手机模拟器 */
+        .phone {
+            background: #1a1a1a;
+            border-radius: 40px;
+            padding: 15px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.4);
+            width: 320px;
+            margin: 0 auto;
+        }
+        
+        .phone-notch {
+            width: 120px;
+            height: 25px;
+            background: #1a1a1a;
+            border-radius: 0 0 15px 15px;
+            margin: 0 auto -10px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .phone-screen {
+            background: #f5f5f5;
+            border-radius: 30px;
+            overflow: hidden;
+            height: 640px;
+            position: relative;
+        }
+        
+        /* 小程序页面内容 */
+        .miniapp-page {
+            height: 100%;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+        
+        /* 首页样式 */
+        .home-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 50px 20px 30px;
+            color: white;
+        }
+        
+        .home-welcome {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .home-subtitle {
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+        
+        /* 临期提醒卡片 - 优化后 */
+        .warning-card {
+            margin: 15px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+            border-radius: 16px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(238, 90, 90, 0.3);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .warning-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .warning-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+        }
+        
+        .warning-content {
+            flex: 1;
+        }
+        
+        .warning-title {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 4px;
+        }
+        
+        .warning-desc {
+            color: rgba(255,255,255,0.9);
+            font-size: 0.9em;
+        }
+        
+        .warning-arrow {
+            color: white;
+            font-size: 1.3em;
+            opacity: 0.8;
+        }
+        
+        /* 安全状态卡片 */
+        .safe-card {
+            margin: 15px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 16px;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .safe-icon {
+            font-size: 1.5em;
+        }
+        
+        .safe-text {
+            color: white;
+            font-weight: 500;
+        }
+        
+        /* 推荐区域 */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 15px 10px;
+        }
+        
+        .section-title {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        
+        .refresh-btn {
+            color: #667eea;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+        
+        /* 菜谱网格 */
+        .recipe-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 0 15px 20px;
+        }
+        
+        .recipe-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .recipe-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .recipe-image {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+        }
+        
+        .recipe-info {
+            padding: 12px;
+        }
+        
+        .recipe-name {
+            font-weight: 600;
+            font-size: 0.95em;
+            color: #1f2937;
+            margin-bottom: 8px;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .recipe-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: 500;
+        }
+        
+        .tag-primary {
+            background: #e0e7ff;
+            color: #6366f1;
+        }
+        
+        .tag-accent {
+            background: #fce7f3;
+            color: #ec4899;
+        }
+        
+        .tag-favorite {
+            background: #fef3c7;
+            color: #f59e0b;
+        }
+        
+        /* 食材页样式 */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            background: white;
+        }
+        
+        .search-input-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: #f3f4f6;
+            border-radius: 25px;
+            padding: 10px 15px;
+        }
+        
+        .search-icon {
+            margin-right: 8px;
+            color: #9ca3af;
+        }
+        
+        .search-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 0.95em;
+        }
+        
+        .add-btn {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* 筛选标签 */
+        .filter-scroll {
+            background: white;
+            padding: 0 15px 15px;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+        
+        .filter-list {
+            display: inline-flex;
+            gap: 10px;
+        }
+        
+        .filter-item {
+            padding: 8px 18px;
+            border-radius: 20px;
+            background: #f3f4f6;
+            color: #6b7280;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* 扫描录入卡片 - 优化后 */
+        .scan-section {
+            padding: 0 15px 15px;
+        }
+        
+        .scan-card {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .scan-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .scan-icon-wrap {
+            width: 56px;
+            height: 56px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+            backdrop-filter: blur(10px);
+        }
+        
+        .scan-content {
+            flex: 1;
+        }
+        
+        .scan-title {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 4px;
+        }
+        
+        .scan-desc {
+            color: rgba(255,255,255,0.85);
+            font-size: 0.85em;
+        }
+        
+        .scan-arrow {
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2em;
+        }
+        
+        /* 食材列表 */
+        .food-list {
+            padding: 0 15px;
+        }
+        
+        .food-card {
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .food-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: #f3f4f6;
+        }
+        
+        .food-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .food-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .food-name {
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 1em;
+        }
+        
+        .food-info {
+            color: #6b7280;
+            font-size: 0.85em;
+            margin: 4px 0;
+        }
+        
+        /* 状态标识 - 优化后 */
+        .food-status-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+        
+        .status-badge.fresh {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+        }
+        
+        .status-badge.expiring {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+        }
+        
+        .status-badge.expired {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #991b1b;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .status-badge.fresh .status-dot {
+            background: #10b981;
+            box-shadow: 0 0 6px #10b981;
+        }
+        
+        .status-badge.expiring .status-dot {
+            background: #f59e0b;
+            box-shadow: 0 0 6px #f59e0b;
+        }
+        
+        .status-badge.expired .status-dot {
+            background: #ef4444;
+            box-shadow: 0 0 6px #ef4444;
+        }
+        
+        .expire-countdown {
+            color: #9ca3af;
+            font-size: 0.8em;
+        }
+        
+        /* 菜谱页样式 */
+        .action-bar {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            background: white;
+        }
+        
+        .btn {
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+        
+        .btn-match {
+            flex: 1;
+        }
+        
+        /* 悬浮添加按钮 - 优化后 */
+        .fab-container {
+            position: relative;
+        }
+        
+        .fab-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+            cursor: pointer;
+            z-index: 100;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .fab-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
+        }
+        
+        .fab-icon {
+            color: white;
+            font-size: 1.8em;
+            font-weight: 300;
+        }
+        
+        /* 我的页面样式 */
+        .user-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 50px 20px 30px;
+        }
+        
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .avatar-wrap {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            cursor: pointer;
+        }
+        
+        .user-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.3);
+            object-fit: cover;
+        }
+        
+        .avatar-mask {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 24px;
+            height: 24px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+        }
+        
+        .user-info {
+            color: white;
+        }
+        
+        .user-name {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .user-username {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 2px;
+        }
+        
+        .user-id {
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
+        
+        /* 统计区域 */
+        .stats-section {
+            background: white;
+            margin: -20px 15px 15px;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .stats-grid {
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .stats-item {
+            text-align: center;
+        }
+        
+        .stats-number {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #667eea;
+            display: block;
+        }
+        
+        .stats-label {
+            color: #9ca3af;
+            font-size: 0.85em;
+            margin-top: 4px;
+        }
+        
+        /* 菜单区域 */
+        .menu-section {
+            padding: 0 15px;
+        }
+        
+        .menu-group {
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #f3f4f6;
+            cursor: pointer;
+        }
+        
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        
+        .menu-icon {
+            font-size: 1.3em;
+            margin-right: 12px;
+        }
+        
+        .menu-text {
+            flex: 1;
+            color: #1f2937;
+            font-size: 0.95em;
+        }
+        
+        .menu-arrow {
+            color: #9ca3af;
+        }
+        
+        /* 标签切换 */
+        .tab-bar {
+            display: flex;
+            background: white;
+            padding: 0 15px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .tab-item {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.95em;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .tab-item.active {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .tab-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
+        }
+        
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+        
+        .empty-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+        
+        .empty-text {
+            font-size: 0.95em;
+        }
+        
+        /* 底部导航 */
+        .tab-bar-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            padding: 10px 0 25px;
+            border-top: 1px solid #f3f4f6;
+        }
+        
+        .tab-item-bottom {
+            flex: 1;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.75em;
+        }
+        
+        .tab-item-bottom.active {
+            color: #667eea;
+        }
+        
+        .tab-icon {
+            font-size: 1.5em;
+            display: block;
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍳 家庭食材菜谱小程序</h1>
+            <p>优化后页面静态预览</p>
+        </div>
+
+        <!-- 首页 -->
+        <div class="page-section">
+            <h2 class="page-title">🏠 首页（优化后）</h2>
+            <div class="phones-grid">
+                <div class="phone">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen">
+                        <div class="miniapp-page">
+                            <div class="home-header">
+                                <div class="home-welcome">你好，美食家！</div>
+                                <div class="home-subtitle">今天想吃点啥？</div>
+                            </div>
+                            
+                            <div class="warning-card">
+                                <div class="warning-icon">⚠️</div>
+                                <div class="warning-content">
+                                    <div class="warning-title">临期食材提醒</div>
+                                    <div class="warning-desc">有3个食材即将过期，点击查看</div>
+                                </div>
+                                <div class="warning-arrow">›</div>
+                            </div>
+                            
+                            <div class="section-header">
+                                <span class="section-title">今日菜谱推荐</span>
+                                <span class="refresh-btn">换一批 ↻</span>
+                            </div>
+                            
+                            <div class="recipe-grid">
+                                <div class="recipe-card">
+                                    <img class="recipe-image" src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&h=150&fit=crop">
+                                    <div class="recipe-info">
+                                        <span class="recipe-name">番茄炒蛋</span>
+                                        <div class="recipe-tags">
+                                            <span class="tag tag-favorite">⭐ 收藏</span>
+                                            <span class="tag tag-primary">家常菜</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="recipe-card">
+                                    <img class="recipe-image" src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=200&h=150&fit=crop">
+                                    <div class="recipe-info">
+                                        <span class="recipe-name">青椒肉丝</span>
+                                        <div class="recipe-tags">
+                                            <span class="tag tag-favorite">⭐ 收藏</span>
+                                            <span class="tag tag-accent">快手菜</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="recipe-card">
+                                    <img class="recipe-image" src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=200&h=150&fit=crop">
+                                    <div class="recipe-info">
+                                        <span class="recipe-name">清蒸鱼</span>
+                                        <div class="recipe-tags">
+                                            <span class="tag tag-favorite">⭐ 收藏</span>
+                                            <span class="tag tag-primary">健康</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="recipe-card">
+                                    <img class="recipe-image" src="https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=200&h=150&fit=crop">
+                                    <div class="recipe-info">
+                                        <span class="recipe-name">麻婆豆腐</span>
+                                        <div class="recipe-tags">
+                                            <span class="tag tag-accent">川菜</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="recipe-card">
+                                    <img class="recipe-image" src="https://images.unsplash.com/photo-1525351484163-7529414344d8?w=200&h=150&fit=crop">
+                                    <div class="recipe-info">
+                                        <span class="recipe-name">糖醋排骨</span>
+                                        <div class="recipe-tags">
+                                            <span class="tag tag-favorite">⭐ 收藏</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="recipe-card">
+                                    <img class="recipe-image" src="https://images.unsplash.com/photo-1496116218417-1a781b1c416c?w=200&h=150&fit=crop">
+                                    <div class="recipe-info">
+                                        <span class="recipe-name">蒜蓉西兰花</span>
+                                        <div class="recipe-tags">
+                                            <span class="tag tag-primary">素食</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="tab-bar-bottom">
+                                <div class="tab-item-bottom active">
+                                    <span class="tab-icon">🏠</span>
+                                    首页
+                                </div>
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">🥬</span>
+                                    食材
+                                </div>
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">📖</span>
+                                    菜谱
+                                </div>
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">👤</span>
+                                    我的
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 首页安全状态 -->
+                <div class="phone">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen">
+                        <div class="miniapp-page">
+                            <div class="home-header">
+                                <div class="home-welcome">你好，小明！</div>
+                                <div class="home-subtitle">今天想吃点啥？</div>
+                            </div>
+                            
+                            <div class="safe-card">
+                                <span class="safe-icon">✅</span>
+                                <span class="safe-text">暂无临期食材，放心做饭～</span>
+                            </div>
+                            
+                            <div class="section-header">
+                                <span class="section-title">今日菜谱推荐</span>
+                                <span class="refresh-btn">换一批 ↻</span>
+                            </div>
+                            
+                            <div class="recipe-grid">
+                                <div class="recipe-card">
+                                    <img class="recipe-image" src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200&h=150&fit=crop">
+                                    <div class="recipe-info">
+                                        <span class="recipe-name">番茄炒蛋</span>
+                                        <div class="recipe-tags">
+                                            <span class="tag tag-favorite">⭐ 收藏</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="recipe-card">
+                                    <img class="recipe-image" src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=200&h=150&fit=crop">
+                                    <div class="recipe-info">
+                                        <span class="recipe-name">青椒肉丝</span>
+                                        <div class="recipe-tags">
+                                            <span class="tag tag-favorite">⭐ 收藏</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="tab-bar-bottom">
+                                <div class="tab-item-bottom active">
+                                    <span class="tab-icon">🏠</span>
+                                    首页
+                                </div>
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">🥬</span>
+                                    食材
+                                </div>
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">📖</span>
+                                    菜谱
+                                </div>
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">👤</span>
+                                    我的
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 食材页 -->
+        <div class="page-section">
+            <h2 class="page-title">🥬 食材页（优化后）</h2>
+            <div class="phones-grid">
+                <div class="phone">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen">
+                        <div class="miniapp-page">
+                            <div class="search-bar">
+                                <div class="search-input-wrap">
+                                    <span class="search-icon">🔍</span>
+                                    <input class="search-input" placeholder="搜索食材" readonly>
+                                </div>
+                                <div class="add-btn">+</div>
+                            </div>
+                            
+                            <div class="filter-scroll">
+                                <div class="filter-list">
+                                    <div class="filter-item active">全部</div>
+                                    <div class="filter-item">新鲜</div>
+                                    <div class="filter-item">临期</div>
+                                    <div class="filter-item">已过期</div>
+                                </div>
+                            </div>
+                            
+                            <div class="filter-scroll">
+                                <div class="filter-list">
+                                    <div class="filter-item active">全部</div>
+                                    <div class="filter-item">蔬菜</div>
+                                    <div class="filter-item">肉类</div>
+                                    <div class="filter-item">海鲜</div>
+                                    <div class="filter-item">蛋奶</div>
+                                </div>
+                            </div>
+                            
+                            <div class="scan-section">
+                                <div class="scan-card">
+                                    <div class="scan-icon-wrap">📷</div>
+                                    <div class="scan-content">
+                                        <div class="scan-title">扫描录入</div>
+                                        <div class="scan-desc">拍照识别食材信息，快速添加</div>
+                                    </div>
+                                    <div class="scan-arrow">›</div>
+                                </div>
+                            </div>
+                            
+                            <div class="food-list">
+                                <div class="food-card">
+                                    <div class="food-image" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);"></div>
+                                    <div class="food-content">
+                                        <div class="food-header">
+                                            <span class="food-name">鸡蛋</span>
+                                            <span style="color: #9ca3af;">›</span>
+                                        </div>
+                                        <div class="food-info">12个 | 冰箱冷藏</div>
+                                        <div class="food-status-row">
+                                            <span class="status-badge fresh">
+                                                <span class="status-dot"></span>
+                                                新鲜
+                                            </span>
+                                            <span class="expire-countdown">剩余15天</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="food-card">
+                                    <div class="food-image" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);"></div>
+                                    <div class="food-content">
+                                        <div class="food-header">
+                                            <span class="food-name">西红柿</span>
+                                            <span style="color: #9ca3af;">›</span>
+                                        </div>
+                                        <div class="food-info">5个 | 冰箱冷藏</div>
+                                        <div class="food-status-row">
+                                            <span class="status-badge expiring">
+                                                <span class="status-dot"></span>
+                                                临期
+                                            </span>
+                                            <span class="expire-countdown">剩余2天</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="food-card">
+                                    <div class="food-image" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);"></div>
+                                    <div class="food-content">
+                                        <div class="food-header">
+                                            <span class="food-name">鸡胸肉</span>
+                                            <span style="color: #9ca3af;">›</span>
+                                        </div>
+                                        <div class="food-info">500克 | 冰箱冷冻</div>
+                                        <div class="food-status-row">
+                                            <span class="status-badge expired">
+                                                <span class="status-dot"></span>
+                                                已过期
+                                            </span>
+                                            <span class="expire-countdown">已过期3天</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="tab-bar-bottom">
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">🏠</span>
+                                    首页
+                                </div>
+                                <div class="tab-item-bottom active">
+                                    <span class="tab-icon">🥬</span>
+                                    食材
+                                </div>
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">📖</span>
+                                    菜谱
+                                </div>
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">👤</span>
+                                    我的
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 筛选状态 -->
+                <div class="phone">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen">
+                        <div class="miniapp-page">
+                            <div class="search-bar">
+                                <div class="search-input-wrap">
+                                    <span class="search-icon">🔍</span>
+                                    <input class="search-input" placeholder="搜索食材" readonly>
+                                </div>
+                                <div class="add-btn">+</div>
+                            </div>
+                            
+                            <div class="filter-scroll">
+                                <div class="filter-list">
+                                    <div class="filter-item">全部</div>
+                                    <div class="filter-item">新鲜</div>
+                                    <div class="filter-item active">临期</div>
+                                    <div class="filter-item">已过期</div>
+                                </div>
+                            </div>
+                            
+                            <div class="filter-scroll">
+                                <div class="filter-list">
+                                    <div class="filter-item active">全部</div>
+                                    <div class="filter-item">蔬菜</div>
+                                    <div class="filter-item">肉类</div>
+                                    <div class="filter-item">海鲜</div>
+                                </div>
+                            </div>
+                            
+                            <div class="scan-section">
+                                <div class="scan-card">
+                                    <div class="scan-icon-wrap">📷</div>
+                                    <div class="scan-content">
+                                        <div class="scan-title">扫描录入</div>
+                                        <div class="scan-desc">拍照识别食材信息，快速添加</div>
+                                    </div>
+                                    <div class="scan-arrow">›</div>
+                                </div>
+                            </div>
+                            
+                            <div class="food-list">
+                                <div class="food-card">
+                                    <div class="food-image" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);"></div>
+                                    <div class="food-content">
+                                        <div class="food-header">
+                                            <span class="food-name">西红柿</span>
+                                            <span style="color: #9ca3af;">›</span>
+                                        </div>
+                                        <div class="food-info">5个 | 冰箱冷藏</div>
+                                        <div class="food-status-row">
+                                            <span class="status-badge expiring">
+                                                <span class="status-dot"></span>
+                                                临期
+                                            </span>
+                                            <span class="expire-countdown">剩余2天</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="food-card">
+                                    <div class="food-image" style="background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%);"></div>
+                                    <div class="food-content">
+                                        <div class="food-header">
+                                            <span class="food-name">牛奶</span>
+                                            <span style="color: #9ca3af;">›</span>
+                                        </div>
+                                        <div class="food-info">1升 | 冰箱冷藏</div>
+                                        <div class="food-status-row">
+                                            <span class="status-badge expiring">
+                                                <span class="status-dot"></span>
+                                                临期
+                                            </span>
+                                            <span class="expire-countdown">剩余1天</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="tab-bar-bottom">
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">🏠</span>
+                                    首页
+                                </div>
+                                <div class="tab-item-bottom active">
+                                    <span class="tab-icon">🥬</span>
+                                    食材
+                                </div>
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">📖</span>
+                                    菜谱
+                                </div>
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">👤</span>
+                                    我的
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 菜谱页 -->
+        <div class="page-section">
+            <h2 class="page-title">📖 菜谱页（优化后）</h2>
+            <div class="phones-grid">
+                <div class="phone">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen">
+                        <div class="miniapp-page">
+                            <div class="action-bar">
+                                <div class="btn btn-primary btn-match">
+                                    <span>🔍</span>
+                                    按库存找菜谱
+                                </div>
+                                <div class="btn btn-secondary">筛选</div>
+                            </div>
+                            
+                            <div class="tab-bar">
+                                <div class="tab-item active">随机推荐</div>
+                                <div class="tab-item">我的收藏</div>
+                            </div>
+                            
+                            <div class="food-list">
+                                <div class="food-card" style="padding: 0; overflow: hidden;">
+                                    <img class="recipe-image" src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=200&fit=crop" style="width: 100%; height: 140px;">
+                                    <div style="padding: 15px;">
+                                        <span class="food-name">番茄炒蛋</span>
+                                        <div class="recipe-tags" style="margin-top: 8px;">
+                                            <span class="tag tag-primary">家常菜</span>
+                                            <span class="tag tag-accent">15分钟</span>
+                                            <span class="tag tag-favorite">⭐</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="food-card" style="padding: 0; overflow: hidden;">
+                                    <img class="recipe-image" src="https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=400&h=200&fit=crop" style="width: 100%; height: 140px;">
+                                    <div style="padding: 15px;">
+                                        <span class="food-name">青椒肉丝</span>
+                                        <div class="recipe-tags" style="margin-top: 8px;">
+                                            <span class="tag tag-primary">下饭菜</span>
+                                            <span class="tag tag-accent">20分钟</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="fab-btn">
+                                <span class="fab-icon">+</span>
+                            </div>
+                            
+                            <div class="tab-bar-bottom">
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">🏠</span>
+                                    首页
+                                </div>
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">🥬</span>
+                                    食材
+                                </div>
+                                <div class="tab-item-bottom active">
+                                    <span class="tab-icon">📖</span>
+                                    菜谱
+                                </div>
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">👤</span>
+                                    我的
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 收藏页面 -->
+                <div class="phone">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen">
+                        <div class="miniapp-page">
+                            <div class="action-bar">
+                                <div class="btn btn-primary btn-match">
+                                    <span>🔍</span>
+                                    按库存找菜谱
+                                </div>
+                                <div class="btn btn-secondary">筛选</div>
+                            </div>
+                            
+                            <div class="tab-bar">
+                                <div class="tab-item">随机推荐</div>
+                                <div class="tab-item active">我的收藏</div>
+                            </div>
+                            
+                            <div class="food-list">
+                                <div class="food-card" style="padding: 0; overflow: hidden;">
+                                    <img class="recipe-image" src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&h=200&fit=crop" style="width: 100%; height: 140px;">
+                                    <div style="padding: 15px;">
+                                        <span class="food-name">番茄炒蛋</span>
+                                        <div class="recipe-tags" style="margin-top: 8px;">
+                                            <span class="tag tag-primary">家常菜</span>
+                                            <span class="tag tag-favorite">⭐ 已收藏</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="food-card" style="padding: 0; overflow: hidden;">
+                                    <img class="recipe-image" src="https://images.unsplash.com/photo-1525351484163-7529414344d8?w=400&h=200&fit=crop" style="width: 100%; height: 140px;">
+                                    <div style="padding: 15px;">
+                                        <span class="food-name">糖醋排骨</span>
+                                        <div class="recipe-tags" style="margin-top: 8px;">
+                                            <span class="tag tag-accent">经典菜</span>
+                                            <span class="tag tag-favorite">⭐ 已收藏</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="fab-btn">
+                                <span class="fab-icon">+</span>
+                            </div>
+                            
+                            <div class="tab-bar-bottom">
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">🏠</span>
+                                    首页
+                                </div>
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">🥬</span>
+                                    食材
+                                </div>
+                                <div class="tab-item-bottom active">
+                                    <span class="tab-icon">📖</span>
+                                    菜谱
+                                </div>
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">👤</span>
+                                    我的
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 我的页面 -->
+        <div class="page-section">
+            <h2 class="page-title">👤 我的页面（优化后）</h2>
+            <div class="phones-grid">
+                <div class="phone">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen">
+                        <div class="miniapp-page">
+                            <div class="user-header">
+                                <div class="user-card">
+                                    <div class="avatar-wrap">
+                                        <img class="user-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&h=150&fit=crop">
+                                        <div class="avatar-mask">📷</div>
+                                    </div>
+                                    <div class="user-info">
+                                        <div class="user-name">美食达人小明</div>
+                                        <div class="user-username">@xiaoming_cook</div>
+                                        <div class="user-id">ID: 10086</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="stats-section">
+                                <div class="stats-grid">
+                                    <div class="stats-item">
+                                        <span class="stats-number">15</span>
+                                        <span class="stats-label">食材</span>
+                                    </div>
+                                    <div class="stats-item">
+                                        <span class="stats-number">8</span>
+                                        <span class="stats-label">菜谱</span>
+                                    </div>
+                                    <div class="stats-item">
+                                        <span class="stats-number">23</span>
+                                        <span class="stats-label">收藏</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="menu-section">
+                                <div class="menu-group">
+                                    <div class="menu-item">
+                                        <span class="menu-icon">🥬</span>
+                                        <span class="menu-text">我的食材</span>
+                                        <span class="menu-arrow">›</span>
+                                    </div>
+                                    <div class="menu-item">
+                                        <span class="menu-icon">📖</span>
+                                        <span class="menu-text">我的菜谱</span>
+                                        <span class="menu-arrow">›</span>
+                                    </div>
+                                    <div class="menu-item">
+                                        <span class="menu-icon">⭐</span>
+                                        <span class="menu-text">我的收藏</span>
+                                        <span class="menu-arrow">›</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="menu-group">
+                                    <div class="menu-item">
+                                        <span class="menu-icon">🛒</span>
+                                        <span class="menu-text">购物清单</span>
+                                        <span class="menu-arrow">›</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="menu-group">
+                                    <div class="menu-item">
+                                        <span class="menu-icon">ℹ️</span>
+                                        <span class="menu-text">关于我们</span>
+                                        <span class="menu-arrow">›</span>
+                                    </div>
+                                    <div class="menu-item">
+                                        <span class="menu-icon">💬</span>
+                                        <span class="menu-text">意见反馈</span>
+                                        <span class="menu-arrow">›</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="padding: 20px;">
+                                <button class="btn btn-secondary" style="width: 100%; justify-content: center; color: #ef4444;">退出登录</button>
+                            </div>
+                            
+                            <div class="tab-bar-bottom">
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">🏠</span>
+                                    首页
+                                </div>
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">🥬</span>
+                                    食材
+                                </div>
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">📖</span>
+                                    菜谱
+                                </div>
+                                <div class="tab-item-bottom active">
+                                    <span class="tab-icon">👤</span>
+                                    我的
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 未登录状态 -->
+                <div class="phone">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen">
+                        <div class="miniapp-page">
+                            <div style="padding: 60px 20px; text-align: center;">
+                                <div style="font-size: 4em; margin-bottom: 20px;">🔒</div>
+                                <div style="font-size: 1.2em; color: #374151; margin-bottom: 10px;">欢迎使用</div>
+                                <div style="color: #9ca3af; margin-bottom: 30px;">登录后可管理食材、收藏菜谱</div>
+                                
+                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 40px; border-radius: 25px; display: inline-block; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
+                                    微信一键登录
+                                </div>
+                                <div style="color: #9ca3af; font-size: 0.85em; margin-top: 15px;">点击自动登录，新用户自动注册</div>
+                            </div>
+                            
+                            <div class="tab-bar-bottom">
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">🏠</span>
+                                    首页
+                                </div>
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">🥬</span>
+                                    食材
+                                </div>
+                                <div class="tab-item-bottom">
+                                    <span class="tab-icon">📖</span>
+                                    菜谱
+                                </div>
+                                <div class="tab-item-bottom active">
+                                    <span class="tab-icon">👤</span>
+                                    我的
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

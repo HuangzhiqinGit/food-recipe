@@ -2,7 +2,7 @@
  * 图片服务 - 处理OSS图片签名URL
  */
 const app = getApp()
-const { get, post } = require('./request')
+const { get, post } = require('../utils/request')
 
 // 缓存的签名URL
 const urlCache = new Map()

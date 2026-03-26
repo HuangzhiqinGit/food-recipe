@@ -1,0 +1,4 @@
+com/foodrecipe/controller/FoodControllerIntegrationTest.class
+com/foodrecipe/service/RecipeServiceTest.class
+com/foodrecipe/util/JwtUtilTest.class
+com/foodrecipe/service/FoodServiceTest.class

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.foodrecipe.entity.Food;
 import com.foodrecipe.mapper.FoodMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -11,7 +12,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class FoodService extends ServiceImpl<FoodMapper, Food> {
+
+    private final OssService ossService;
 
     public List<Food> getFoodList(Long userId, String category, String keyword) {
         LambdaQueryWrapper<Food> wrapper = new LambdaQueryWrapper<>();
@@ -29,11 +33,15 @@ public class FoodService extends ServiceImpl<FoodMapper, Food> {
 
         List<Food> list = list(wrapper);
 
-        // 计算状态
+        // 计算状态并处理图片URL
         for (Food food : list) {
             food.setStatus(calculateStatus(food.getExpireDate()));
             food.setStatusText(getStatusText(food.getStatus()));
             food.setCategoryName(getCategoryName(food.getCategory()));
+            // 生成图片签名URL（60分钟有效期）
+            if (food.getImageUrl() != null && !food.getImageUrl().isEmpty()) {
+                food.setImageUrl(ossService.generateImageUrl(food.getImageUrl(), 60));
+            }
         }
 
         return list;
@@ -100,7 +108,7 @@ public class FoodService extends ServiceImpl<FoodMapper, Food> {
 
         List<Food> list = list(wrapper);
 
-        // 计算状态并筛选
+        // 计算状态并筛选，同时处理图片URL
         LocalDate today = LocalDate.now();
         return list.stream()
             .filter(food -> {
@@ -108,6 +116,11 @@ public class FoodService extends ServiceImpl<FoodMapper, Food> {
                 food.setStatus(foodStatus);
                 food.setStatusText(getStatusText(foodStatus));
                 food.setCategoryName(getCategoryName(food.getCategory()));
+                
+                // 生成图片签名URL
+                if (food.getImageUrl() != null && !food.getImageUrl().isEmpty()) {
+                    food.setImageUrl(ossService.generateImageUrl(food.getImageUrl(), 60));
+                }
                 
                 switch (status) {
                     case "fresh": return foodStatus == 0;
@@ -117,5 +130,22 @@ public class FoodService extends ServiceImpl<FoodMapper, Food> {
                 }
             })
             .toList();
+    }
+    
+    /**
+     * 获取食材详情（处理图片URL）
+     */
+    public Food getFoodDetail(Long id) {
+        Food food = getById(id);
+        if (food != null) {
+            food.setStatus(calculateStatus(food.getExpireDate()));
+            food.setStatusText(getStatusText(food.getStatus()));
+            food.setCategoryName(getCategoryName(food.getCategory()));
+            // 生成图片签名URL
+            if (food.getImageUrl() != null && !food.getImageUrl().isEmpty()) {
+                food.setImageUrl(ossService.generateImageUrl(food.getImageUrl(), 60));
+            }
+        }
+        return food;
     }
 }

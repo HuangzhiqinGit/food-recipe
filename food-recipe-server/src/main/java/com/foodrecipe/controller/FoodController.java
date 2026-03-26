@@ -52,7 +52,7 @@ public class FoodController {
 
     @GetMapping("/{id}")
     public Result<Food> detail(@PathVariable Long id) {
-        Food food = foodService.getById(id);
+        Food food = foodService.getFoodDetail(id);
         return Result.success(food);
     }
 
