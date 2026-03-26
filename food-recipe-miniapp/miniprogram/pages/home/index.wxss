@@ -16,7 +16,7 @@
 /* 滚动内容区 */
 .content-scroll {
   flex: 1;
-  height: 0;
+  height: calc(100vh - 400rpx);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -117,7 +117,7 @@
   background: white;
   border-radius: 24rpx;
   padding: 32rpx;
-  margin: 16rpx 24rpx 120rpx;
+  margin: 16rpx 24rpx 200rpx;
   box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.08);
 }
 
