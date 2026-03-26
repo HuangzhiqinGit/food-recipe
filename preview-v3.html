@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小程序优化预览 - V3</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 { text-align: center; color: white; margin-bottom: 30px; font-size: 28px; }
+    
+    .preview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(375px, 1fr)); gap: 30px; }
+    
+    .phone-frame {
+      background: #1a1a2e;
+      border-radius: 40px;
+      padding: 15px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+    }
+    .phone-screen {
+      background: #f5f5f5;
+      border-radius: 30px;
+      height: 700px;
+      overflow: hidden;
+      position: relative;
+    }
+    .phone-title {
+      color: white;
+      text-align: center;
+      margin: 10px 0;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+    
+    /* ===== 食材详情页样式 ===== */
+    .food-detail { height: 100%; overflow-y: auto; background: #f8f9fa; }
+    .food-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 30px 20px;
+      color: white;
+      position: relative;
+    }
+    .food-image-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .food-image {
+      width: 120px;
+      height: 120px;
+      border-radius: 20px;
+      object-fit: cover;
+      border: 4px solid rgba(255,255,255,0.3);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      margin-bottom: 15px;
+    }
+    .food-name { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
+    .food-category { display: flex; gap: 8px; justify-content: center; }
+    .category-tag {
+      background: rgba(255,255,255,0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+    
+    /* 状态标签 - 优化后 */
+    .status-section {
+      padding: 20px;
+      background: white;
+      margin: 15px;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .status-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+    .status-title { font-size: 16px; font-weight: 600; color: #333; }
+    
+    /* 新鲜/临期/过期标签 */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 24px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .status-badge.fresh {
+      background: linear-gradient(135deg, #52c234 0%, #22b322 100%);
+      color: white;
+    }
+    .status-badge.warning {
+      background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+      color: white;
+    }
+    .status-badge.expired {
+      background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+      color: white;
+    }
+    
+    .status-info {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-top: 1px solid #f0f0f0;
+    }
+    .status-label { color: #999; font-size: 14px; }
+    .status-value { color: #333; font-size: 14px; font-weight: 500; }
+    .status-value.highlight { color: #f5af19; font-weight: 600; }
+    
+    /* 详情卡片 */
+    .detail-card {
+      background: white;
+      margin: 15px;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 15px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #f8f8f8;
+    }
+    .detail-item:last-child { border-bottom: none; }
+    .item-label { color: #666; font-size: 14px; }
+    .item-value { color: #333; font-size: 14px; font-weight: 500; }
+    
+    /* 操作按钮 */
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      padding: 20px 15px;
+    }
+    .btn {
+      flex: 1;
+      padding: 14px 24px;
+      border-radius: 12px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.3s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    .btn-danger {
+      background: #fee;
+      color: #eb3349;
+    }
+    
+    /* ===== 菜谱添加页样式 ===== */
+    .recipe-add { height: 100%; overflow-y: auto; background: #f8f9fa; }
+    .page-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+      color: white;
+    }
+    .page-title { font-size: 20px; font-weight: 600; }
+    
+    .form { padding: 15px; }
+    .form-item {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .form-label {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 12px;
+    }
+    .required { color: #eb3349; }
+    .optional { color: #999; font-weight: 400; font-size: 13px; }
+    
+    /* 图片上传区域 - 优化后 */
+    .uploader-area {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .upload-item {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .upload-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .upload-item .delete-btn {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      width: 24px;
+      height: 24px;
+      background: #eb3349;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .upload-btn {
+      width: 80px;
+      height: 80px;
+      border: 2px dashed #ddd;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .upload-btn:hover {
+      border-color: #667eea;
+      color: #667eea;
+    }
+    .upload-btn .icon { font-size: 28px; margin-bottom: 4px; }
+    .upload-btn .text { font-size: 12px; }
+    
+    /* 上传错误提示 */
+    .upload-error {
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+      border: 1px solid #ffcdd2;
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .upload-error .icon { font-size: 20px; }
+    .upload-error .content { flex: 1; }
+    .upload-error .title { font-size: 14px; font-weight: 600; color: #c62828; }
+    .upload-error .desc { font-size: 12px; color: #e57373; margin-top: 2px; }
+    .upload-error .retry-btn {
+      background: #eb3349;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      border: none;
+    }
+    
+    /* 表单输入 */
+    .form-input, .picker, .form-textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #e8e8e8;
+      border-radius: 12px;
+      font-size: 15px;
+      background: #fafafa;
+    }
+    .picker {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .picker-arrow { color: #999; }
+    
+    /* 食材列表 */
+    .label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .add-link {
+      color: #667eea;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .ingredient-item {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    .ingredient-input {
+      padding: 10px 12px;
+      border: 1px solid #e8e8e8;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .name-input { flex: 2; }
+    .qty-input { flex: 1; }
+    .unit-input { flex: 1; }
+    .delete-btn-icon { color: #eb3349; cursor: pointer; font-size: 18px; }
+    
+    /* 步骤 */
+    .step-item {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+      align-items: flex-start;
+    }
+    .step-number {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .step-input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #e8e8e8;
+      border-radius: 10px;
+      font-size: 14px;
+      min-height: 60px;
+      resize: vertical;
+    }
+    
+    /* 底部按钮 */
+    .footer {
+      display: flex;
+      gap: 12px;
+      padding: 20px;
+      background: white;
+      border-top: 1px solid #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🍳 小程序优化预览 V3 - 问题修复</h1>
+    
+    <div class="preview-grid">
+      <!-- 食材详情页 - 优化后 -->
+      <div>
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="food-detail">
+              <!-- 头部 - 带图片 -->
+              <div class="food-header">
+                <div class="food-image-wrap">
+                  <img class="food-image" src="https://images.unsplash.com/photo-1540420773420-3366772f4999?w=200" alt="食材图片">
+                  <div class="food-name">西红柿</div>
+                  <div class="food-category">
+                    <span class="category-tag">🥬 蔬菜</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- 状态卡片 - 优化后 -->
+              <div class="status-section">
+                <div class="status-header">
+                  <span class="status-title">保鲜状态</span>
+                  <span class="status-badge warning">
+                    <span>⏰</span>
+                    <span>临期（2天后过期）</span>
+                  </span>
+                </div>
+                <div class="status-info">
+                  <span class="status-label">过期日期</span>
+                  <span class="status-value highlight">2024-03-28</span>
+                </div>
+                <div class="status-info">
+                  <span class="status-label">剩余天数</span>
+                  <span class="status-value highlight">2 天</span>
+                </div>
+              </div>
+              
+              <!-- 详情卡片 - 时间格式化 -->
+              <div class="detail-card">
+                <div class="card-title">📋 详细信息</div>
+                <div class="detail-item">
+                  <span class="item-label">数量</span>
+                  <span class="item-value">3 个</span>
+                </div>
+                <div class="detail-item">
+                  <span class="item-label">存放位置</span>
+                  <span class="item-value">冰箱冷藏室</span>
+                </div>
+                <div class="detail-item">
+                  <span class="item-label">添加时间</span>
+                  <span class="item-value">2024-03-20 15:30</span>
+                </div>
+                <div class="detail-item">
+                  <span class="item-label">更新时间</span>
+                  <span class="item-value">2024-03-25 09:15</span>
+                </div>
+              </div>
+              
+              <!-- 操作按钮 -->
+              <div class="action-buttons">
+                <button class="btn btn-primary">✏️ 编辑</button>
+                <button class="btn btn-danger">🗑️ 删除</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-title">食材详情页 - 优化后</div>
+      </div>
+      
+      <!-- 状态标签对比 -->
+      <div>
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="food-detail">
+              <div style="padding: 20px;">
+                <h3 style="margin-bottom: 20px; color: #333;">状态标签样式对比</h3>
+                
+                <div style="margin-bottom: 30px;">
+                  <p style="color: #999; margin-bottom: 10px; font-size: 12px;">新鲜（>7天）</p>
+                  <span class="status-badge fresh">
+                    <span>✅</span>
+                    <span>15 天后过期</span>
+                  </span>
+                </div>
+                
+                <div style="margin-bottom: 30px;">
+                  <p style="color: #999; margin-bottom: 10px; font-size: 12px;">临期（3-7天）</p>
+                  <span class="status-badge warning">
+                    <span>⏰</span>
+                    <span>5 天后过期</span>
+                  </span>
+                </div>
+                
+                <div style="margin-bottom: 30px;">
+                  <p style="color: #999; margin-bottom: 10px; font-size: 12px;">临期（<3天）</p>
+                  <span class="status-badge warning">
+                    <span>⏰</span>
+                    <span>2 天后过期</span>
+                  </span>
+                </div>
+                
+                <div>
+                  <p style="color: #999; margin-bottom: 10px; font-size: 12px;">已过期</p>
+                  <span class="status-badge expired">
+                    <span>⚠️</span>
+                    <span>已过期 3 天</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-title">状态标签样式展示</div>
+      </div>
+      
+      <!-- 菜谱添加页 - 上传错误处理 -->
+      <div>
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="recipe-add">
+              <div class="page-header">
+                <div class="page-title">添加个人菜谱</div>
+              </div>
+              
+              <div class="form">
+                <!-- 图片上传 - 带错误提示 -->
+                <div class="form-item">
+                  <label class="form-label">食谱图片 <span class="optional">（最多5张）</span></label>
+                  <div class="uploader-area">
+                    <div class="upload-item">
+                      <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200" alt="食谱">
+                      <span class="delete-btn">×</span>
+                    </div>
+                    <div class="upload-item">
+                      <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=200" alt="食谱">
+                      <span class="delete-btn">×</span>
+                    </div>
+                    <div class="upload-btn">
+                      <span class="icon">+</span>
+                      <span class="text">上传</span>
+                    </div>
+                  </div>
+                  
+                  <!-- 上传错误提示 - 优化后 -->
+                  <div class="upload-error">
+                    <span class="icon">⚠️</span>
+                    <div class="content">
+                      <div class="title">图片上传失败</div>
+                      <div class="desc">服务器繁忙，请稍后重试</div>
+                    </div>
+                    <button class="retry-btn">重试</button>
+                  </div>
+                </div>
+                
+                <!-- 菜名 -->
+                <div class="form-item">
+                  <label class="form-label">菜名 <span class="required">*</span></label>
+                  <input class="form-input" placeholder="请输入菜名" value="西红柿炒鸡蛋">
+                </div>
+                
+                <!-- 类型选择 -->
+                <div class="form-item">
+                  <label class="form-label">荤素类型 <span class="required">*</span></label>
+                  <div class="picker">
+                    <span>半荤</span>
+                    <span class="picker-arrow">▼</span>
+                  </div>
+                </div>
+                
+                <!-- 烹饪时长 -->
+                <div class="form-item">
+                  <label class="form-label">烹饪时长 <span class="required">*</span></label>
+                  <div class="picker">
+                    <span>15分钟</span>
+                    <span class="picker-arrow">▼</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- 底部按钮 -->
+              <div class="footer">
+                <button class="btn btn-secondary" style="background: #f0f0f0; color: #666;">取消</button>
+                <button class="btn btn-primary">保存</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-title">菜谱添加页 - 上传错误提示优化</div>
+      </div>
+      
+      <!-- 菜谱添加页 - 正常状态 -->
+      <div>
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="recipe-add">
+              <div class="page-header">
+                <div class="page-title">添加个人菜谱</div>
+              </div>
+              
+              <div class="form">
+                <!-- 图片上传 - 正常 -->
+                <div class="form-item">
+                  <label class="form-label">食谱图片 <span class="optional">（最多5张）</span></label>
+                  <div class="uploader-area">
+                    <div class="upload-item">
+                      <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=200" alt="食谱">
+                      <span class="delete-btn">×</span>
+                    </div>
+                    <div class="upload-btn">
+                      <span class="icon">+</span>
+                      <span class="text">上传</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- 菜名 -->
+                <div class="form-item">
+                  <label class="form-label">菜名 <span class="required">*</span></label>
+                  <input class="form-input" placeholder="请输入菜名">
+                </div>
+                
+                <!-- 食材 -->
+                <div class="form-item">
+                  <div class="label-row">
+                    <label class="form-label">所需食材 <span class="required">*</span></label>
+                    <span class="add-link">+ 添加食材</span>
+                  </div>
+                  <div class="ingredient-item">
+                    <input class="ingredient-input name-input" placeholder="食材名" value="西红柿">
+                    <input class="ingredient-input qty-input" placeholder="数量" value="2">
+                    <input class="ingredient-input unit-input" placeholder="单位" value="个">
+                    <span class="delete-btn-icon">🗑️</span>
+                  </div>
+                  <div class="ingredient-item">
+                    <input class="ingredient-input name-input" placeholder="食材名" value="鸡蛋">
+                    <input class="ingredient-input qty-input" placeholder="数量" value="3">
+                    <input class="ingredient-input unit-input" placeholder="单位" value="个">
+                    <span class="delete-btn-icon">🗑️</span>
+                  </div>
+                </div>
+                
+                <!-- 步骤 -->
+                <div class="form-item">
+                  <div class="label-row">
+                    <label class="form-label">烹饪步骤 <span class="required">*</span></label>
+                    <span class="add-link">+ 添加步骤</span>
+                  </div>
+                  <div class="step-item">
+                    <span class="step-number">1</span>
+                    <textarea class="step-input" placeholder="请输入步骤内容">西红柿切块，鸡蛋打散备用</textarea>
+                    <span class="delete-btn-icon">🗑️</span>
+                  </div>
+                  <div class="step-item">
+                    <span class="step-number">2</span>
+                    <textarea class="step-input" placeholder="请输入步骤内容">热锅凉油，倒入鸡蛋炒熟盛出</textarea>
+                    <span class="delete-btn-icon">🗑️</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- 底部按钮 -->
+              <div class="footer">
+                <button class="btn btn-secondary" style="background: #f0f0f0; color: #666;">取消</button>
+                <button class="btn btn-primary">保存</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-title">菜谱添加页 - 正常状态</div>
+      </div>
+    </div>
+    
+    <!-- 修改说明 -->
+    <div style="background: white; border-radius: 20px; padding: 30px; margin-top: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+      <h2 style="color: #333; margin-bottom: 20px;">📝 本次修改说明</h2>
+      
+      <h3 style="color: #667eea; margin: 20px 0 10px;">一、食材详情页优化</h3>
+      <ul style="color: #666; line-height: 2;">
+        <li><strong>图片展示：</strong>在页面顶部添加食材图片区域，支持点击查看大图</li>
+        <li><strong>时间格式化：</strong>添加时间显示从时间戳格式化为 "YYYY-MM-DD HH:mm"</li>
+        <li><strong>状态标签：</strong>新增渐变色状态标签（绿色=新鲜、橙色=临期、红色=过期），带图标和阴影效果</li>
+      </ul>
+      
+      <h3 style="color: #667eea; margin: 20px 0 10px;">二、图片上传错误处理优化</h3>
+      <ul style="color: #666; line-height: 2;">
+        <li><strong>本地预览：</strong>选择图片后立即显示本地预览，不等待上传完成</li>
+        <li><strong>错误提示：</strong>上传失败显示友好提示，包含具体错误原因</li>
+        <li><strong>重试机制：</strong>提供"重试"按钮，保留已选择的图片</li>
+        <li><strong>降级方案：</strong>上传失败不影响其他表单内容的填写</li>
+      </ul>
+      
+      <h3 style="color: #667eea; margin: 20px 0 10px;">三、后端优化</h3>
+      <ul style="color: #666; line-height: 2;">
+        <li><strong>错误码优化：</strong>OSS 未配置时返回 503 错误码，而非 500</li>
+        <li><strong>参数校验：</strong>增加文件类型、大小校验</li>
+        <li><strong>异常捕获：</strong>完善异常处理，避免未捕获异常导致 500</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
