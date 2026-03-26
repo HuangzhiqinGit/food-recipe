@@ -1,22 +1,26 @@
 .container {
   padding: 0;
-  padding-bottom: 120rpx;
+  padding-bottom: 0;
   background: #f8f9fa;
   min-height: 100vh;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 /* 固定头部区域 - 合并操作栏+Tab */
 .header-fixed {
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  flex-shrink: 0;
   background: #f8f9fa;
   padding: 24rpx 24rpx 16rpx;
-  transform: translateZ(0);
-  will-change: transform;
-  backface-visibility: hidden;
-  border-bottom: 8rpx solid #f8f9fa;
+}
+
+/* 滚动内容区 */
+.content-scroll {
+  flex: 1;
+  height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* 操作栏 */
@@ -141,7 +145,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 24rpx;
-  padding: 0 24rpx 120rpx;
+  padding: 16rpx 24rpx 120rpx;
 }
 
 .recipe-card {

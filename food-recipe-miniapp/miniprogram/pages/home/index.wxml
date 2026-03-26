@@ -24,8 +24,8 @@
     </view>
   </view>
 
-  <!-- 内容区域 - 可滚动 -->
-  <view class="content">
+  <!-- 滚动内容区 -->
+  <scroll-view class="content-scroll" scroll-y enhanced show-scrollbar>
     <!-- 今日菜谱推荐 -->
     <view class="recipe-section">
       <view class="section-header">
@@ -48,5 +48,5 @@
         </view>
       </view>
     </view>
-  </view>
+  </scroll-view>
 </view>

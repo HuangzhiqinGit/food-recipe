@@ -31,8 +31,10 @@
     </view>
   </view>
 
-  <!-- 菜谱列表 - 可滚动 -->
-  <view class="recipe-list" wx:if="{{recipeList.length > 0}}">
+  <!-- 滚动内容区 -->
+  <scroll-view class="content-scroll" scroll-y enhanced show-scrollbar>
+    <!-- 菜谱列表 -->
+    <view class="recipe-list" wx:if="{{recipeList.length > 0}}">
     <view 
       class="recipe-card" 
       wx:for="{{recipeList}}" 
@@ -68,6 +70,7 @@
       <text class="action-link" bindtap="goToFoodList">去添加食材 ></text>
     </view>
   </view>
+  </scroll-view>
 
   <!-- 悬浮添加按钮 - 优化后 -->
   <view class="fab-btn" bindtap="goToAddRecipe">

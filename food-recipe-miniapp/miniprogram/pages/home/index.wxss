@@ -1,20 +1,24 @@
 .container {
   min-height: 100vh;
   background: #f8f9fa;
+  display: flex;
+  flex-direction: column;
 }
 
 /* 固定头部区域 */
 .header-fixed {
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  flex-shrink: 0;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 60rpx 32rpx 32rpx;
   color: white;
-  transform: translateZ(0);
-  will-change: transform;
-  backface-visibility: hidden;
-  border-bottom: 8rpx solid #f8f9fa;
+}
+
+/* 滚动内容区 */
+.content-scroll {
+  flex: 1;
+  height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .header-content {
@@ -32,11 +36,6 @@
 .welcome-subtext {
   font-size: 28rpx;
   opacity: 0.85;
-}
-
-/* 内容区域 - 可滚动 */
-.content {
-  padding: 16rpx 24rpx 40rpx;
 }
 
 /* 临期提醒卡片 */
@@ -118,6 +117,7 @@
   background: white;
   border-radius: 24rpx;
   padding: 32rpx;
+  margin: 16rpx 24rpx 40rpx;
   box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.08);
 }
 

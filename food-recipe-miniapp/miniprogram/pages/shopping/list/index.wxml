@@ -51,8 +51,8 @@
     </block>
   </view>
 
-  <!-- 内容区 - 可滚动 -->
-  <view class="content">
+  <!-- 滚动内容区 -->
+  <scroll-view class="content-scroll" scroll-y enhanced show-scrollbar>
     <!-- 当前清单 -->
     <block wx:if="{{currentTab === 'current'}}">
       <!-- 未购买列表 -->
@@ -158,7 +158,7 @@
         <text class="empty-title">暂无历史记录</text>
       </view>
     </block>
-  </view>
+  </scroll-view>
 
   <!-- 悬浮添加按钮 -->
   <view class="fab-btn" bindtap="showAddModal">

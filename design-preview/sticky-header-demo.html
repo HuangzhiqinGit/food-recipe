@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>固定头部列表效果预览</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        /* 模拟手机屏幕 */
+        .phone-frame {
+            max-width: 414px;
+            margin: 20px auto;
+            background: #fff;
+            min-height: 800px;
+            border-radius: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* ===== 方案一：渐变头部固定（首页/食材页风格） ===== */
+        .header-fixed {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 50px 20px 20px;
+            color: #fff;
+        }
+        
+        .header-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .search-box {
+            background: rgba(255,255,255,0.2);
+            border-radius: 25px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .search-box::before {
+            content: "🔍";
+            margin-right: 10px;
+            opacity: 0.8;
+        }
+        
+        .search-placeholder {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+        }
+        
+        /* 筛选栏 - 也在固定区域内 */
+        .filter-bar {
+            background: #fff;
+            padding: 15px 20px;
+            display: flex;
+            gap: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+        
+        .filter-item {
+            padding: 8px 16px;
+            background: #f5f5f5;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #666;
+            white-space: nowrap;
+        }
+        
+        .filter-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+        
+        /* 列表内容区 */
+        .list-content {
+            padding: 15px 20px;
+            min-height: 600px;
+        }
+        
+        .list-item {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .item-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .item-info {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .item-desc {
+            font-size: 13px;
+            color: #999;
+        }
+        
+        /* ===== 方案二：Tab 切换固定（购物清单风格） ===== */
+        .tab-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #fff;
+        }
+        
+        .tab-bar {
+            display: flex;
+            padding: 0 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .tab-item {
+            flex: 1;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 15px;
+            color: #999;
+            position: relative;
+        }
+        
+        .tab-item.active {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .tab-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 3px;
+        }
+        
+        /* 统计卡片 - 也在固定区域 */
+        .stats-bar {
+            background: #fff;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .stats-item {
+            text-align: center;
+        }
+        
+        .stats-num {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .stats-label {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+        
+        /* ===== 方案三：简洁头部（菜谱页风格） ===== */
+        .simple-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: #fff;
+            padding: 50px 20px 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .simple-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        /* 分类横向滚动 */
+        .category-scroll {
+            background: #fff;
+            padding: 12px 20px;
+            white-space: nowrap;
+            overflow-x: auto;
+            border-bottom: 1px solid #f0f0f0;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .category-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .category-tag {
+            display: inline-block;
+            padding: 8px 20px;
+            margin-right: 10px;
+            background: #f5f5f5;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .category-tag.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+        
+        /* 说明文字 */
+        .demo-desc {
+            padding: 20px;
+            background: #fff;
+            margin: 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: #666;
+        }
+        
+        .demo-desc h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .demo-desc code {
+            background: #f5f5f5;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 说明 -->
+<div style="max-width: 800px; margin: 20px auto; padding: 0 20px;">
+    <h2 style="margin-bottom: 10px;">📱 固定头部列表效果方案</h2>
+    <p style="color: #666; line-height: 1.6;">
+        下方展示三种不同场景的固定头部效果。滚动页面查看效果，注意观察头部区域如何保持固定。
+    </p>
+</div>
+
+<!-- 方案一：渐变头部（首页、食材页） -->
+<div class="phone-frame">
+    <div class="demo-desc">
+        <h3>方案一：渐变头部 + 筛选栏</h3>
+        <p>适用：<strong>首页、食材页</strong></p>
+        <p>特点：渐变背景头部固定，筛选栏紧随其后也固定，列表内容独立滚动。</p>
+    </div>
+    
+    <!-- 固定头部 -->
+    <div class="header-fixed">
+        <div class="header-title">我的食材</div>
+        <div class="search-box">
+            <span class="search-placeholder">搜索食材名称...</span>
+        </div>
+    </div>
+    
+    <!-- 固定筛选栏 -->
+    <div class="filter-bar">
+        <div class="filter-item active">全部</div>
+        <div class="filter-item">蔬菜</div>
+        <div class="filter-item">肉类</div>
+        <div class="filter-item">海鲜</div>
+        <div class="filter-item">蛋奶</div>
+    </div>
+    
+    <!-- 滚动列表 -->
+    <div class="list-content">
+        <div class="list-item">
+            <div class="item-icon">🥬</div>
+            <div class="item-info">
+                <div class="item-name">青菜</div>
+                <div class="item-desc">剩余3天 · 冰箱冷藏</div>
+            </div>
+        </div>
+        <div class="list-item">
+            <div class="item-icon">🥩</div>
+            <div class="item-info">
+                <div class="item-name">牛肉</div>
+                <div class="item-desc">剩余5天 · 冰箱冷冻</div>
+            </div>
+        </div>
+        <div class="list-item">
+            <div class="item-icon">🥚</div>
+            <div class="item-info">
+                <div class="item-name">鸡蛋</div>
+                <div class="item-desc">剩余7天 · 冰箱冷藏</div>
+            </div>
+        </div>
+        <div class="list-item">
+            <div class="item-icon">🦐</div>
+            <div class="item-info">
+                <div class="item-name">鲜虾</div>
+                <div class="item-desc">今天过期 · 冰箱冷藏</div>
+            </div>
+        </div>
+        <div class="list-item">
+            <div class="item-icon">🥛</div>
+            <div class="item-info">
+                <div class="item-name">牛奶</div>
+                <div class="item-desc">剩余2天 · 冰箱冷藏</div>
+            </div>
+        </div>
+        <div class="list-item">
+            <div class="item-icon">🍚</div>
+            <div class="item-info">
+                <div class="item-name">大米</div>
+                <div class="item-desc">剩余30天 · 常温</div>
+            </div>
+        </div>
+        <div class="list-item">
+            <div class="item-icon">🧂</div>
+            <div class="item-info">
+                <div class="item-name">食盐</div>
+                <div class="item-desc">无过期日期 · 常温</div>
+            </div>
+        </div>
+        <div class="list-item">
+            <div class="item-icon">🍅</div>
+            <div class="item-info">
+                <div class="item-name">番茄</div>
+                <div class="item-desc">剩余4天 · 冰箱冷藏</div>
+            </div>
+        </div>
+        <div style="text-align: center; padding: 30px; color: #999; font-size: 13px;">
+            — 已经到底了 —
+        </div>
+    </div>
+</div>
+
+<!-- 方案二：Tab切换（购物清单） -->
+<div class="phone-frame">
+    <div class="demo-desc">
+        <h3>方案二：Tab 头部 + 统计栏</h3>
+        <p>适用：<strong>购物清单页</strong></p>
+        <p>特点：Tab 切换和统计数字固定，下方列表滚动。</p>
+    </div>
+    
+    <!-- 固定头部 -->
+    <div class="tab-header">
+        <div class="tab-bar">
+            <div class="tab-item active">当前清单</div>
+            <div class="tab-item">历史记录</div>
+        </div>
+        
+        <div class="stats-bar">
+            <div class="stats-item">
+                <div class="stats-num">12</div>
+                <div class="stats-label">总数</div>
+            </div>
+            <div class="stats-item">
+                <div class="stats-num" style="color: #52c234;">5</div>
+                <div class="stats-label">已购</div>
+            </div>
+            <div class="stats-item">
+                <div class="stats-num" style="color: #ff9800;">7</div>
+                <div class="stats-label">未购</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 滚动列表 -->
+    <div class="list-content">
+        <div style="font-size: 13px; color: #999; margin-bottom: 15px; padding-left: 5px;">未购买</div>
+        
+        <div class="list-item">
+            <div class="item-icon" style="background: #ff9800;">🥬</div>
+            <div class="item-info">
+                <div class="item-name">青菜 <span style="font-size: 12px; color: #999;">500g</span></div>
+                <div class="item-desc">添加于今天</div>
+            </div>
+        </div>
+        <div class="list-item">
+            <div class="item-icon" style="background: #ff9800;">🥩</div>
+            <div class="item-info">
+                <div class="item-name">牛肉 <span style="font-size: 12px; color: #999;">300g</span></div>
+                <div class="item-desc">添加于今天</div>
+            </div>
+        </div>
+        <div class="list-item">
+            <div class="item-icon" style="background: #ff9800;">🥚</div>
+            <div class="item-info">
+                <div class="item-name">鸡蛋 <span style="font-size: 12px; color: #999;">10个</span></div>
+                <div class="item-desc">添加于昨天</div>
+            </div>
+        </div>
+        
+        <div style="font-size: 13px; color: #999; margin: 20px 0 15px; padding-left: 5px;">已购买</div>
+        
+        <div class="list-item" style="opacity: 0.7;">
+            <div class="item-icon" style="background: #52c234;">✓</div>
+            <div class="item-info">
+                <div class="item-name" style="text-decoration: line-through;">番茄 <span style="font-size: 12px; color: #999;">4个</span></div>
+                <div class="item-desc">已购买</div>
+            </div>
+        </div>
+        <div class="list-item" style="opacity: 0.7;">
+            <div class="item-icon" style="background: #52c234;">✓</div>
+            <div class="item-info">
+                <div class="item-name" style="text-decoration: line-through;">土豆 <span style="font-size: 12px; color: #999;">2个</span></div>
+                <div class="item-desc">已购买</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 方案三：简洁头部 + 分类滚动（菜谱页） -->
+<div class="phone-frame">
+    <div class="demo-desc">
+        <h3>方案三：简洁头部 + 横向分类</h3>
+        <p>适用：<strong>菜谱页</strong></p>
+        <p>特点：简洁标题固定，分类标签横向滚动也固定。</p>
+    </div>
+    
+    <!-- 固定头部 -->
+    <div class="simple-header">
+        <div class="simple-title">推荐菜谱</div>
+    </div>
+    
+    <!-- 固定分类栏 -->
+    <div class="category-scroll">
+        <div class="category-tag active">全部</div>
+        <div class="category-tag">家常菜</div>
+        <div class="category-tag">快手菜</div>
+        <div class="category-tag">汤羹</div>
+        <div class="category-tag">主食</div>
+        <div class="category-tag">烘焙</div>
+        <div class="category-tag">凉菜</div>
+    </div>
+    
+    <!-- 滚动列表 -->
+    <div class="list-content">
+        <div class="list-item" style="flex-direction: column; align-items: flex-start;">
+            <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 60px; margin-bottom: 12px;">
+                🍅
+            </div>
+            <div class="item-name">番茄炒蛋</div>
+            <div class="item-desc">15分钟 · 素食 ·  matched 100%</div>
+        </div>
+        
+        <div class="list-item" style="flex-direction: column; align-items: flex-start;">
+            <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 60px; margin-bottom: 12px;">
+                🥩
+            </div>
+            <div class="item-name">青椒肉丝</div>
+            <div class="item-desc">20分钟 · 荤素 · matched 85%</div>
+        </div>
+        
+        <div class="list-item" style="flex-direction: column; align-items: flex-start;">
+            <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 60px; margin-bottom: 12px;">
+                🥦
+            </div>
+            <div class="item-name">清炒西兰花</div>
+            <div class="item-desc">10分钟 · 素食 · matched 90%</div>
+        </div>
+    </div>
+</div>
+
+<!-- 技术方案说明 -->
+<div style="max-width: 800px; margin: 40px auto; padding: 0 20px;">
+    <div class="demo-desc">
+        <h3>🛠 技术实现方案</h3>
+        <p><strong>微信小程序实现方式：</strong></p>
+        <p>1. 使用 <code>position: sticky</code> 实现头部固定（iOS/Android 都支持）</p>
+        <p>2. 外层容器使用 <code>height: 100vh; overflow-y: auto;</code></p>
+        <p>3. 下拉刷新使用 <code>enablePullDownRefresh: true</code> 配合 <code>onPullDownRefresh</code></p>
+        <p>4. 列表滚动区域设置 <code>-webkit-overflow-scrolling: touch</code> 提升流畅度</p>
+        <br>
+        <p><strong>结构示例：</strong></p>
+        <pre style="background: #f5f5f5; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 12px; line-height: 1.5;">
+&lt;view class="page-container"&gt;
+  &lt;!-- 固定头部 --&gt;
+  &lt;view class="header"&gt;...&lt;/view&gt;
+  
+  &lt;!-- 固定筛选栏 --&gt;
+  &lt;view class="filter-bar"&gt;...&lt;/view&gt;
+  
+  &lt;!-- 滚动列表 --&gt;
+  &lt;scroll-view scroll-y class="list"&gt;
+    &lt;view wx:for="{{list}}"&gt;...&lt;/view&gt;
+  &lt;/scroll-view&gt;
+&lt;/view&gt;</pre>
+    </div>
+    
+    <div style="text-align: center; padding: 20px; color: #999;">
+        <p>👆 滚动上方手机屏幕查看效果</p>
+        <p>确认方案后告诉我，我帮你修改代码</p>
+    </div>
+</div>
+
+</body>
+</html>
