@@ -207,9 +207,10 @@
 .food-card {
   background: #fff;
   border-radius: 24rpx;
-  padding: 0;
+  padding: 24rpx;
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
   display: flex;
+  align-items: center;
   gap: 24rpx;
   transition: transform 0.2s;
 }
