@@ -1,5 +1,5 @@
 <view class="container">
-  <!-- 渐变头部 -->
+  <!-- 渐变头部 - 固定 -->
   <view class="header">
     <view class="header-content">
       <text class="welcome-text">你好，{{userInfo.nickname || '美食家'}}！</text>
@@ -7,9 +7,8 @@
     </view>
   </view>
 
-  <!-- 内容区域 - 卡片式 -->
-  <view class="content">
-    <!-- 临期提醒卡片 -->
+  <!-- 临期提醒卡片 - 固定 -->
+  <view class="warning-section">
     <view class="warning-card" wx:if="{{expiringCount > 0}}" bindtap="goToFoodList">
       <view class="warning-icon-wrap">
         <text class="warning-icon">⚠️</text>
@@ -25,7 +24,10 @@
       <text class="safe-icon">✅</text>
       <text class="safe-text">暂无临期食材，放心做饭～</text>
     </view>
+  </view>
 
+  <!-- 内容区域 - 可滚动 -->
+  <view class="content">
     <!-- 今日菜谱推荐 -->
     <view class="recipe-section">
       <view class="section-header">

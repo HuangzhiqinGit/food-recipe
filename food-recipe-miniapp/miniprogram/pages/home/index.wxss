@@ -9,7 +9,7 @@
   top: 0;
   z-index: 100;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 60rpx 32rpx 80rpx;
+  padding: 60rpx 32rpx 40rpx;
   color: white;
 }
 
@@ -29,11 +29,18 @@
   opacity: 0.85;
 }
 
-/* 内容区域 */
+/* 内容区域 - 可滚动 */
 .content {
-  padding: 0 24rpx;
-  margin-top: -40rpx;
-  padding-bottom: 40rpx;
+  padding: 16rpx 24rpx 40rpx;
+}
+
+/* 临期提醒区域 - 固定 */
+.warning-section {
+  position: sticky;
+  top: 132rpx;
+  z-index: 99;
+  background: #f8f9fa;
+  padding: 0 24rpx 16rpx;
 }
 
 /* 临期提醒卡片 */
@@ -45,7 +52,6 @@
   align-items: center;
   gap: 24rpx;
   box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.08);
-  margin-bottom: 24rpx;
 }
 
 .warning-card:active {
@@ -98,7 +104,6 @@
   justify-content: center;
   gap: 16rpx;
   box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.08);
-  margin-bottom: 24rpx;
 }
 
 .safe-icon {
