@@ -1,0 +1,80 @@
+# ========================================
+# Java / Maven 后端项目
+# ========================================
+# 编译输出
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Maven
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.swp
+*.swo
+*~
+
+# 日志文件
+*.log
+logs/
+log/
+
+# 临时文件
+*.tmp
+*.temp
+
+# ========================================
+# 微信小程序前端项目
+# ========================================
+# 依赖
+node_modules/
+npm-debug.log*
+
+# 小程序自动生成的文件
+miniprogram_npm/
+
+# 开发配置文件（可能包含敏感信息）
+project.private.config.json
+
+# 本地配置文件
+*.local
+
+# ========================================
+# 操作系统
+# ========================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ========================================
+# 其他
+# ========================================
+# 测试报告（如果是自动生成的）
+# test-report.html
+# test-report.md
+
+# 敏感文件
+*.key
+*.pem
+*.p12
+*.pfx
+
+# 环境变量文件
+.env
+.env.local
+.env.*.local
