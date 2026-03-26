@@ -12,7 +12,7 @@
   <!-- 已登录内容 -->
   <block wx:else>
   <!-- 固定区域：搜索栏 + 筛选 + 分类 -->
-  <view class="header-fixed">
+  <view class="header-fixed" catchtouchmove="preventScroll">
     <!-- 搜索栏 -->
     <view class="search-bar">
       <view class="search-input-wrap">
@@ -58,7 +58,15 @@
   </view>
 
   <!-- 滚动内容区 -->
-  <scroll-view class="content-scroll" scroll-y enhanced show-scrollbar>
+  <scroll-view 
+    class="content-scroll" 
+    scroll-y 
+    enhanced 
+    show-scrollbar
+    scroll-with-animation="{{false}}"
+    bounces="{{false}}"
+    fast-deceleration
+  >
     <!-- 食材列表 -->
     <view class="food-list" wx:if="{{foodList.length > 0}}">
       <view 

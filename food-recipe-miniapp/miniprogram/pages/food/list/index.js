@@ -160,6 +160,11 @@ Page({
     this.loadFoodList()
   }, 300),
 
+  // 阻止固定区域触摸事件冒泡
+  preventScroll() {
+    return false
+  },
+
   // 选择分类
   selectCategory(e) {
     this.setData({

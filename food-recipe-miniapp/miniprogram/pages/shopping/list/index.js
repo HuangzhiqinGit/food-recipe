@@ -304,5 +304,10 @@ Page({
         }
       }
     })
+  },
+
+  // 阻止固定区域触摸事件冒泡
+  preventScroll() {
+    return false
   }
 })

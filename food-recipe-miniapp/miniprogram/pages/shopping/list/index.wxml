@@ -1,6 +1,6 @@
 <view class="container">
   <!-- 固定区域：渐变头部 + Tab + 统计 + 分类 -->
-  <view class="header-fixed">
+  <view class="header-fixed" catchtouchmove="preventScroll">
     <!-- 渐变头部 -->
     <view class="header">
       <view class="header-content">
@@ -52,7 +52,15 @@
   </view>
 
   <!-- 滚动内容区 -->
-  <scroll-view class="content-scroll" scroll-y enhanced show-scrollbar>
+  <scroll-view 
+    class="content-scroll" 
+    scroll-y 
+    enhanced 
+    show-scrollbar
+    scroll-with-animation="{{false}}"
+    bounces="{{false}}"
+    fast-deceleration
+  >
     <!-- 当前清单 -->
     <block wx:if="{{currentTab === 'current'}}">
       <!-- 未购买列表 -->
