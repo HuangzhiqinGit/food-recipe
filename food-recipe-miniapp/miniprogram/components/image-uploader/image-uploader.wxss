@@ -12,8 +12,9 @@
   position: relative;
   width: 200rpx;
   height: 200rpx;
-  border-radius: 12rpx;
+  border-radius: 16rpx;
   overflow: hidden;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
 }
 
 .image {
@@ -21,42 +22,86 @@
   height: 100%;
 }
 
+/* 上传中状态 */
+.image-item.uploading {
+  background: #f5f5f5;
+}
+
+.upload-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-progress {
+  width: 60rpx;
+  height: 60rpx;
+}
+
+.progress-ring {
+  width: 100%;
+  height: 100%;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 .delete-btn {
   position: absolute;
-  top: 8rpx;
-  right: 8rpx;
-  width: 40rpx;
-  height: 40rpx;
-  background: rgba(0, 0, 0, 0.5);
+  top: -10rpx;
+  right: -10rpx;
+  width: 44rpx;
+  height: 44rpx;
+  background: #eb3349;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(235, 51, 73, 0.4);
+  z-index: 10;
 }
 
 .delete-icon {
   color: #fff;
   font-size: 28rpx;
   line-height: 1;
+  font-weight: bold;
 }
 
 .upload-btn {
   width: 200rpx;
   height: 200rpx;
-  border: 2rpx dashed #ccc;
-  border-radius: 12rpx;
+  border: 2rpx dashed #ddd;
+  border-radius: 16rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #f9f9f9;
+  background: #fafafa;
+  transition: all 0.3s;
+}
+
+.upload-btn:active {
+  border-color: #667eea;
+  background: rgba(102, 126, 234, 0.05);
 }
 
 .upload-icon {
-  font-size: 60rpx;
-  color: #999;
+  font-size: 56rpx;
+  color: #bbb;
   line-height: 1;
-  margin-bottom: 10rpx;
+  margin-bottom: 12rpx;
 }
 
 .upload-text {
@@ -68,4 +113,68 @@
   font-size: 24rpx;
   color: #999;
   margin-top: 16rpx;
+  display: block;
+}
+
+/* 上传错误提示 */
+.upload-error {
+  margin-top: 24rpx;
+  background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+  border: 2rpx solid #ffcdd2;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+}
+
+.error-icon {
+  font-size: 40rpx;
+  flex-shrink: 0;
+}
+
+.error-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.error-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #c62828;
+  margin-bottom: 6rpx;
+}
+
+.error-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #e57373;
+  line-height: 1.4;
+}
+
+.error-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  flex-shrink: 0;
+}
+
+.retry-btn {
+  background: #eb3349;
+  color: #fff;
+  padding: 12rpx 28rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+  text-align: center;
+}
+
+.dismiss-btn {
+  background: transparent;
+  color: #999;
+  padding: 8rpx 28rpx;
+  border-radius: 8rpx;
+  font-size: 22rpx;
+  text-align: center;
 }

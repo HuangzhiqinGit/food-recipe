@@ -1,5 +1,16 @@
 <view class="image-uploader">
   <view class="image-list">
+    <!-- 本地预览图（上传中） -->
+    <view class="image-item uploading" wx:for="{{uploadingImages}}" wx:key="tempFilePath">
+      <image class="image" src="{{item.tempFilePath}}" mode="aspectFill"/>
+      <view class="upload-overlay">
+        <view class="upload-progress">
+          <view class="progress-ring"></view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 已上传成功的图片 -->
     <view class="image-item" wx:for="{{images}}" wx:key="*this">
       <image class="image" src="{{item}}" mode="aspectFill" 
              bindtap="previewImage" data-index="{{index}}"
@@ -9,10 +20,24 @@
       </view>
     </view>
     
-    <view class="upload-btn" wx:if="{{images.length < maxCount}}" bindtap="chooseImage">
+    <view class="upload-btn" wx:if="{{images.length + uploadingImages.length < maxCount}}" bindtap="chooseImage">
       <text class="upload-icon">+</text>
       <text class="upload-text">上传图片</text>
     </view>
   </view>
+  
   <text class="upload-tip" wx:if="{{maxCount > 1}}">最多上传{{maxCount}}张图片</text>
+  
+  <!-- 上传错误提示 -->
+  <view class="upload-error" wx:if="{{uploadError}}">
+    <view class="error-icon">⚠️</view>
+    <view class="error-content">
+      <text class="error-title">{{uploadError.title}}</text>
+      <text class="error-desc">{{uploadError.message}}</text>
+    </view>
+    <view class="error-actions">
+      <view class="retry-btn" bindtap="retryUpload" wx:if="{{failedFiles.length > 0}}">重试</view>
+      <view class="dismiss-btn" bindtap="dismissError">忽略</view>
+    </view>
+  </view>
 </view>

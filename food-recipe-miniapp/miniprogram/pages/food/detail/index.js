@@ -1,4 +1,4 @@
-const { showConfirm, showSuccess, showError } = require('../../../utils/util')
+const { showConfirm, showSuccess, showError, formatDateTime } = require('../../../utils/util')
 const foodService = require('../../../services/foodService')
 
 Page({
@@ -32,6 +32,11 @@ Page({
       this.setData({ loading: false })
       showError('加载失败')
     }
+  },
+
+  // 格式化日期时间 - 新增
+  formatDateTime(date) {
+    return formatDateTime(date)
   },
 
   // 获取分类名称
@@ -72,13 +77,45 @@ Page({
     return diff
   },
 
-  // 获取状态标签
-  getStatusLabel(remainingDays) {
-    if (remainingDays === null) return { text: '无过期日期', type: 'normal' }
-    if (remainingDays < 0) return { text: `已过期 ${Math.abs(remainingDays)} 天`, type: 'expired' }
-    if (remainingDays === 0) return { text: '今天过期', type: 'warning' }
-    if (remainingDays <= 3) return { text: `${remainingDays} 天后过期`, type: 'warning' }
-    return { text: `${remainingDays} 天后过期`, type: 'normal' }
+  // 获取食材状态 - 新增
+  getFoodStatus(expireDate) {
+    const daysLeft = this.getRemainingDays(expireDate)
+    if (daysLeft === null) return { 
+      text: '无过期日期', 
+      type: 'normal',
+      icon: '✅'
+    }
+    if (daysLeft < 0) return { 
+      text: `已过期 ${Math.abs(daysLeft)} 天`, 
+      type: 'expired',
+      icon: '⚠️'
+    }
+    if (daysLeft === 0) return { 
+      text: '今天过期', 
+      type: 'warning',
+      icon: '⏰'
+    }
+    if (daysLeft <= 3) return { 
+      text: `临期 ${daysLeft} 天`, 
+      type: 'warning',
+      icon: '⏰'
+    }
+    return { 
+      text: `${daysLeft} 天后过期`, 
+      type: 'normal',
+      icon: '✅'
+    }
+  },
+
+  // 预览图片 - 新增
+  previewImage() {
+    const { food } = this.data
+    if (food && food.imageUrl) {
+      wx.previewImage({
+        urls: [food.imageUrl],
+        current: food.imageUrl
+      })
+    }
   },
 
   // 跳转到编辑

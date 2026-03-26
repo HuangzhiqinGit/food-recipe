@@ -37,14 +37,21 @@ public class OssService {
     private String domain;
 
     /**
-     * 检查OSS是否已配置
+     * 检查OSS是否已配置 - 公共方法
      */
-    private boolean isOssConfigured() {
+    public boolean isConfigured() {
         return endpoint != null && !endpoint.isEmpty()
                 && accessKeyId != null && !accessKeyId.isEmpty()
                 && accessKeySecret != null && !accessKeySecret.isEmpty()
                 && bucketName != null && !bucketName.isEmpty()
                 && domain != null && !domain.isEmpty();
+    }
+
+    /**
+     * 检查OSS是否已配置（兼容旧方法）
+     */
+    private boolean isOssConfigured() {
+        return isConfigured();
     }
 
     /**

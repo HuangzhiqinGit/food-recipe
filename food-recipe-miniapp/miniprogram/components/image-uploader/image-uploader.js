@@ -15,13 +15,15 @@ Component({
   },
 
   data: {
-    uploadUrl: ''
+    uploadingImages: [], // 正在上传的图片（本地预览）
+    uploadError: null,   // 上传错误信息
+    failedFiles: []      // 上传失败的文件
   },
 
   methods: {
     // 选择图片来源
     chooseImage() {
-      const remainingCount = this.data.maxCount - this.data.images.length
+      const remainingCount = this.data.maxCount - this.data.images.length - this.data.uploadingImages.length
       if (remainingCount <= 0) {
         wx.showToast({ title: `最多上传${this.data.maxCount}张图片`, icon: 'none' })
         return
@@ -44,6 +46,16 @@ Component({
         sourceType: sourceType,
         success: (res) => {
           const tempFiles = res.tempFiles
+          // 立即显示本地预览
+          const uploadingImages = tempFiles.map(file => ({
+            tempFilePath: file.tempFilePath,
+            isUploading: true
+          }))
+          this.setData({ 
+            uploadingImages: [...this.data.uploadingImages, ...uploadingImages],
+            uploadError: null // 清除之前的错误
+          })
+          // 开始上传
           this.uploadImages(tempFiles)
         }
       })
@@ -51,10 +63,9 @@ Component({
 
     // 上传图片
     async uploadImages(tempFiles) {
-      wx.showLoading({ title: '上传中...' })
-      
       const uploadService = require('../../services/uploadService')
       const newImages = []
+      const failedFiles = []
 
       for (const file of tempFiles) {
         try {
@@ -71,29 +82,121 @@ Component({
               newImages.push(imageUrl)
             } else {
               console.error('图片URL格式不正确:', imageUrl)
-              wx.showToast({ title: '图片URL格式错误', icon: 'none' })
+              failedFiles.push(file)
             }
           } else {
             console.error('上传返回异常:', result)
-            wx.showToast({ title: result.message || '上传失败', icon: 'none' })
+            failedFiles.push(file)
+            // 显示具体错误
+            this.handleUploadError(result.code, result.message)
           }
         } catch (error) {
           console.error('上传失败:', error)
-          wx.showToast({ title: '上传失败', icon: 'none' })
+          failedFiles.push(file)
+          // 根据错误类型显示不同提示
+          this.handleNetworkError(error)
         }
       }
 
-      wx.hideLoading()
+      // 移除已完成的预览
+      const remainingUploading = this.data.uploadingImages.filter(
+        item => !tempFiles.some(file => file.tempFilePath === item.tempFilePath)
+      )
 
       if (newImages.length > 0) {
         const allImages = [...this.data.images, ...newImages]
-        console.log('所有图片:', allImages)
-        this.setData({ images: allImages })
+        this.setData({ 
+          images: allImages,
+          uploadingImages: remainingUploading,
+          failedFiles: failedFiles
+        })
         this.triggerEvent('change', { images: allImages })
-        wx.showToast({ title: '上传成功', icon: 'success' })
+        
+        if (failedFiles.length === 0) {
+          wx.showToast({ title: '上传成功', icon: 'success' })
+        }
       } else {
-        wx.showToast({ title: '上传失败', icon: 'none' })
+        this.setData({ 
+          uploadingImages: remainingUploading,
+          failedFiles: failedFiles
+        })
       }
+
+      // 如果有失败的文件，显示错误提示
+      if (failedFiles.length > 0 && !this.data.uploadError) {
+        this.setData({
+          uploadError: {
+            title: '部分图片上传失败',
+            message: `${failedFiles.length}张图片上传失败，可点击重试`
+          }
+        })
+      }
+    },
+
+    // 处理上传错误
+    handleUploadError(code, message) {
+      let errorInfo = { title: '上传失败', message: message || '请稍后重试' }
+      
+      switch (code) {
+        case 400:
+          errorInfo = { title: '上传失败', message: '文件格式或大小不符合要求' }
+          break
+        case 401:
+          errorInfo = { title: '登录已过期', message: '请重新登录后再试' }
+          break
+        case 403:
+          errorInfo = { title: '上传失败', message: '没有权限上传文件' }
+          break
+        case 413:
+          errorInfo = { title: '文件过大', message: '单张图片不能超过10MB' }
+          break
+        case 503:
+          errorInfo = { title: '服务暂不可用', message: '文件存储服务未配置，请联系管理员' }
+          break
+        case 500:
+        default:
+          errorInfo = { title: '服务器繁忙', message: '请稍后重试，或检查网络连接' }
+          break
+      }
+      
+      this.setData({ uploadError: errorInfo })
+    },
+
+    // 处理网络错误
+    handleNetworkError(error) {
+      let errorInfo = { title: '网络错误', message: '请检查网络连接后重试' }
+      
+      if (error.errMsg && error.errMsg.includes('timeout')) {
+        errorInfo = { title: '请求超时', message: '上传时间过长，请检查网络或压缩图片后重试' }
+      } else if (error.errMsg && error.errMsg.includes('fail')) {
+        errorInfo = { title: '网络错误', message: '无法连接到服务器，请检查网络设置' }
+      }
+      
+      this.setData({ uploadError: errorInfo })
+    },
+
+    // 重试上传
+    retryUpload() {
+      const { failedFiles } = this.data
+      if (failedFiles.length === 0) return
+      
+      // 重置错误状态
+      this.setData({ 
+        uploadError: null,
+        failedFiles: []
+      })
+      
+      // 重新上传失败的文件
+      const tempFiles = failedFiles.map(path => ({ tempFilePath: path }))
+      this.uploadImages(tempFiles)
+    },
+
+    // 忽略错误
+    dismissError() {
+      this.setData({ 
+        uploadError: null,
+        failedFiles: []
+      })
     },
 
     // 删除图片

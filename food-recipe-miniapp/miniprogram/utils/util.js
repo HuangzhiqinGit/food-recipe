@@ -12,6 +12,19 @@ const formatDate = (date, format = 'YYYY-MM-DD') => {
     .replace('DD', day)
 }
 
+// 格式化日期时间（完整格式）
+const formatDateTime = (date) => {
+  if (!date) return ''
+  const d = new Date(date)
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  const hours = String(d.getHours()).padStart(2, '0')
+  const minutes = String(d.getMinutes()).padStart(2, '0')
+  
+  return `${year}-${month}-${day} ${hours}:${minutes}`
+}
+
 // 计算剩余天数
 const getDaysLeft = (expireDate) => {
   if (!expireDate) return null
@@ -26,13 +39,49 @@ const getDaysLeft = (expireDate) => {
   return diffDays
 }
 
-// 获取食材状态
+// 获取食材状态（优化后，返回更详细的信息）
 const getFoodStatus = (expireDate) => {
   const daysLeft = getDaysLeft(expireDate)
-  if (daysLeft === null) return { code: 0, text: '新鲜', color: '#4CAF50' }
-  if (daysLeft < 1) return { code: 2, text: '已过期', color: '#F44336' }
-  if (daysLeft <= 3) return { code: 1, text: `临期 ${daysLeft}天`, color: '#FF9800' }
-  return { code: 0, text: '新鲜', color: '#4CAF50' }
+  if (daysLeft === null) return { 
+    code: 0, 
+    text: '无过期日期', 
+    type: 'normal',
+    color: '#4CAF50',
+    bgGradient: 'linear-gradient(135deg, #52c234 0%, #22b322 100%)',
+    icon: '✅'
+  }
+  if (daysLeft < 0) return { 
+    code: 2, 
+    text: `已过期 ${Math.abs(daysLeft)} 天`, 
+    type: 'expired',
+    color: '#F44336',
+    bgGradient: 'linear-gradient(135deg, #eb3349 0%, #f45c43 100%)',
+    icon: '⚠️'
+  }
+  if (daysLeft === 0) return { 
+    code: 1, 
+    text: '今天过期', 
+    type: 'warning',
+    color: '#FF9800',
+    bgGradient: 'linear-gradient(135deg, #f5af19 0%, #f12711 100%)',
+    icon: '⏰'
+  }
+  if (daysLeft <= 3) return { 
+    code: 1, 
+    text: `临期 ${daysLeft} 天`, 
+    type: 'warning',
+    color: '#FF9800',
+    bgGradient: 'linear-gradient(135deg, #f5af19 0%, #f12711 100%)',
+    icon: '⏰'
+  }
+  return { 
+    code: 0, 
+    text: `${daysLeft} 天后过期`, 
+    type: 'normal',
+    color: '#4CAF50',
+    bgGradient: 'linear-gradient(135deg, #52c234 0%, #22b322 100%)',
+    icon: '✅'
+  }
 }
 
 // 防抖
@@ -89,6 +138,7 @@ const showError = (title = '操作失败') => {
 
 module.exports = {
   formatDate,
+  formatDateTime,
   getDaysLeft,
   getFoodStatus,
   debounce,

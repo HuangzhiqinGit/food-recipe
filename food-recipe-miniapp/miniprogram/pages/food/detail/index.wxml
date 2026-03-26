@@ -6,31 +6,46 @@
 
   <!-- 内容区域 -->
   <block wx:elif="{{food}}">
-    <!-- 食材头部信息 -->
+    <!-- 食材头部信息 - 优化后带图片 -->
     <view class="food-header">
-      <view class="food-icon">{{getCategoryIcon(food.category)}}</view>
-      <view class="food-info">
-        <text class="food-name">{{food.name}}</text>
-        <view class="food-category">
-          <text class="category-tag">{{getCategoryName(food.category)}}</text>
+      <view class="food-image-wrap">
+        <image 
+          class="food-image" 
+          src="{{food.imageUrl || '/assets/images/empty-food.png'}}" 
+          mode="aspectFill"
+          bindtap="previewImage"
+        />
+        <view class="food-info">
+          <text class="food-name">{{food.name}}</text>
+          <view class="food-category">
+            <text class="category-tag">{{getCategoryIcon(food.category)}} {{getCategoryName(food.category)}}</text>
+          </view>
         </view>
       </view>
     </view>
 
-    <!-- 状态卡片 -->
-    <view class="status-card {{getStatusLabel(getRemainingDays(food.expireDate)).type}}">
-      <view class="status-icon">
-        <text wx:if="{{getStatusLabel(getRemainingDays(food.expireDate)).type === 'expired'}}">⚠️</text>
-        <text wx:elif="{{getStatusLabel(getRemainingDays(food.expireDate)).type === 'warning'}}">⏰</text>
-        <text wx:else>✅</text>
+    <!-- 状态卡片 - 优化后 -->
+    <view class="status-section">
+      <view class="status-header">
+        <text class="status-title">保鲜状态</text>
+        <view class="status-badge {{getFoodStatus(food.expireDate).type}}">
+          <text class="badge-icon">{{getFoodStatus(food.expireDate).icon}}</text>
+          <text class="badge-text">{{getFoodStatus(food.expireDate).text}}</text>
+        </view>
       </view>
-      <view class="status-text">
-        <text class="status-label">{{getStatusLabel(getRemainingDays(food.expireDate)).text}}</text>
-        <text wx:if="{{food.expireDate}}" class="expire-date">过期日期：{{food.expireDate}}</text>
+      <view class="status-info-list">
+        <view class="status-info-item" wx:if="{{food.expireDate}}">
+          <text class="info-label">过期日期</text>
+          <text class="info-value {{getFoodStatus(food.expireDate).type}}">{{food.expireDate}}</text>
+        </view>
+        <view class="status-info-item" wx:if="{{getRemainingDays(food.expireDate) !== null}}">
+          <text class="info-label">剩余天数</text>
+          <text class="info-value {{getFoodStatus(food.expireDate).type}}">{{getRemainingDays(food.expireDate) > 0 ? getRemainingDays(food.expireDate) + ' 天' : '已过期'}}</text>
+        </view>
       </view>
     </view>
 
-    <!-- 详细信息卡片 -->
+    <!-- 详细信息卡片 - 时间格式化 -->
     <view class="detail-card">
       <view class="card-title">详细信息</view>
       
@@ -46,12 +61,12 @@
       
       <view class="detail-item">
         <text class="item-label">添加时间</text>
-        <text class="item-value">{{food.createTime}}</text>
+        <text class="item-value">{{formatDateTime(food.createTime)}}</text>
       </view>
       
       <view class="detail-item" wx:if="{{food.updateTime}}">
         <text class="item-label">更新时间</text>
-        <text class="item-value">{{food.updateTime}}</text>
+        <text class="item-value">{{formatDateTime(food.updateTime)}}</text>
       </view>
     </view>
 
