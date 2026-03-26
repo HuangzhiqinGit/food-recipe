@@ -63,13 +63,29 @@ Page({
   // 缺的食材加入购物清单
   async addToShopping() {
     try {
-      const { recipeId } = this.data
+      const { ingredients, recipeId } = this.data
+      
+      // 筛选缺少的食材
+      const missingIngredients = ingredients.filter(item => !item.hasStock)
+      
+      if (missingIngredients.length === 0) {
+        showSuccess('所有食材库存充足')
+        return
+      }
 
       wx.showLoading({ title: '添加中...' })
-      await shoppingService.addFromRecipe(recipeId)
+      
+      // 逐个添加到购物清单
+      for (const item of missingIngredients) {
+        await shoppingService.addItem({
+          foodName: item.name,
+          quantity: `${item.quantity}${item.unit || ''}`,
+          fromRecipeId: recipeId
+        })
+      }
+      
       wx.hideLoading()
-
-      showSuccess('已添加到购物清单')
+      showSuccess(`已添加 ${missingIngredients.length} 个食材到购物清单`)
 
       // 询问是否跳转到购物清单
       wx.showModal({
