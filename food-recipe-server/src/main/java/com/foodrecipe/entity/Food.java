@@ -1,6 +1,7 @@
 package com.foodrecipe.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -36,6 +37,7 @@ public class Food {
     private String location;
 
     @TableField("expire_date")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate expireDate;
 
     private Integer status;
@@ -44,12 +46,15 @@ public class Food {
     private Integer isFinished;
 
     @TableField("finished_at")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime finishedAt;
 
     @TableField(value = "created_at", fill = FieldFill.INSERT)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 
     @TableField(value = "updated_at", fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
 
     // 非数据库字段
