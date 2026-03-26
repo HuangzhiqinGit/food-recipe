@@ -58,32 +58,58 @@ public class ShoppingItemService extends ServiceImpl<ShoppingItemMapper, Shoppin
         int failCount = 0;
 
         for (Long itemId : dto.getItemIds()) {
-            ShoppingItem item = getById(itemId);
-            if (item == null || !item.getUserId().equals(userId)) {
+            try {
+                ShoppingItem item = getById(itemId);
+                if (item == null || !item.getUserId().equals(userId)) {
+                    failCount++;
+                    continue;
+                }
+
+                // 解析数量和单位
+                String quantityStr = item.getQuantity() != null ? item.getQuantity() : "";
+                java.math.BigDecimal quantity = new java.math.BigDecimal("0");
+                String unit = "";
+                
+                if (!quantityStr.isEmpty()) {
+                    try {
+                        String numPart = quantityStr.replaceAll("[^0-9.]", "");
+                        if (!numPart.isEmpty()) {
+                            quantity = new java.math.BigDecimal(numPart);
+                        }
+                        unit = quantityStr.replaceAll("[0-9.]", "").trim();
+                    } catch (Exception e) {
+                        // 解析失败则使用默认值
+                        quantity = new java.math.BigDecimal("1");
+                        unit = quantityStr;
+                    }
+                } else {
+                    quantity = new java.math.BigDecimal("1");
+                }
+
+                // 创建食材
+                Food food = new Food();
+                food.setUserId(userId);
+                food.setName(item.getFoodName());
+                food.setCategory(item.getCategory() != null ? item.getCategory() : "其他");
+                food.setQuantity(quantity);
+                food.setUnit(unit.isEmpty() ? "个" : unit);
+                food.setLocation(dto.getStorageLocation());
+                food.setExpireDate(dto.getExpireDate());
+                food.setStatus(0);
+                food.setIsFinished(0);
+
+                foodService.save(food);
+
+                // 更新购物项状态为已入库
+                item.setStatus(2);
+                item.setArchivedAt(LocalDateTime.now());
+                updateById(item);
+
+                successCount++;
+            } catch (Exception e) {
                 failCount++;
-                continue;
+                System.err.println("入库失败 itemId=" + itemId + ": " + e.getMessage());
             }
-
-            // 创建食材
-            Food food = new Food();
-            food.setUserId(userId);
-            food.setName(item.getFoodName());
-            food.setCategory(item.getCategory());
-            food.setQuantity(new java.math.BigDecimal(item.getQuantity().replaceAll("[^0-9.]", "")));
-            food.setUnit(item.getQuantity().replaceAll("[0-9.]", ""));
-            food.setLocation(dto.getStorageLocation());
-            food.setExpireDate(dto.getExpireDate());
-            food.setStatus(0);
-            food.setIsFinished(0);
-
-            foodService.save(food);
-
-            // 更新购物项状态为已入库
-            item.setStatus(2);
-            item.setArchivedAt(LocalDateTime.now());
-            updateById(item);
-
-            successCount++;
         }
 
         Map<String, Object> result = new HashMap<>();
