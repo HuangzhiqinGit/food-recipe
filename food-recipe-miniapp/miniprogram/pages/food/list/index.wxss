@@ -1,5 +1,5 @@
 .container {
-  padding: 24rpx;
+  padding: 0;
   padding-bottom: 120rpx;
   background: #f8f9fa;
   min-height: 100vh;
@@ -53,11 +53,16 @@
   margin-top: 24rpx;
 }
 
-/* 搜索栏 */
+/* 搜索栏 - 固定 */
 .search-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #f8f9fa;
+  padding: 24rpx 24rpx 16rpx;
   display: flex;
   align-items: center;
-  margin-bottom: 24rpx;
+  margin-bottom: 16rpx;
 }
 
 .search-input-wrap {
@@ -106,9 +111,13 @@
   line-height: 1;
 }
 
-/* 状态筛选 */
+/* 状态筛选 - 固定 */
 .status-scroll {
-  margin-bottom: 20rpx;
+  position: sticky;
+  top: 120rpx;
+  z-index: 99;
+  background: #f8f9fa;
+  padding: 0 24rpx 16rpx;
   white-space: nowrap;
 }
 
@@ -157,9 +166,13 @@
   box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.4);
 }
 
-/* 分类标签 */
+/* 分类标签 - 固定 */
 .category-scroll {
-  margin-bottom: 24rpx;
+  position: sticky;
+  top: 192rpx;
+  z-index: 98;
+  background: #f8f9fa;
+  padding: 0 24rpx 16rpx;
   white-space: nowrap;
 }
 
@@ -190,12 +203,13 @@
   display: flex;
   flex-direction: column;
   gap: 20rpx;
+  padding: 0 24rpx;
 }
 
 .food-card {
   background: #fff;
   border-radius: 24rpx;
-  padding: 24rpx;
+  padding: 0;
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
   display: flex;
   gap: 24rpx;

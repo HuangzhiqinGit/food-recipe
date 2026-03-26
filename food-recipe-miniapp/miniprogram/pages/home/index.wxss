@@ -3,8 +3,11 @@
   background: #f8f9fa;
 }
 
-/* 渐变头部 */
+/* 渐变头部 - 固定 */
 .header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 60rpx 32rpx 80rpx;
   color: white;
