@@ -76,12 +76,15 @@ public class UploadController {
             Result<String> result = ossService.uploadFile(file, folder);
             
             if (result.getCode() == 200) {
-                log.info("图片上传成功, url={}", result.getData());
+                // 生成带签名的完整URL
+                String filePath = result.getData();
+                Result<String> signedUrlResult = ossService.generateSignedUrl(filePath);
+                log.info("图片上传成功, url={}", signedUrlResult.getData());
+                return signedUrlResult;
             } else {
                 log.warn("图片上传失败: {}", result.getMessage());
+                return result;
             }
-            
-            return result;
             
         } catch (Exception e) {
             log.error("图片上传发生异常", e);

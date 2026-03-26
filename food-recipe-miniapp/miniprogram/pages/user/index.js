@@ -138,21 +138,44 @@ Page({
           console.log('上传结果:', result)
           
           if (result.code === 200 && result.data) {
-            // result.data 直接是路径字符串，不是对象
-            const newAvatarUrl = typeof result.data === 'string' ? result.data : result.data.url
-            console.log('获取到图片URL:', newAvatarUrl)
+            // result.data 现在是完整的带签名 URL
+            const fullImageUrl = result.data
+            console.log('获取到完整图片URL:', fullImageUrl)
             
-            // 更新本地数据
-            const userInfo = { ...this.data.userInfo, avatarUrl: newAvatarUrl }
+            // 从完整URL中提取路径（用于保存到数据库）
+            // URL 格式: https://xxx.oss-cn-xxx.aliyuncs.com/foods/xxx.png?Signature=xxx
+            let pathForDb = fullImageUrl
+            try {
+              const urlObj = new URL(fullImageUrl)
+              // 去掉开头的 /
+              pathForDb = urlObj.pathname.substring(1)
+              // 如果路径包含签名参数，去掉它们
+              if (pathForDb.includes('?')) {
+                pathForDb = pathForDb.split('?')[0]
+              }
+            } catch (e) {
+              console.log('解析URL失败，使用原始值:', e)
+            }
+            console.log('提取的路径用于数据库:', pathForDb)
+            
+            // 更新本地数据（使用完整URL显示）
+            const userInfo = { ...this.data.userInfo, avatarUrl: fullImageUrl }
             this.setData({ userInfo })
             
             // 更新全局数据
             app.globalData.userInfo = userInfo
             
-            // 调用后端更新用户信息
-            console.log('开始调用 updateUserInfo, 参数:', { avatarUrl: newAvatarUrl })
-            const updateResult = await this.updateUserInfo({ avatarUrl: newAvatarUrl })
+            // 调用后端更新用户信息（保存路径到数据库）
+            console.log('开始调用 updateUserInfo, 参数:', { avatarUrl: pathForDb })
+            const updateResult = await this.updateUserInfo({ avatarUrl: pathForDb })
             console.log('updateUserInfo 返回:', updateResult)
+            
+            // 如果后端返回了新的完整URL，更新显示
+            if (updateResult.code === 200 && updateResult.data && updateResult.data.avatarUrl) {
+              const updatedUserInfo = { ...this.data.userInfo, avatarUrl: updateResult.data.avatarUrl }
+              this.setData({ userInfo: updatedUserInfo })
+              app.globalData.userInfo = updatedUserInfo
+            }
             
             wx.showToast({ title: '头像更新成功', icon: 'success' })
           } else {

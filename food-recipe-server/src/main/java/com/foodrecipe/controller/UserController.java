@@ -2,6 +2,7 @@ package com.foodrecipe.controller;
 
 import com.foodrecipe.dto.Result;
 import com.foodrecipe.entity.User;
+import com.foodrecipe.service.OssService;
 import com.foodrecipe.service.UserService;
 import com.foodrecipe.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class UserController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private OssService ossService;
 
     /**
      * 更新用户信息
@@ -52,6 +56,14 @@ public class UserController {
         
         userService.updateById(user);
         
+        // 返回时处理 avatarUrl 为带签名的完整 URL
+        if (user.getAvatarUrl() != null && !user.getAvatarUrl().isEmpty()) {
+            Result<String> signedUrlResult = ossService.generateSignedUrl(user.getAvatarUrl());
+            if (signedUrlResult.getCode() == 200) {
+                user.setAvatarUrl(signedUrlResult.getData());
+            }
+        }
+        
         return Result.success(user);
     }
 
@@ -70,6 +82,14 @@ public class UserController {
         User user = userService.getById(userId);
         if (user == null) {
             return Result.error(401, "用户不存在");
+        }
+
+        // 返回时处理 avatarUrl 为带签名的完整 URL
+        if (user.getAvatarUrl() != null && !user.getAvatarUrl().isEmpty()) {
+            Result<String> signedUrlResult = ossService.generateSignedUrl(user.getAvatarUrl());
+            if (signedUrlResult.getCode() == 200) {
+                user.setAvatarUrl(signedUrlResult.getData());
+            }
         }
 
         return Result.success(user);
