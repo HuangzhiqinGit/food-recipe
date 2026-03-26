@@ -13,7 +13,7 @@ const shoppingService = {
 
   // 从菜谱添加缺失的食材
   addFromRecipe(recipeId) {
-    return post('/shopping/from-recipe', { recipeId })
+    return post(`/shopping/from-recipe/${recipeId}`)
   },
 
   // 切换购买状态
