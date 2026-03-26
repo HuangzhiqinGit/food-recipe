@@ -61,18 +61,37 @@ Page({
   },
 
   // 缺的食材加入购物清单
-  async addToShopping() {
-    try {
-      const { ingredients, recipeId } = this.data
-      
-      // 筛选缺少的食材
-      const missingIngredients = ingredients.filter(item => !item.hasStock)
-      
-      if (missingIngredients.length === 0) {
-        showSuccess('所有食材库存充足')
-        return
-      }
+  addToShopping() {
+    const { ingredients, recipeId } = this.data
+    
+    // 筛选缺少的食材
+    const missingIngredients = ingredients.filter(item => !item.hasStock)
+    
+    if (missingIngredients.length === 0) {
+      showSuccess('所有食材库存充足')
+      return
+    }
 
+    // 构建确认框内容，展示食材列表
+    const itemsList = missingIngredients.map(item => `• ${item.name} ${item.quantity}${item.unit || ''}`).join('\n')
+    const content = `以下 ${missingIngredients.length} 个食材将加入购物清单：\n\n${itemsList}`
+
+    wx.showModal({
+      title: '确认添加',
+      content: content,
+      confirmText: '添加',
+      cancelText: '取消',
+      success: async (res) => {
+        if (res.confirm) {
+          await this.doAddToShopping(missingIngredients, recipeId)
+        }
+      }
+    })
+  },
+
+  // 执行添加操作
+  async doAddToShopping(missingIngredients, recipeId) {
+    try {
       wx.showLoading({ title: '添加中...' })
       
       // 逐个添加到购物清单
@@ -91,6 +110,8 @@ Page({
       wx.showModal({
         title: '添加成功',
         content: '是否跳转到购物清单？',
+        confirmText: '去查看',
+        cancelText: '留在当前页',
         success: (res) => {
           if (res.confirm) {
             wx.switchTab({
