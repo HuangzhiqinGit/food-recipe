@@ -10,6 +10,9 @@
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 60rpx 32rpx 32rpx;
   color: white;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .header-content {
@@ -34,7 +37,7 @@
   background: white;
   border-radius: 24rpx;
   padding: 32rpx;
-  margin: -16rpx 24rpx 24rpx;
+  margin: 24rpx 24rpx 16rpx;
   display: flex;
   align-items: center;
   gap: 24rpx;
@@ -88,7 +91,7 @@
   background: white;
   border-radius: 24rpx;
   padding: 40rpx;
-  margin: -16rpx 24rpx 24rpx;
+  margin: 24rpx 24rpx 16rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -112,7 +115,7 @@
   background: white;
   border-radius: 24rpx;
   padding: 32rpx;
-  margin: 0 24rpx;
+  margin: 16rpx 24rpx;
   box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.08);
 }
 
