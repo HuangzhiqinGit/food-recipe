@@ -34,7 +34,7 @@ public class UploadController {
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
 
     /**
-     * 上传图片 - 优化错误处理
+     * 上传图片 - 返回OSS文件路径
      */
     @PostMapping("/image")
     public Result<String> uploadImage(
@@ -76,20 +76,30 @@ public class UploadController {
             Result<String> result = ossService.uploadFile(file, folder);
             
             if (result.getCode() == 200) {
-                // 生成带签名的完整URL
-                String filePath = result.getData();
-                Result<String> signedUrlResult = ossService.generateSignedUrl(filePath);
-                log.info("图片上传成功, url={}", signedUrlResult.getData());
-                return signedUrlResult;
+                log.info("图片上传成功, path={}", result.getData());
             } else {
                 log.warn("图片上传失败: {}", result.getMessage());
-                return result;
             }
+            
+            return result;
             
         } catch (Exception e) {
             log.error("图片上传发生异常", e);
             return Result.error(500, "服务器繁忙，请稍后重试");
         }
+    }
+
+    /**
+     * 获取图片的签名URL（用于渲染）
+     */
+    @GetMapping("/signed-url")
+    public Result<String> getSignedUrl(@RequestParam("path") String path) {
+        if (path == null || path.isEmpty()) {
+            return Result.error(400, "路径不能为空");
+        }
+        
+        // 返回带签名的完整URL
+        return ossService.generateSignedUrl(path);
     }
 
     /**

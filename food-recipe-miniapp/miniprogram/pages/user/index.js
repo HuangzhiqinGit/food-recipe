@@ -126,39 +126,22 @@ Page({
           const result = await uploadService.uploadImage(tempFilePath, 'avatar')
           
           if (result.code === 200 && result.data) {
-            // result.data 现在是完整的带签名 URL
-            const fullImageUrl = result.data
+            // result.data 是 OSS 路径
+            const ossPath = result.data
             
-            // 从完整URL中提取路径（用于保存到数据库）
-            let pathForDb = fullImageUrl
-            try {
-              const urlObj = new URL(fullImageUrl)
-              // 去掉开头的 /
-              pathForDb = urlObj.pathname.substring(1)
-              // 如果路径包含签名参数，去掉它们
-              if (pathForDb.includes('?')) {
-                pathForDb = pathForDb.split('?')[0]
-              }
-            } catch (e) {
-              // URL 解析失败，使用原始值
-            }
+            // 立即获取签名URL用于显示
+            const signedUrlRes = await uploadService.getSignedUrl(ossPath)
+            const displayUrl = signedUrlRes.code === 200 ? signedUrlRes.data : ''
             
-            // 更新本地数据（使用完整URL显示）
-            const userInfo = { ...this.data.userInfo, avatarUrl: fullImageUrl }
+            // 更新本地数据（使用带签名URL显示）
+            const userInfo = { ...this.data.userInfo, avatarUrl: displayUrl }
             this.setData({ userInfo })
             
             // 更新全局数据
             app.globalData.userInfo = userInfo
             
-            // 调用后端更新用户信息（保存路径到数据库）
-            const updateResult = await this.updateUserInfo({ avatarUrl: pathForDb })
-            
-            // 如果后端返回了新的完整URL，更新显示
-            if (updateResult.code === 200 && updateResult.data && updateResult.data.avatarUrl) {
-              const updatedUserInfo = { ...this.data.userInfo, avatarUrl: updateResult.data.avatarUrl }
-              this.setData({ userInfo: updatedUserInfo })
-              app.globalData.userInfo = updatedUserInfo
-            }
+            // 调用后端更新用户信息（保存OSS路径到数据库）
+            await this.updateUserInfo({ avatarUrl: ossPath })
             
             wx.showToast({ title: '头像更新成功', icon: 'success' })
           } else {
