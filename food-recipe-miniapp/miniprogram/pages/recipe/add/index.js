@@ -8,7 +8,7 @@ Page({
       name: '',
       type: 'vegetarian',
       duration: '15min',
-      ingredients: [{ name: '', quantity: '', unit: '' }],
+      ingredients: [{ name: '', quantity: '', unit: '', category: 'vegetable', categoryIndex: 0 }],
       steps: [''],
       tips: ''
     },
@@ -24,7 +24,17 @@ Page({
       { label: '20分钟', value: '20min' },
       { label: '30分钟+', value: '30min_plus' }
     ],
-    durationIndex: 1
+    durationIndex: 1,
+    // 食材分类选项
+    categoryOptions: [
+      { label: '蔬菜', value: 'vegetable' },
+      { label: '肉类', value: 'meat' },
+      { label: '海鲜', value: 'seafood' },
+      { label: '蛋奶', value: 'egg' },
+      { label: '主食', value: 'staple' },
+      { label: '调料', value: 'seasoning' },
+      { label: '酒水', value: 'drink' }
+    ]
   },
 
   // 菜名输入
@@ -55,7 +65,7 @@ Page({
   // 添加食材
   addIngredient() {
     const ingredients = this.data.form.ingredients
-    ingredients.push({ name: '', quantity: '', unit: '' })
+    ingredients.push({ name: '', quantity: '', unit: '', category: 'vegetable', categoryIndex: 0 })
     this.setData({
       'form.ingredients': ingredients
     })
@@ -82,6 +92,17 @@ Page({
       [key]: value
     })
   },
+
+  // 食材分类选择
+  onIngredientCategoryChange(e) {
+    const index = e.currentTarget.dataset.index
+    const categoryIndex = parseInt(e.detail.value)
+    const category = this.data.categoryOptions[categoryIndex].value
+    this.setData({
+      [`form.ingredients[${index}].category`]: category,
+      [`form.ingredients[${index}].categoryIndex`]: categoryIndex
+    })
+  },,
 
   // 添加步骤
   addStep() {

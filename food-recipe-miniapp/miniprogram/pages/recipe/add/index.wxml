@@ -76,6 +76,12 @@
             data-field="unit"
             bindinput="onIngredientInput"
           />
+          <picker class="category-picker" bindchange="onIngredientCategoryChange" data-index="{{index}}" value="{{item.categoryIndex || 0}}" range="{{categoryOptions}}" range-key="label">
+            <view class="picker-value">
+              <text class="category-label">{{categoryOptions[item.categoryIndex || 0].label}}</text>
+              <text class="picker-arrow">▼</text>
+            </view>
+          </picker>
           <text class="delete-btn" bindtap="deleteIngredient" data-index="{{index}}">🗑️</text>
         </view>
       </view>

@@ -121,6 +121,26 @@
   width: 80rpx;
 }
 
+/* 分类选择器 */
+.category-picker {
+  width: 120rpx;
+}
+
+.picker-value {
+  height: 72rpx;
+  background: #F5F5F5;
+  border-radius: 8rpx;
+  padding: 0 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.category-label {
+  font-size: 24rpx;
+  color: var(--text-primary);
+}
+
 /* 步骤列表 */
 .step-list {
   display: flex;
