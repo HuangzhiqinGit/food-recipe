@@ -10,7 +10,7 @@
   </view>
 
   <!-- 已登录内容 -->
-  <block wx:else>
+  <view class="main-content" wx:else>
     <!-- 固定区域：搜索栏 + 筛选 + 分类 -->
     <view class="header-fixed">
       <!-- 搜索栏 -->
@@ -121,5 +121,5 @@
         <text class="fab-icon">+</text>
       </view>
     </view>
-  </block>
+  </view>
 </view>
