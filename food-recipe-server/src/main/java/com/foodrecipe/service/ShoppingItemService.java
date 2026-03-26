@@ -90,7 +90,7 @@ public class ShoppingItemService extends ServiceImpl<ShoppingItemMapper, Shoppin
                 Food food = new Food();
                 food.setUserId(userId);
                 food.setName(item.getFoodName());
-                food.setCategory(item.getCategory() != null ? item.getCategory() : "其他");
+                food.setCategory(item.getCategory() != null && !item.getCategory().trim().isEmpty() ? item.getCategory() : "other");
                 food.setQuantity(quantity);
                 food.setUnit(unit.isEmpty() ? "个" : unit);
                 food.setLocation(dto.getStorageLocation());

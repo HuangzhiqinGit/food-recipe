@@ -65,7 +65,7 @@ public class ShoppingController {
         item.setIsPurchased(0);
         // 如果分类为空，默认设为"其他"
         if (item.getCategory() == null || item.getCategory().trim().isEmpty()) {
-            item.setCategory("其他");
+            item.setCategory("other");
         }
         shoppingItemService.save(item);
         return Result.success(item);
@@ -119,7 +119,7 @@ public class ShoppingController {
                     item.setQuantity(ingredient.getString("quantity") + ingredient.getString("unit"));
                     // 从食材中获取分类，如果没有则默认"其他"
                     String category = ingredient.getString("category");
-                    item.setCategory(category != null && !category.trim().isEmpty() ? category : "其他");
+                    item.setCategory(category != null && !category.trim().isEmpty() ? category : "other");
                     item.setFromRecipeId(recipeId);
                     item.setIsPurchased(0);
                     shoppingItemService.save(item);
