@@ -73,7 +73,7 @@
 /* 滚动内容区 */
 .content-scroll {
   flex: 1;
-  height: calc(100vh - 240rpx);
+  height: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
