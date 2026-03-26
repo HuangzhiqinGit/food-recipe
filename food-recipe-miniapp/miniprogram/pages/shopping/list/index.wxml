@@ -283,17 +283,17 @@
         <text class="input-label">存放位置</text>
         <view class="location-options"
         >
-          <view class="location-item {{stockLocation === 'refrigerated' ? 'active' : ''}}" bindtap="selectLocation" data-value="refrigerated"
+          <view class="location-item {{stockLocation === '冰箱冷藏' ? 'active' : ''}}" bindtap="selectLocation" data-value="冰箱冷藏"
           >
             <text class="location-icon">❄️</text>
             <text>冷藏</text>
           </view>
-          <view class="location-item {{stockLocation === 'frozen' ? 'active' : ''}}" bindtap="selectLocation" data-value="frozen"
+          <view class="location-item {{stockLocation === '冰箱冷冻' ? 'active' : ''}}" bindtap="selectLocation" data-value="冰箱冷冻"
           >
             <text class="location-icon">🧊</text>
             <text>冷冻</text>
           </view>
-          <view class="location-item {{stockLocation === 'room' ? 'active' : ''}}" bindtap="selectLocation" data-value="room"
+          <view class="location-item {{stockLocation === '常温' ? 'active' : ''}}" bindtap="selectLocation" data-value="常温"
           >
             <text class="location-icon">🏠</text>
             <text>常温</text>

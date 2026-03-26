@@ -30,7 +30,7 @@ Page({
       category: 'vegetable'
     },
     newItemCategoryIndex: 0,
-    stockLocation: 'refrigerated',
+    stockLocation: '冰箱冷藏',
     stockExpireDate: ''
   },
 
