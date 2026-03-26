@@ -117,7 +117,7 @@
   background: white;
   border-radius: 24rpx;
   padding: 32rpx;
-  margin: 16rpx 24rpx 40rpx;
+  margin: 16rpx 24rpx 120rpx;
   box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.08);
 }
 
@@ -205,4 +205,6 @@
 .tag-accent {
   background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
   color: #ec4899;
+}
+color: #ec4899;
 }
