@@ -2,8 +2,8 @@ package com.foodrecipe.service;
 
 import com.foodrecipe.dto.Result;
 import com.foodrecipe.util.AiUtil;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,11 +13,13 @@ import java.util.Map;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class FoodAiService {
 
-    private final OssService ossService;
-    private final AiUtil aiUtil;
+    @Autowired
+    private OssService ossService;
+
+    @Autowired
+    private AiUtil aiUtil;
 
     @Value("${aliyun.oss.domain:}")
     private String ossDomain;
@@ -29,10 +31,15 @@ public class FoodAiService {
      * 3. 返回识别结果和图片URL
      */
     public Result<Map<String, Object>> recognizeFood(MultipartFile file) {
+        log.info("开始AI识别食材, fileName: {}, size: {}", 
+            file.getOriginalFilename(), file.getSize());
+        
         try {
             // 1. 上传图片到OSS
+            log.info("开始上传图片到OSS...");
             Result<String> uploadResult = ossService.uploadFile(file, "foods");
             if (uploadResult.getCode() != 200) {
+                log.error("图片上传失败: {}", uploadResult.getMessage());
                 return Result.error("图片上传失败: " + uploadResult.getMessage());
             }
             
@@ -40,7 +47,9 @@ public class FoodAiService {
             log.info("图片上传成功, path: {}", ossPath);
             
             // 2. 调用AI识别
+            log.info("开始调用AI识别...");
             Map<String, Object> aiResult = aiUtil.recognizeFood(file);
+            log.info("AI识别结果: {}", aiResult);
             
             // 3. 组装返回结果
             Map<String, Object> result = new HashMap<>();
@@ -49,7 +58,7 @@ public class FoodAiService {
             result.put("location", aiResult.getOrDefault("location", "冰箱冷藏"));
             result.put("imageUrl", ossPath);
             
-            log.info("AI识别结果: {}", result);
+            log.info("最终返回结果: {}", result);
             return Result.success(result);
             
         } catch (Exception e) {
