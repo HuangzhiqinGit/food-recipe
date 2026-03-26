@@ -19,6 +19,7 @@
   height: calc(100vh - 400rpx);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  padding-bottom: 100rpx;
 }
 
 .header-content {
@@ -117,7 +118,8 @@
   background: white;
   border-radius: 24rpx;
   padding: 32rpx;
-  margin: 16rpx 24rpx 200rpx;
+  margin: 16rpx 24rpx;
+  padding-bottom: 200rpx;
   box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.08);
 }
 
