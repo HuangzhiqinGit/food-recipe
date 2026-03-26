@@ -126,8 +126,11 @@ Page({
           const result = await uploadService.uploadImage(tempFilePath, 'avatar')
           
           if (result.code === 200 && result.data) {
-            // result.data 是 OSS 路径
+            // result.data 是 OSS 路径，保存到数据库
             const ossPath = result.data
+            
+            // 调用后端更新用户信息（保存OSS路径到数据库）
+            await this.updateUserInfo({ avatarUrl: ossPath })
             
             // 立即获取签名URL用于显示
             const signedUrlRes = await uploadService.getSignedUrl(ossPath)
@@ -139,9 +142,6 @@ Page({
             
             // 更新全局数据
             app.globalData.userInfo = userInfo
-            
-            // 调用后端更新用户信息（保存OSS路径到数据库）
-            await this.updateUserInfo({ avatarUrl: ossPath })
             
             wx.showToast({ title: '头像更新成功', icon: 'success' })
           } else {
