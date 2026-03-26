@@ -18,7 +18,7 @@
 .header-content {
   display: flex;
   flex-direction: column;
-  margin-bottom: 24rpx;
+  margin-bottom: 32rpx;
 }
 
 .welcome-text {
@@ -37,13 +37,10 @@
   background: white;
   border-radius: 24rpx;
   padding: 32rpx;
-  margin: 24rpx 24rpx 16rpx;
   display: flex;
   align-items: center;
   gap: 24rpx;
   box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.12);
-  position: relative;
-  z-index: 10;
 }
 
 .warning-card:active {
@@ -91,14 +88,11 @@
   background: white;
   border-radius: 24rpx;
   padding: 40rpx;
-  margin: 24rpx 24rpx 16rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 16rpx;
   box-shadow: 0 8rpx 32rpx rgba(0,0,0,0.12);
-  position: relative;
-  z-index: 10;
 }
 
 .safe-icon {
