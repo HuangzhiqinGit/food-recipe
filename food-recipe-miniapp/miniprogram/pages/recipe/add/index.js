@@ -33,7 +33,8 @@ Page({
       { label: '蛋奶', value: 'egg' },
       { label: '主食', value: 'staple' },
       { label: '调料', value: 'seasoning' },
-      { label: '酒水', value: 'drink' }
+      { label: '酒水', value: 'drink' },
+      { label: '其他', value: 'other' }
     ]
   },
 
