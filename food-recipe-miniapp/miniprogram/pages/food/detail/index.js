@@ -1,4 +1,4 @@
-const { showConfirm, showSuccess, showError, formatDateTime } = require('../../../utils/util')
+const { showConfirm, showSuccess, showError, formatDateTime: formatDateTimeUtil } = require('../../../utils/util')
 const foodService = require('../../../services/foodService')
 
 Page({
@@ -34,9 +34,9 @@ Page({
     }
   },
 
-  // 格式化日期时间 - 新增
+  // 格式化日期时间
   formatDateTime(date) {
-    return formatDateTime(date)
+    return formatDateTimeUtil(date)
   },
 
   // 获取分类名称
