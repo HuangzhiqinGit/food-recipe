@@ -101,6 +101,7 @@ Page({
         await shoppingService.addItem({
           foodName: item.name,
           quantity: `${item.quantity}${item.unit || ''}`,
+          category: item.category || '', // 传递分类
           fromRecipeId: recipeId
         })
       }
