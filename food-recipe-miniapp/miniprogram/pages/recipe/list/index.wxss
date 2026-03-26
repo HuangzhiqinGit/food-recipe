@@ -17,7 +17,7 @@
 /* 滚动内容区 */
 .content-scroll {
   flex: 1;
-  height: 0;
+  height: calc(100vh - 180rpx);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
