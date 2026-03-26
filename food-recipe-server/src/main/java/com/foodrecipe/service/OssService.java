@@ -129,6 +129,11 @@ public class OssService {
             Date expiration = new Date(System.currentTimeMillis() + 3600 * 1000);
             String signedUrl = ossClient.generatePresignedUrl(bucketName, objectName, expiration).toString();
             
+            // 强制使用 HTTPS
+            if (signedUrl.startsWith("http://")) {
+                signedUrl = signedUrl.replace("http://", "https://");
+            }
+            
             return Result.success(signedUrl);
         } catch (Exception e) {
             log.error("生成签名URL失败: {}", fileUrl, e);
@@ -169,6 +174,10 @@ public class OssService {
                 String objectName = extractObjectName(fileUrl);
                 if (objectName != null && !objectName.isEmpty()) {
                     String signedUrl = ossClient.generatePresignedUrl(bucketName, objectName, expiration).toString();
+                    // 强制使用 HTTPS
+                    if (signedUrl.startsWith("http://")) {
+                        signedUrl = signedUrl.replace("http://", "https://");
+                    }
                     signedUrls.add(signedUrl);
                 } else {
                     signedUrls.add(fileUrl);
@@ -215,6 +224,11 @@ public class OssService {
             // 生成签名URL
             Date expiration = new Date(System.currentTimeMillis() + expireMinutes * 60 * 1000L);
             String signedUrl = ossClient.generatePresignedUrl(bucketName, objectName, expiration).toString();
+            
+            // 强制使用 HTTPS
+            if (signedUrl.startsWith("http://")) {
+                signedUrl = signedUrl.replace("http://", "https://");
+            }
             
             return signedUrl;
         } catch (Exception e) {

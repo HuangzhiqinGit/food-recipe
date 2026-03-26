@@ -1,7 +1,17 @@
+// 辅助函数：将日期字符串转换为iOS兼容格式
+const convertToIOSCompatibleDate = (dateStr) => {
+  if (!dateStr) return dateStr
+  // 如果是 "2026-03-26 09:17:26" 格式，转换为 "2026-03-26T09:17:26"
+  if (typeof dateStr === 'string' && dateStr.includes(' ') && !dateStr.includes('T')) {
+    return dateStr.replace(' ', 'T')
+  }
+  return dateStr
+}
+
 // 格式化日期
 const formatDate = (date, format = 'YYYY-MM-DD') => {
   if (!date) return ''
-  const d = new Date(date)
+  const d = new Date(convertToIOSCompatibleDate(date))
   const year = d.getFullYear()
   const month = String(d.getMonth() + 1).padStart(2, '0')
   const day = String(d.getDate()).padStart(2, '0')
@@ -15,7 +25,7 @@ const formatDate = (date, format = 'YYYY-MM-DD') => {
 // 格式化日期时间（完整格式）
 const formatDateTime = (date) => {
   if (!date) return ''
-  const d = new Date(date)
+  const d = new Date(convertToIOSCompatibleDate(date))
   const year = d.getFullYear()
   const month = String(d.getMonth() + 1).padStart(2, '0')
   const day = String(d.getDate()).padStart(2, '0')
