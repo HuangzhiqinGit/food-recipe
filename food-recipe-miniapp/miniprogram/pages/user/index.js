@@ -38,15 +38,11 @@ Page({
 
   // 微信登录 - 自动登录并获取用户信息
   wxLogin() {
-    console.log('======== 点击登录按钮，开始自动登录 ========')
-    
     wx.showLoading({ title: '登录中...', mask: true })
     
     // 获取微信登录凭证
     wx.login({
       success: (loginRes) => {
-        console.log('wx.login 成功, code:', loginRes.code)
-        
         if (!loginRes.code) {
           wx.hideLoading()
           wx.showToast({ title: '获取登录凭证失败', icon: 'none' })
@@ -70,12 +66,10 @@ Page({
       desc: '用于完善用户资料',
       success: (res) => {
         const wxUserInfo = res.userInfo
-        console.log('获取到微信用户信息:', wxUserInfo)
         this.doLogin(code, wxUserInfo)
       },
       fail: () => {
         // 用户拒绝授权，使用默认信息登录
-        console.log('用户拒绝授权，使用默认信息登录')
         this.doLogin(code, { nickName: '微信用户', avatarUrl: '' })
       }
     })
@@ -83,8 +77,6 @@ Page({
   
   // 执行登录请求 - 修改：保存微信昵称和头像
   doLogin(code, wxUserInfo) {
-    console.log('调用后端登录接口, code:', code, '用户信息:', wxUserInfo)
-    
     const data = {
       code: code,
       nickname: wxUserInfo.nickName,
@@ -93,8 +85,6 @@ Page({
     
     authService.login(data)
       .then((loginData) => {
-        console.log('后端登录返回:', loginData)
-        
         if (!loginData || loginData.code !== 200) {
           throw new Error(loginData?.message || '登录失败')
         }
@@ -133,17 +123,13 @@ Page({
         wx.showLoading({ title: '上传中...' })
         
         try {
-          console.log('开始上传图片:', tempFilePath)
           const result = await uploadService.uploadImage(tempFilePath, 'avatar')
-          console.log('上传结果:', result)
           
           if (result.code === 200 && result.data) {
             // result.data 现在是完整的带签名 URL
             const fullImageUrl = result.data
-            console.log('获取到完整图片URL:', fullImageUrl)
             
             // 从完整URL中提取路径（用于保存到数据库）
-            // URL 格式: https://xxx.oss-cn-xxx.aliyuncs.com/foods/xxx.png?Signature=xxx
             let pathForDb = fullImageUrl
             try {
               const urlObj = new URL(fullImageUrl)
@@ -154,9 +140,8 @@ Page({
                 pathForDb = pathForDb.split('?')[0]
               }
             } catch (e) {
-              console.log('解析URL失败，使用原始值:', e)
+              // URL 解析失败，使用原始值
             }
-            console.log('提取的路径用于数据库:', pathForDb)
             
             // 更新本地数据（使用完整URL显示）
             const userInfo = { ...this.data.userInfo, avatarUrl: fullImageUrl }
@@ -166,9 +151,7 @@ Page({
             app.globalData.userInfo = userInfo
             
             // 调用后端更新用户信息（保存路径到数据库）
-            console.log('开始调用 updateUserInfo, 参数:', { avatarUrl: pathForDb })
             const updateResult = await this.updateUserInfo({ avatarUrl: pathForDb })
-            console.log('updateUserInfo 返回:', updateResult)
             
             // 如果后端返回了新的完整URL，更新显示
             if (updateResult.code === 200 && updateResult.data && updateResult.data.avatarUrl) {
@@ -179,11 +162,10 @@ Page({
             
             wx.showToast({ title: '头像更新成功', icon: 'success' })
           } else {
-            console.error('上传失败, result:', result)
             wx.showToast({ title: '上传失败', icon: 'none' })
           }
         } catch (error) {
-          console.error('上传头像失败, 错误详情:', error)
+          console.error('上传头像失败:', error)
           wx.showToast({ title: '上传失败', icon: 'none' })
         } finally {
           wx.hideLoading()
@@ -194,14 +176,11 @@ Page({
 
   // 更新用户信息 - 新增
   async updateUserInfo(data) {
-    console.log('updateUserInfo 被调用, 数据:', data)
     try {
-      console.log('开始调用 authService.updateUserInfo')
       const result = await authService.updateUserInfo(data)
-      console.log('authService.updateUserInfo 返回:', result)
       return result
     } catch (error) {
-      console.error('更新用户信息失败, 错误:', error)
+      console.error('更新用户信息失败:', error)
       throw error
     }
   },
