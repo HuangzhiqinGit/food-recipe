@@ -67,43 +67,31 @@ Page({
     return map[category] || '📦'
   },
 
-  // 计算剩余天数
-  getRemainingDays(expireDate) {
-    if (!expireDate) return null
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const expire = new Date(expireDate)
-    const diff = Math.ceil((expire - today) / (1000 * 60 * 60 * 24))
-    return diff
+  // 获取状态图标
+  getStatusIcon(status) {
+    const map = {
+      'fresh': '✅',
+      'expiring': '⏰',
+      'expired': '⚠️'
+    }
+    return map[status] || '✅'
   },
 
-  // 获取食材状态 - 新增
-  getFoodStatus(expireDate) {
-    const daysLeft = this.getRemainingDays(expireDate)
-    if (daysLeft === null) return { 
-      text: '无过期日期', 
-      type: 'normal',
-      icon: '✅'
-    }
-    if (daysLeft < 0) return { 
-      text: `已过期 ${Math.abs(daysLeft)} 天`, 
-      type: 'expired',
-      icon: '⚠️'
-    }
-    if (daysLeft === 0) return { 
-      text: '今天过期', 
-      type: 'warning',
-      icon: '⏰'
-    }
-    if (daysLeft <= 3) return { 
-      text: `临期 ${daysLeft} 天`, 
-      type: 'warning',
-      icon: '⏰'
-    }
-    return { 
-      text: `${daysLeft} 天后过期`, 
-      type: 'normal',
-      icon: '✅'
+  // 计算过期倒计时 - 与列表页保持一致
+  getExpireCountdown(expireDate) {
+    if (!expireDate) return '无过期日期'
+    
+    const now = new Date()
+    const expire = new Date(expireDate)
+    const diffTime = expire - now
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    
+    if (diffDays < 0) {
+      return `已过期${Math.abs(diffDays)}天`
+    } else if (diffDays === 0) {
+      return '今天过期'
+    } else {
+      return `剩余${diffDays}天`
     }
   },
 

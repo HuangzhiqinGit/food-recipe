@@ -85,7 +85,7 @@
   color: #333;
 }
 
-/* 状态标签 - 渐变色 */
+/* 状态标签 - 与列表页保持一致 */
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -97,12 +97,12 @@
   box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
 }
 
-.status-badge.normal {
+.status-badge.fresh {
   background: linear-gradient(135deg, #52c234 0%, #22b322 100%);
   color: #fff;
 }
 
-.status-badge.warning {
+.status-badge.expiring {
   background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
   color: #fff;
 }
@@ -118,6 +118,22 @@
 
 .badge-text {
   font-size: 26rpx;
+}
+
+/* 状态信息值的颜色 */
+.info-value.fresh {
+  color: #52c234;
+  font-weight: 600;
+}
+
+.info-value.expiring {
+  color: #f5af19;
+  font-weight: 600;
+}
+
+.info-value.expired {
+  color: #eb3349;
+  font-weight: 600;
 }
 
 /* 状态信息列表 */
@@ -142,16 +158,6 @@
   font-size: 28rpx;
   font-weight: 500;
   color: #333;
-}
-
-.info-value.warning {
-  color: #f5af19;
-  font-weight: 600;
-}
-
-.info-value.expired {
-  color: #eb3349;
-  font-weight: 600;
 }
 
 /* 详情卡片 */

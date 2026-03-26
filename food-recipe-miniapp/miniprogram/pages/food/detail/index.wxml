@@ -24,23 +24,23 @@
       </view>
     </view>
 
-    <!-- 状态卡片 - 优化后 -->
+    <!-- 状态卡片 - 优化后，复用后端返回的status -->
     <view class="status-section">
       <view class="status-header">
         <text class="status-title">保鲜状态</text>
-        <view class="status-badge {{getFoodStatus(food.expireDate).type}}">
-          <text class="badge-icon">{{getFoodStatus(food.expireDate).icon}}</text>
-          <text class="badge-text">{{getFoodStatus(food.expireDate).text}}</text>
+        <view class="status-badge {{food.status || 'fresh'}}">
+          <text class="badge-icon">{{getStatusIcon(food.status)}}</text>
+          <text class="badge-text">{{food.statusText || '新鲜'}}</text>
         </view>
       </view>
       <view class="status-info-list">
         <view class="status-info-item" wx:if="{{food.expireDate}}">
           <text class="info-label">过期日期</text>
-          <text class="info-value {{getFoodStatus(food.expireDate).type}}">{{food.expireDate}}</text>
+          <text class="info-value {{food.status}}">{{food.expireDate}}</text>
         </view>
-        <view class="status-info-item" wx:if="{{getRemainingDays(food.expireDate) !== null}}">
+        <view class="status-info-item" wx:if="{{food.expireDate}}">
           <text class="info-label">剩余天数</text>
-          <text class="info-value {{getFoodStatus(food.expireDate).type}}">{{getRemainingDays(food.expireDate) > 0 ? getRemainingDays(food.expireDate) + ' 天' : '已过期'}}</text>
+          <text class="info-value {{food.status}}">{{getExpireCountdown(food.expireDate)}}</text>
         </view>
       </view>
     </view>
@@ -61,12 +61,12 @@
       
       <view class="detail-item">
         <text class="item-label">添加时间</text>
-        <text class="item-value">{{formatDateTime(food.createTime)}}</text>
+        <text class="item-value">{{formatDateTime(food.createdAt)}}</text>
       </view>
       
-      <view class="detail-item" wx:if="{{food.updateTime}}">
+      <view class="detail-item" wx:if="{{food.updatedAt}}">
         <text class="item-label">更新时间</text>
-        <text class="item-value">{{formatDateTime(food.updateTime)}}</text>
+        <text class="item-value">{{formatDateTime(food.updatedAt)}}</text>
       </view>
     </view>
 
