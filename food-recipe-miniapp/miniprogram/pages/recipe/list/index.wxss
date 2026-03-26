@@ -13,6 +13,7 @@
   z-index: 100;
   background: #f8f9fa;
   padding: 24rpx 24rpx 16rpx;
+  margin-bottom: -4rpx;
   transform: translateZ(0);
   will-change: transform;
   backface-visibility: hidden;

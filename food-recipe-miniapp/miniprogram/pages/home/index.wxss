@@ -11,6 +11,7 @@
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 60rpx 32rpx 32rpx;
   color: white;
+  margin-bottom: -4rpx;
   transform: translateZ(0);
   will-change: transform;
   backface-visibility: hidden;
