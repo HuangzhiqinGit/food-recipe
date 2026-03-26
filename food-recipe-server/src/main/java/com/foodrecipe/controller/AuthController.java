@@ -3,6 +3,7 @@ package com.foodrecipe.controller;
 import com.alibaba.fastjson2.JSONObject;
 import com.foodrecipe.dto.Result;
 import com.foodrecipe.entity.User;
+import com.foodrecipe.service.OssService;
 import com.foodrecipe.service.UserService;
 import com.foodrecipe.util.JwtUtil;
 import com.foodrecipe.util.WxUtil;
@@ -25,6 +26,9 @@ public class AuthController {
     @Autowired
     private WxUtil wxUtil;
 
+    @Autowired
+    private OssService ossService;
+
     @PostMapping("/login")
     public Result<Map<String, Object>> login(@RequestBody Map<String, String> params) {
         String code = params.get("code");
@@ -44,6 +48,18 @@ public class AuthController {
 
         // 创建或更新用户
         User user = userService.createOrUpdateUser(openid, nickname, avatarUrl);
+
+        // 处理头像URL：如果是OSS路径，生成签名URL
+        if (user.getAvatarUrl() != null && !user.getAvatarUrl().isEmpty()) {
+            // 如果是微信头像（完整URL，以http开头），直接保留
+            if (!user.getAvatarUrl().startsWith("http")) {
+                // 是OSS路径，生成签名URL
+                Result<String> signedUrlResult = ossService.generateSignedUrl(user.getAvatarUrl());
+                if (signedUrlResult.getCode() == 200) {
+                    user.setAvatarUrl(signedUrlResult.getData());
+                }
+            }
+        }
 
         // 生成token
         String token = jwtUtil.generateToken(user.getId());
@@ -67,6 +83,16 @@ public class AuthController {
         User user = userService.getById(userId);
         if (user == null) {
             return Result.error(401, "用户不存在");
+        }
+
+        // 处理头像URL
+        if (user.getAvatarUrl() != null && !user.getAvatarUrl().isEmpty()) {
+            if (!user.getAvatarUrl().startsWith("http")) {
+                Result<String> signedUrlResult = ossService.generateSignedUrl(user.getAvatarUrl());
+                if (signedUrlResult.getCode() == 200) {
+                    user.setAvatarUrl(signedUrlResult.getData());
+                }
+            }
         }
 
         return Result.success(user);
