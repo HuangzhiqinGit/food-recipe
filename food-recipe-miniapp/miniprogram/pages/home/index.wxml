@@ -1,14 +1,12 @@
 <view class="container">
-  <!-- 渐变头部 - 固定 -->
-  <view class="header">
+  <!-- 固定区域：渐变头部 + 临期提醒 -->
+  <view class="header-fixed">
     <view class="header-content">
       <text class="welcome-text">你好，{{userInfo.nickname || '美食家'}}！</text>
       <text class="welcome-subtext">今天想吃点啥？</text>
     </view>
-  </view>
-
-  <!-- 临期提醒卡片 - 固定 -->
-  <view class="warning-section">
+    
+    <!-- 临期提醒卡片 -->
     <view class="warning-card" wx:if="{{expiringCount > 0}}" bindtap="goToFoodList">
       <view class="warning-icon-wrap">
         <text class="warning-icon">⚠️</text>
