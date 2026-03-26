@@ -55,7 +55,7 @@ public class OssService {
     }
 
     /**
-     * 上传文件到OSS
+     * 上传文件到OSS - 返回文件路径而非签名URL
      */
     public Result<String> uploadFile(MultipartFile file, String folder) {
         // 检查OSS是否配置
@@ -87,12 +87,9 @@ public class OssService {
 
             ossClient.putObject(bucketName, newFilename, inputStream, metadata);
 
-            // 生成带签名的URL（有效期1小时）
-            Date expiration = new Date(System.currentTimeMillis() + 3600 * 1000);
-            String signedUrl = ossClient.generatePresignedUrl(bucketName, newFilename, expiration).toString();
-            
-            log.info("文件上传成功，返回签名URL: {}", signedUrl);
-            return Result.success(signedUrl);
+            // 返回文件路径（不含签名）
+            log.info("文件上传成功，返回路径: {}", newFilename);
+            return Result.success(newFilename);
 
         } catch (IOException e) {
             log.error("文件上传失败", e);

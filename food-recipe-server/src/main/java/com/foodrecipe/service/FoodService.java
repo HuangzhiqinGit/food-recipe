@@ -35,8 +35,10 @@ public class FoodService extends ServiceImpl<FoodMapper, Food> {
 
         // 计算状态并处理图片URL
         for (Food food : list) {
-            food.setStatus(calculateStatus(food.getExpireDate()));
-            food.setStatusText(getStatusText(food.getStatus()));
+            int status = calculateStatus(food.getExpireDate());
+            food.setStatus(status);
+            food.setStatusStr(getStatusString(status));
+            food.setStatusText(getStatusText(status));
             food.setCategoryName(getCategoryName(food.getCategory()));
             // 生成图片签名URL（60分钟有效期）
             if (food.getImageUrl() != null && !food.getImageUrl().isEmpty()) {
@@ -57,7 +59,7 @@ public class FoodService extends ServiceImpl<FoodMapper, Food> {
         LocalDate today = LocalDate.now();
         long daysLeft = ChronoUnit.DAYS.between(today, expireDate);
 
-        if (daysLeft < 1) return 2;  // 过期
+        if (daysLeft < 0) return 2;  // 过期
         if (daysLeft <= 3) return 1; // 临期
         return 0; // 新鲜
     }
@@ -68,6 +70,15 @@ public class FoodService extends ServiceImpl<FoodMapper, Food> {
             case 1: return "临期";
             case 2: return "已过期";
             default: return "新鲜";
+        }
+    }
+    
+    public String getStatusString(Integer status) {
+        switch (status) {
+            case 0: return "fresh";
+            case 1: return "expiring";
+            case 2: return "expired";
+            default: return "fresh";
         }
     }
 
@@ -114,6 +125,7 @@ public class FoodService extends ServiceImpl<FoodMapper, Food> {
             .filter(food -> {
                 int foodStatus = calculateStatus(food.getExpireDate());
                 food.setStatus(foodStatus);
+                food.setStatusStr(getStatusString(foodStatus));
                 food.setStatusText(getStatusText(foodStatus));
                 food.setCategoryName(getCategoryName(food.getCategory()));
                 
@@ -138,8 +150,10 @@ public class FoodService extends ServiceImpl<FoodMapper, Food> {
     public Food getFoodDetail(Long id) {
         Food food = getById(id);
         if (food != null) {
-            food.setStatus(calculateStatus(food.getExpireDate()));
-            food.setStatusText(getStatusText(food.getStatus()));
+            int status = calculateStatus(food.getExpireDate());
+            food.setStatus(status);
+            food.setStatusStr(getStatusString(status));
+            food.setStatusText(getStatusText(status));
             food.setCategoryName(getCategoryName(food.getCategory()));
             // 生成图片签名URL
             if (food.getImageUrl() != null && !food.getImageUrl().isEmpty()) {

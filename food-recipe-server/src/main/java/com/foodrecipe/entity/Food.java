@@ -63,4 +63,7 @@ public class Food {
 
     @TableField(exist = false)
     private String statusText;
+    
+    @TableField(exist = false)
+    private String statusStr;  // 字符串类型的状态: fresh/expiring/expired
 }

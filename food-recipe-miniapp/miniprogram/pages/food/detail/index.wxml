@@ -24,23 +24,23 @@
       </view>
     </view>
 
-    <!-- 状态卡片 - 优化后，复用后端返回的status -->
+    <!-- 状态卡片 - 优化后，复用后端返回的statusStr -->
     <view class="status-section">
       <view class="status-header">
         <text class="status-title">保鲜状态</text>
-        <view class="status-badge {{food.status || 'fresh'}}">
-          <text class="badge-icon">{{getStatusIcon(food.status)}}</text>
+        <view class="status-badge {{food.statusStr || 'fresh'}}">
+          <text class="badge-icon">{{getStatusIcon(food.statusStr)}}</text>
           <text class="badge-text">{{food.statusText || '新鲜'}}</text>
         </view>
       </view>
       <view class="status-info-list">
         <view class="status-info-item" wx:if="{{food.expireDate}}">
           <text class="info-label">过期日期</text>
-          <text class="info-value {{food.status}}">{{food.expireDate}}</text>
+          <text class="info-value {{food.statusStr}}">{{food.expireDate}}</text>
         </view>
         <view class="status-info-item" wx:if="{{food.expireDate}}">
           <text class="info-label">剩余天数</text>
-          <text class="info-value {{food.status}}">{{getExpireCountdown(food.expireDate)}}</text>
+          <text class="info-value {{food.statusStr}}">{{getExpireCountdown(food.expireDate)}}</text>
         </view>
       </view>
     </view>
