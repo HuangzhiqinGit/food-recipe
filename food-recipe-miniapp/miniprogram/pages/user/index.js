@@ -133,10 +133,13 @@ Page({
         wx.showLoading({ title: '上传中...' })
         
         try {
+          console.log('开始上传图片:', tempFilePath)
           const result = await uploadService.uploadImage(tempFilePath, 'avatar')
+          console.log('上传结果:', result)
           
           if (result.code === 200 && result.data) {
             const newAvatarUrl = result.data.url
+            console.log('获取到图片URL:', newAvatarUrl)
             
             // 更新本地数据
             const userInfo = { ...this.data.userInfo, avatarUrl: newAvatarUrl }
@@ -146,12 +149,17 @@ Page({
             app.globalData.userInfo = userInfo
             
             // 调用后端更新用户信息
-            await this.updateUserInfo({ avatarUrl: newAvatarUrl })
+            console.log('开始调用 updateUserInfo, 参数:', { avatarUrl: newAvatarUrl })
+            const updateResult = await this.updateUserInfo({ avatarUrl: newAvatarUrl })
+            console.log('updateUserInfo 返回:', updateResult)
             
             wx.showToast({ title: '头像更新成功', icon: 'success' })
+          } else {
+            console.error('上传失败, result:', result)
+            wx.showToast({ title: '上传失败', icon: 'none' })
           }
         } catch (error) {
-          console.error('上传头像失败:', error)
+          console.error('上传头像失败, 错误详情:', error)
           wx.showToast({ title: '上传失败', icon: 'none' })
         } finally {
           wx.hideLoading()
@@ -162,12 +170,14 @@ Page({
 
   // 更新用户信息 - 新增
   async updateUserInfo(data) {
+    console.log('updateUserInfo 被调用, 数据:', data)
     try {
+      console.log('开始调用 authService.updateUserInfo')
       const result = await authService.updateUserInfo(data)
-      console.log('更新用户信息成功:', result)
+      console.log('authService.updateUserInfo 返回:', result)
       return result
     } catch (error) {
-      console.error('更新用户信息失败:', error)
+      console.error('更新用户信息失败, 错误:', error)
       throw error
     }
   },
