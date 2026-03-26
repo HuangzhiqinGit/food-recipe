@@ -37,7 +37,7 @@
   <view class="empty-state" wx:else>
     <image class="empty-icon" src="/assets/images/empty-recipe.png" mode="aspectFit"/>
     <text class="empty-text">{{currentTab === 'favorite' ? '暂无收藏菜谱' : '暂无匹配菜谱，快去添加食材吧~'}}</text>
-    <view class="action-link" bindtap="goToFoodList" wx:if="{{currentTab === 'recommend'}}">去添加食材 ></text>
+    <view class="action-link" bindtap="goToFoodList" wx:if="{{currentTab === 'recommend'}}">去添加食材 ></view>
   </view>
 
   <!-- 悬浮按钮 -->
