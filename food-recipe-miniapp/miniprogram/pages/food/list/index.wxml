@@ -11,48 +11,51 @@
 
   <!-- 已登录内容 -->
   <block wx:else>
-  <!-- 搜索栏 -->
-  <view class="search-bar">
-    <view class="search-input-wrap">
-      <text class="search-icon">🔍</text>
-      <input 
-        class="search-input" 
-        placeholder="搜索食材" 
-        value="{{keyword}}"
-        bindinput="onSearchInput"
-      />
+  <!-- 固定区域：搜索栏 + 筛选 + 分类 -->
+  <view class="header-fixed">
+    <!-- 搜索栏 -->
+    <view class="search-bar">
+      <view class="search-input-wrap">
+        <text class="search-icon">🔍</text>
+        <input 
+          class="search-input" 
+          placeholder="搜索食材" 
+          value="{{keyword}}"
+          bindinput="onSearchInput"
+        />
+      </view>
     </view>
+
+    <!-- 状态筛选 -->
+    <scroll-view class="status-scroll" scroll-x>
+      <view class="status-list">
+        <view 
+          class="status-item {{currentStatus === item.value ? 'active' : ''}} status-{{item.value}}"
+          wx:for="{{statusList}}"
+          wx:key="value"
+          bindtap="selectStatus"
+          data-value="{{item.value}}"
+        >
+          {{item.label}}
+        </view>
+      </view>
+    </scroll-view>
+
+    <!-- 分类标签 -->
+    <scroll-view class="category-scroll" scroll-x>
+      <view class="category-list">
+        <view 
+          class="category-item {{currentCategory === item.value ? 'active' : ''}}"
+          wx:for="{{categories}}"
+          wx:key="value"
+          bindtap="selectCategory"
+          data-value="{{item.value}}"
+        >
+          {{item.label}}
+        </view>
+      </view>
+    </scroll-view>
   </view>
-
-  <!-- 状态筛选 -->
-  <scroll-view class="status-scroll" scroll-x>
-    <view class="status-list">
-      <view 
-        class="status-item {{currentStatus === item.value ? 'active' : ''}} status-{{item.value}}"
-        wx:for="{{statusList}}"
-        wx:key="value"
-        bindtap="selectStatus"
-        data-value="{{item.value}}"
-      >
-        {{item.label}}
-      </view>
-    </view>
-  </scroll-view>
-
-  <!-- 分类标签 -->
-  <scroll-view class="category-scroll" scroll-x>
-    <view class="category-list">
-      <view 
-        class="category-item {{currentCategory === item.value ? 'active' : ''}}"
-        wx:for="{{categories}}"
-        wx:key="value"
-        bindtap="selectCategory"
-        data-value="{{item.value}}"
-      >
-        {{item.label}}
-      </view>
-    </view>
-  </scroll-view>
 
   <!-- 食材列表 -->
   <view class="food-list" wx:if="{{foodList.length > 0}}">

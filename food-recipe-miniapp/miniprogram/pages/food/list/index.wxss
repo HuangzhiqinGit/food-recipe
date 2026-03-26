@@ -53,13 +53,20 @@
   margin-top: 24rpx;
 }
 
-/* 搜索栏 - 固定 */
-.search-bar {
+/* 固定头部区域 - 合并搜索栏+状态筛选+分类标签 */
+.header-fixed {
   position: sticky;
   top: 0;
   z-index: 100;
   background: #f8f9fa;
   padding: 24rpx 24rpx 16rpx;
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* 搜索栏 */
+.search-bar {
   display: flex;
   align-items: center;
   margin-bottom: 16rpx;
@@ -111,13 +118,9 @@
   line-height: 1;
 }
 
-/* 状态筛选 - 固定 */
+/* 状态筛选 */
 .status-scroll {
-  position: sticky;
-  top: 120rpx;
-  z-index: 99;
-  background: #f8f9fa;
-  padding: 0 24rpx 16rpx;
+  margin-bottom: 16rpx;
   white-space: nowrap;
 }
 
@@ -166,13 +169,8 @@
   box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.4);
 }
 
-/* 分类标签 - 固定 */
+/* 分类标签 */
 .category-scroll {
-  position: sticky;
-  top: 192rpx;
-  z-index: 98;
-  background: #f8f9fa;
-  padding: 0 24rpx 16rpx;
   white-space: nowrap;
 }
 
