@@ -40,7 +40,7 @@
         </view>
         <view class="status-info-item" wx:if="{{food.expireDate}}">
           <text class="info-label">剩余天数</text>
-          <text class="info-value {{food.statusStr}}">{{getExpireCountdown(food.expireDate)}}</text>
+          <text class="info-value {{food.statusStr}}">{{food.expireCountdown}}</text>
         </view>
       </view>
     </view>

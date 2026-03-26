@@ -28,6 +28,9 @@ Page({
       // 提前格式化日期，方便WXML直接使用
       food.createdAtStr = formatDateTimeUtil(food.createdAt)
       food.updatedAtStr = food.updatedAt ? formatDateTimeUtil(food.updatedAt) : ''
+      
+      // 计算剩余天数
+      food.expireCountdown = this.getExpireCountdown(food.expireDate)
 
       this.setData({
         food: food,
