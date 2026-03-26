@@ -81,9 +81,24 @@
   align-items: center;
 }
 
+.ingredient-left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  flex: 1;
+}
+
 .ingredient-name {
   font-size: 28rpx;
   color: var(--text-primary);
+}
+
+.ingredient-category {
+  font-size: 22rpx;
+  color: #fff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
 }
 
 .ingredient-status {

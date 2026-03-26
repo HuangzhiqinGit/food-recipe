@@ -2,6 +2,18 @@ const { showSuccess, showError } = require('../../../utils/util')
 const recipeService = require('../../../services/recipeService')
 const shoppingService = require('../../../services/shoppingService')
 
+// 食材分类名称映射
+const CATEGORY_MAP = {
+  vegetable: '蔬菜',
+  meat: '肉类',
+  seafood: '海鲜',
+  egg: '蛋奶',
+  staple: '主食',
+  seasoning: '调料',
+  drink: '酒水',
+  other: '其他'
+}
+
 Page({
   data: {
     recipeId: null,
@@ -27,9 +39,15 @@ Page({
       const recipe = res.data
 
       // 解析JSON字段
-      const ingredients = JSON.parse(recipe.ingredients || '[]')
+      let ingredients = JSON.parse(recipe.ingredients || '[]')
       const steps = JSON.parse(recipe.steps || '[]')
       const images = recipe.images ? JSON.parse(recipe.images) : []
+
+      // 为食材添加分类名称
+      ingredients = ingredients.map(item => ({
+        ...item,
+        categoryName: CATEGORY_MAP[item.category] || '其他'
+      }))
 
       this.setData({
         recipe: recipe,
@@ -107,11 +125,10 @@ Page({
       }
       
       wx.hideLoading()
-      showSuccess(`已添加 ${missingIngredients.length} 个食材到购物清单`)
-
-      // 询问是否跳转到购物清单
+      
+      // 询问是否跳转到购物清单（成功提示在跳转弹窗中）
       wx.showModal({
-        title: '添加成功',
+        title: `已添加 ${missingIngredients.length} 个食材`,
         content: '是否跳转到购物清单？',
         confirmText: '去查看',
         cancelText: '留在当前页',

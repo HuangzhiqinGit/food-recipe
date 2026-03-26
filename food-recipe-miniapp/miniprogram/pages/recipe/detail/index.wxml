@@ -23,7 +23,10 @@
     <view class="section-title">所需食材</view>
     <view class="ingredients-list">
       <view class="ingredient-item" wx:for="{{ingredients}}" wx:key="name">
-        <text class="ingredient-name">• {{item.name}} {{item.quantity}}{{item.unit}}</text>
+        <view class="ingredient-left">
+          <text class="ingredient-name">• {{item.name}} {{item.quantity}}{{item.unit}}</text>
+          <text class="ingredient-category">{{item.categoryName}}</text>
+        </view>
         <text class="ingredient-status {{item.hasStock ? 'has-stock' : 'no-stock'}}">
           {{item.hasStock ? '已备 ✅' : '缺 ❌'}}
         </text>
