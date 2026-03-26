@@ -163,13 +163,12 @@ Page({
   // 更新用户信息 - 新增
   async updateUserInfo(data) {
     try {
-      // 调用后端接口更新用户信息
-      // 这里假设后端有 /user/update 接口
-      // 如果后端暂时没有，可以注释掉这部分
-      // await authService.updateUserInfo(data)
-      console.log('更新用户信息:', data)
+      const result = await authService.updateUserInfo(data)
+      console.log('更新用户信息成功:', result)
+      return result
     } catch (error) {
       console.error('更新用户信息失败:', error)
+      throw error
     }
   },
 

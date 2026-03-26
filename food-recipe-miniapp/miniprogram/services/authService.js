@@ -1,4 +1,4 @@
-const { post, get } = require('../utils/request')
+const { post, get, put } = require('../utils/request')
 
 // 登录
 const login = (data) => {
@@ -10,7 +10,13 @@ const validateToken = () => {
   return get('/auth/validate')
 }
 
+// 更新用户信息
+const updateUserInfo = (data) => {
+  return put('/user/update', data)
+}
+
 module.exports = {
   login,
-  validateToken
+  validateToken,
+  updateUserInfo
 }
