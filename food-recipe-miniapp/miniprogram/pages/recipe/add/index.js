@@ -103,7 +103,7 @@ Page({
       [`form.ingredients[${index}].category`]: category,
       [`form.ingredients[${index}].categoryIndex`]: categoryIndex
     })
-  },,
+  },
 
   // 添加步骤
   addStep() {
