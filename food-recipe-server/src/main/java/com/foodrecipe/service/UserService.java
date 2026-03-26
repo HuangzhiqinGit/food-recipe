@@ -17,15 +17,21 @@ public class UserService extends ServiceImpl<UserMapper, User> {
     public User createOrUpdateUser(String openid, String nickname, String avatarUrl) {
         User user = getByOpenid(openid);
         if (user == null) {
+            // 新用户：使用传入的值或默认值
             user = new User();
             user.setOpenid(openid);
-            user.setNickname(nickname);
-            user.setAvatarUrl(avatarUrl);
+            user.setNickname(nickname != null && !nickname.isEmpty() ? nickname : "微信用户");
+            user.setAvatarUrl(avatarUrl != null ? avatarUrl : "");
             user.setLastLoginAt(LocalDateTime.now());
             save(user);
         } else {
-            user.setNickname(nickname);
-            user.setAvatarUrl(avatarUrl);
+            // 已存在用户：只更新非空值
+            if (nickname != null && !nickname.isEmpty()) {
+                user.setNickname(nickname);
+            }
+            if (avatarUrl != null && !avatarUrl.isEmpty()) {
+                user.setAvatarUrl(avatarUrl);
+            }
             user.setLastLoginAt(LocalDateTime.now());
             updateById(user);
         }

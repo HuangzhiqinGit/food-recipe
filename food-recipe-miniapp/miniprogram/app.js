@@ -39,10 +39,9 @@ App({
   // 执行自动登录
   doAutoLogin(code) {
     const { post } = require('./utils/request')
+    // 自动登录时不传昵称和头像，避免覆盖已有信息
     post('/auth/login', {
-      code: code,
-      nickname: '微信用户',
-      avatarUrl: ''
+      code: code
     }).then((res) => {
       if (res.code === 200 && res.data) {
         this.setLoginStatus(res.data.token, res.data.userInfo)
