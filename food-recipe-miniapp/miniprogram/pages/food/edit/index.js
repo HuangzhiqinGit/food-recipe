@@ -111,9 +111,13 @@ Page({
         
         wx.showLoading({ title: 'AI识别中...', mask: true })
         
+        console.log('准备上传图片, 路径:', tempFilePath)
+        
         try {
           // 上传并识别
+          console.log('调用 ocrService.scanAndRecognize...')
           const result = await ocrService.scanAndRecognize(tempFilePath)
+          console.log('scanAndRecognize 返回:', result)
           
           if (result.code === 200 && result.data) {
             const { name, category, location, imageUrl } = result.data

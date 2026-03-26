@@ -89,9 +89,14 @@ const del = (url, data = {}) => {
 const upload = (url, filePath, formData = {}) => {
   return new Promise((resolve, reject) => {
     const token = app.globalData.token
+    const fullUrl = `${app.globalData.baseUrl}${url}`
+    
+    console.log('upload 请求:', fullUrl)
+    console.log('filePath:', filePath)
+    console.log('token:', token ? '已设置' : '未设置')
 
     wx.uploadFile({
-      url: `${app.globalData.baseUrl}${url}`,
+      url: fullUrl,
       filePath: filePath,
       name: 'file',
       formData: formData,
@@ -99,6 +104,7 @@ const upload = (url, filePath, formData = {}) => {
         'Authorization': token ? `Bearer ${token}` : ''
       },
       success: (res) => {
+        console.log('uploadFile success, statusCode:', res.statusCode)
         if (res.statusCode === 200) {
           const data = JSON.parse(res.data)
           if (data.code === 200) {
@@ -119,6 +125,7 @@ const upload = (url, filePath, formData = {}) => {
         }
       },
       fail: (err) => {
+        console.error('uploadFile fail:', err)
         wx.showToast({
           title: '上传失败',
           icon: 'none'
