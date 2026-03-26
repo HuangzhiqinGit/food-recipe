@@ -36,11 +36,8 @@
   background: #fff;
   border-radius: 16rpx;
   padding: 6rpx;
-  margin: 24rpx;
-  margin-top: -16rpx;
+  margin-top: 24rpx;
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
-  position: relative;
-  z-index: 10;
 }
 
 .tab-item {
@@ -67,7 +64,7 @@
   background: #fff;
   border-radius: 24rpx;
   padding: 32rpx;
-  margin: 0 24rpx 16rpx;
+  margin-top: 24rpx;
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
 }
 
@@ -112,7 +109,7 @@
 
 /* 分类筛选 */
 .category-scroll {
-  margin: 0 24rpx 16rpx;
+  margin-top: 16rpx;
   white-space: nowrap;
 }
 
