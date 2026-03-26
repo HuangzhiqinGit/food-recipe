@@ -138,7 +138,8 @@ Page({
           console.log('上传结果:', result)
           
           if (result.code === 200 && result.data) {
-            const newAvatarUrl = result.data.url
+            // result.data 直接是路径字符串，不是对象
+            const newAvatarUrl = typeof result.data === 'string' ? result.data : result.data.url
             console.log('获取到图片URL:', newAvatarUrl)
             
             // 更新本地数据
