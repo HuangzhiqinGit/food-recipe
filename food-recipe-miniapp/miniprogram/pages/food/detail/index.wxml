@@ -61,12 +61,12 @@
       
       <view class="detail-item">
         <text class="item-label">添加时间</text>
-        <text class="item-value">{{formatDateTime(food.createdAt)}}</text>
+        <text class="item-value">{{food.createdAtStr}}</text>
       </view>
       
       <view class="detail-item" wx:if="{{food.updatedAt}}">
         <text class="item-label">更新时间</text>
-        <text class="item-value">{{formatDateTime(food.updatedAt)}}</text>
+        <text class="item-value">{{food.updatedAtStr}}</text>
       </view>
     </view>
 

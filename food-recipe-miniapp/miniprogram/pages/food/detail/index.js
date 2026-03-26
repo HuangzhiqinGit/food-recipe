@@ -23,8 +23,14 @@ Page({
     try {
       this.setData({ loading: true })
       const res = await foodService.getFoodDetail(id)
+      const food = res.data
+
+      // 提前格式化日期，方便WXML直接使用
+      food.createdAtStr = formatDateTimeUtil(food.createdAt)
+      food.updatedAtStr = food.updatedAt ? formatDateTimeUtil(food.updatedAt) : ''
+
       this.setData({
-        food: res.data,
+        food: food,
         loading: false
       })
     } catch (error) {
