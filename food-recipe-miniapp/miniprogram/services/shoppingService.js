@@ -11,6 +11,11 @@ const shoppingService = {
     return post('/shopping', data)
   },
 
+  // 从菜谱添加缺失的食材
+  addFromRecipe(recipeId) {
+    return post('/shopping/from-recipe', { recipeId })
+  },
+
   // 切换购买状态
   toggleStatus(id) {
     return put(`/shopping/${id}/toggle`)
