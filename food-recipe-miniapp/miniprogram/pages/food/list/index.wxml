@@ -9,39 +9,24 @@
     <text class="login-sub-tip">点击自动登录，新用户自动注册</text>
   </view>
 
-  <!-- 固定头部区域 -->
-  <view class="header-section" wx:if="{{isLogin}}">
-    <!-- 渐变头部 + 搜索 -->
-    <view class="header-content">
-      <text class="header-title">食材库存</text>
-      
-      <view class="search-bar">
-        <view class="search-input-wrap">
-          <text class="search-icon">🔍</text>
-          <input class="search-input" placeholder="搜索食材" value="{{keyword}}" bindinput="onSearchInput"/>
-        </view>
+  <!-- 固定头部 -->
+  <view class="header-fixed" wx:if="{{isLogin}}">
+    <view class="search-bar">
+      <view class="search-input-wrap">
+        <text class="search-icon">🔍</text>
+        <input class="search-input" placeholder="搜索食材" value="{{keyword}}" bindinput="onSearchInput"/>
       </view>
     </view>
-    
-    <!-- 状态筛选：固定"全部"+滚动其他 -->
-    <view class="filter-row">
-      <view class="filter-item all-item {{currentStatus === 'all' ? 'active' : ''}}" bindtap="selectStatus" data-value="all">全部</view>
-      <scroll-view class="filter-scroll" scroll-x>
-        <view class="filter-list">
-          <view class="filter-item {{currentStatus === item.value ? 'active' : ''}}" wx:for="{{statusList}}" wx:key="value" bindtap="selectStatus" data-value="{{item.value}}" wx:if="{{item.value !== 'all'}}">{{item.label}}</view>
-        </view>
-      </scroll-view>
-    </view>
-    
-    <!-- 分类筛选：固定"全部"+滚动其他 -->
-    <view class="filter-row">
-      <view class="filter-item all-item {{currentCategory === 'all' ? 'active' : ''}}" bindtap="selectCategory" data-value="all">全部</view>
-      <scroll-view class="filter-scroll" scroll-x>
-        <view class="filter-list">
-          <view class="filter-item {{currentCategory === item.value ? 'active' : ''}}" wx:for="{{categories}}" wx:key="value" bindtap="selectCategory" data-value="{{item.value}}" wx:if="{{item.value !== 'all'}}">{{item.label}}</view>
-        </view>
-      </scroll-view>
-    </view>
+    <scroll-view class="status-scroll" scroll-x>
+      <view class="status-list">
+        <view class="status-item {{currentStatus === item.value ? 'active' : ''}}" wx:for="{{statusList}}" wx:key="value" bindtap="selectStatus" data-value="{{item.value}}">{{item.label}}</view>
+      </view>
+    </scroll-view>
+    <scroll-view class="category-scroll" scroll-x>
+      <view class="category-list">
+        <view class="category-item {{currentCategory === item.value ? 'active' : ''}}" wx:for="{{categories}}" wx:key="value" bindtap="selectCategory" data-value="{{item.value}}">{{item.label}}</view>
+      </view>
+    </scroll-view>
   </view>
 
   <!-- 食材列表 -->
