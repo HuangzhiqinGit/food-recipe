@@ -73,6 +73,7 @@ desktop.ini
 *.pem
 *.p12
 *.pfx
+GenerateToken.java
 
 # 环境变量文件
 .env
