@@ -1,4 +1,5 @@
 {
   "navigationBarTitleText": "食材库存",
+  "disableScroll": true,
   "usingComponents": {}
 }
