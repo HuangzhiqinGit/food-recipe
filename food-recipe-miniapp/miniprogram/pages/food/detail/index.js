@@ -57,7 +57,8 @@ Page({
       egg: '蛋奶',
       staple: '主食',
       seasoning: '调料',
-      drink: '酒水'
+      drink: '酒水',
+      other: '其他'
     }
     return map[category] || '其他'
   },
@@ -71,7 +72,8 @@ Page({
       egg: '🥚',
       staple: '🍚',
       seasoning: '🧂',
-      drink: '🥤'
+      drink: '🥤',
+      other: '📦'
     }
     return map[category] || '📦'
   },
