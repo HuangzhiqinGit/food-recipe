@@ -1,51 +1,40 @@
 <view class="container">
-  <!-- 渐变头部 -->
-  <view class="header"
-    >
-    <view class="header-content"
-    >
-      <text class="header-title">购物清单</text>
-      <text class="header-subtitle">管理您的采购计划</text>
+  <!-- 固定区域：渐变头部 + Tab + 统计 + 分类 -->
+  <view class="header-fixed">
+    <!-- 渐变头部 -->
+    <view class="header">
+      <view class="header-content">
+        <text class="header-title">购物清单</text>
+        <text class="header-subtitle">管理您的采购计划</text>
+      </view>
     </view>
-  </view>
 
-  <!-- 内容区 -->
-  <view class="content"
-  >
     <!-- Tab切换 -->
-    <view class="tab-bar"
-    >
-      <view class="tab-item {{currentTab === 'current' ? 'active' : ''}}" bindtap="switchTab" data-tab="current"
-      >
+    <view class="tab-bar">
+      <view class="tab-item {{currentTab === 'current' ? 'active' : ''}}" bindtap="switchTab" data-tab="current">
         <text class="tab-text">当前清单</text>
       </view>
-      <view class="tab-item {{currentTab === 'history' ? 'active' : ''}}" bindtap="switchTab" data-tab="history"
-      >
+      <view class="tab-item {{currentTab === 'history' ? 'active' : ''}}" bindtap="switchTab" data-tab="history">
         <text class="tab-text">历史记录</text>
       </view>
     </view>
 
-    <!-- 当前清单 -->
+    <!-- 当前清单固定区 -->
     <block wx:if="{{currentTab === 'current'}}">
       <!-- 统计卡片 -->
-      <view class="stats-card" wx:if="{{shoppingList.length > 0}}"
-      >
-        <view class="stats-row"
-        >
-          <view class="stats-item"
-          >
+      <view class="stats-card" wx:if="{{shoppingList.length > 0}}">
+        <view class="stats-row">
+          <view class="stats-item">
             <text class="stats-num">{{totalCount}}</text>
             <text class="stats-label">总数</text>
           </view>
           <view class="stats-divider"></view>
-          <view class="stats-item"
-          >
+          <view class="stats-item">
             <text class="stats-num purchased">{{purchasedCount}}</text>
             <text class="stats-label">已购</text>
           </view>
           <view class="stats-divider"></view>
-          <view class="stats-item"
-          >
+          <view class="stats-item">
             <text class="stats-num pending">{{unpurchasedCount}}</text>
             <text class="stats-label">未购</text>
           </view>
@@ -53,47 +42,39 @@
       </view>
 
       <!-- 分类筛选 -->
-      <scroll-view class="category-scroll" scroll-x wx:if="{{shoppingList.length > 0}}"
-      >
-        <view class="category-list"
-        >
-          <view class="category-item {{currentCategory === 'all' ? 'active' : ''}}" bindtap="selectCategory" data-value="all"
-          >全部</view>
-          <view class="category-item {{currentCategory === item.value ? 'active' : ''}}" wx:for="{{categories}}" wx:key="value" bindtap="selectCategory" data-value="{{item.value}}"
-          >{{item.label}}</view>
+      <scroll-view class="category-scroll" scroll-x wx:if="{{shoppingList.length > 0}}">
+        <view class="category-list">
+          <view class="category-item {{currentCategory === 'all' ? 'active' : ''}}" bindtap="selectCategory" data-value="all">全部</view>
+          <view class="category-item {{currentCategory === item.value ? 'active' : ''}}" wx:for="{{categories}}" wx:key="value" bindtap="selectCategory" data-value="{{item.value}}">{{item.label}}</view>
         </view>
       </scroll-view>
+    </block>
+  </view>
 
+  <!-- 内容区 - 可滚动 -->
+  <view class="content">
+    <!-- 当前清单 -->
+    <block wx:if="{{currentTab === 'current'}}">
       <!-- 未购买列表 -->
-      <view class="section-card" wx:if="{{unpurchasedList.length > 0}}"
-      >
-        <view class="section-header"
-        >
+      <view class="section-card" wx:if="{{unpurchasedList.length > 0}}">
+        <view class="section-header">
           <text class="section-icon">🛒</text>
           <text class="section-title">未购买</text>
           <text class="section-count">{{unpurchasedList.length}}</text>
         </view>
-        <view class="shopping-list"
-        >
-          <view class="shopping-item" wx:for="{{unpurchasedList}}" wx:key="id"
-          >
-            <view class="checkbox" bindtap="toggleStatus" data-id="{{item.id}}"
-            >
-              <view class="check-circle"
-              ></view>
+        <view class="shopping-list">
+          <view class="shopping-item" wx:for="{{unpurchasedList}}" wx:key="id">
+            <view class="checkbox" bindtap="toggleStatus" data-id="{{item.id}}">
+              <view class="check-circle"></view>
             </view>
-            <view class="item-content"
-            >
-              <view class="item-header"
-              >
+            <view class="item-content">
+              <view class="item-header">
                 <text class="item-name">{{item.foodName}}</text>
-                <view class="item-tag tag-{{item.category}}" wx:if="{{item.category}}"
-                >{{getCategoryName(item.category)}}</view>
+                <view class="item-tag tag-{{item.category}}" wx:if="{{item.category}}">{{getCategoryName(item.category)}}</view>
               </view>
               <text class="item-quantity">{{item.quantity}}</text>
             </view>
-            <view class="delete-btn" bindtap="deleteItem" data-id="{{item.id}}"
-            >
+            <view class="delete-btn" bindtap="deleteItem" data-id="{{item.id}}">
               <text class="delete-icon">🗑️</text>
             </view>
           </view>
@@ -101,37 +82,27 @@
       </view>
 
       <!-- 已购买列表 -->
-      <view class="section-card" wx:if="{{purchasedList.length > 0}}"
-      >
-        <view class="section-header"
-        >
+      <view class="section-card" wx:if="{{purchasedList.length > 0}}">
+        <view class="section-header">
           <text class="section-icon">✅</text>
           <text class="section-title">已购买</text>
           <text class="section-count">{{purchasedList.length}}</text>
         </view>
-        <view class="shopping-list"
-        >
-          <view class="shopping-item purchased" wx:for="{{purchasedList}}" wx:key="id"
-          >
-            <view class="checkbox" bindtap="toggleStatus" data-id="{{item.id}}"
-            >
-              <view class="check-circle checked"
-              >
+        <view class="shopping-list">
+          <view class="shopping-item purchased" wx:for="{{purchasedList}}" wx:key="id">
+            <view class="checkbox" bindtap="toggleStatus" data-id="{{item.id}}">
+              <view class="check-circle checked">
                 <text class="check-mark">✓</text>
               </view>
             </view>
-            <view class="item-content"
-            >
-              <view class="item-header"
-              >
+            <view class="item-content">
+              <view class="item-header">
                 <text class="item-name strikethrough">{{item.foodName}}</text>
-                <view class="item-tag tag-{{item.category}}" wx:if="{{item.category}}"
-                >{{getCategoryName(item.category)}}</view>
+                <view class="item-tag tag-{{item.category}}" wx:if="{{item.category}}">{{getCategoryName(item.category)}}</view>
               </view>
               <text class="item-quantity strikethrough">{{item.quantity}}</text>
             </view>
-            <view class="delete-btn" bindtap="deleteItem" data-id="{{item.id}}"
-            >
+            <view class="delete-btn" bindtap="deleteItem" data-id="{{item.id}}">
               <text class="delete-icon">🗑️</text>
             </view>
           </view>
@@ -139,20 +110,16 @@
       </view>
 
       <!-- 一键入库按钮 -->
-      <view class="batch-stock-section" wx:if="{{purchasedList.length > 0}}"
-      >
-        <view class="batch-stock-btn" bindtap="showStockModal"
-        >
+      <view class="batch-stock-section" wx:if="{{purchasedList.length > 0}}">
+        <view class="batch-stock-btn" bindtap="showStockModal">
           <text class="btn-icon">📦</text>
           <text class="btn-text">一键入库</text>
         </view>
       </view>
 
       <!-- 空状态 -->
-      <view class="empty-state" wx:if="{{shoppingList.length === 0}}"
-      >
-        <view class="empty-icon-wrap"
-        >
+      <view class="empty-state" wx:if="{{shoppingList.length === 0}}">
+        <view class="empty-icon-wrap">
           <text class="empty-icon">🛒</text>
         </view>
         <text class="empty-title">购买清单为空</text>
@@ -161,42 +128,31 @@
     </block>
 
     <!-- 历史清单 -->
-    <block wx:if="{{currentTab === 'history'}}"
-    >
-      <view class="history-list" wx:if="{{historyList.length > 0}}"
-      >
-        <view class="history-card" wx:for="{{historyList}}" wx:key="id"
-        >
-          <view class="history-header"
-          >
-            <view class="history-date-wrap"
-            >
+    <block wx:if="{{currentTab === 'history'}}">
+      <view class="history-list" wx:if="{{historyList.length > 0}}">
+        <view class="history-card" wx:for="{{historyList}}" wx:key="id">
+          <view class="history-header">
+            <view class="history-date-wrap">
               <text class="history-date">{{item.createdAt}}</text>
-              <view class="history-badge"
-              >
+              <view class="history-badge">
                 <text class="history-count">{{item.totalItems}}件</text>
               </view>
             </view>
-            <view class="history-btn" bindtap="repurchase" data-id="{{item.id}}"
-            >
+            <view class="history-btn" bindtap="repurchase" data-id="{{item.id}}">
               <text class="btn-icon">🔄</text>
               <text>再次购买</text>
             </view>
           </view>
           
-          <view class="history-items"
-          >
-            <text class="history-item-name" wx:for="{{item.items}}" wx:for-item="food" wx:key="foodName"
-            >{{food.foodName}}</text>
+          <view class="history-items">
+            <text class="history-item-name" wx:for="{{item.items}}" wx:for-item="food" wx:key="foodName">{{food.foodName}}</text>
           </view>
         </view>
       </view>
 
       <!-- 空状态 -->
-      <view class="empty-state" wx:if="{{historyList.length === 0}}"
-      >
-        <view class="empty-icon-wrap"
-        >
+      <view class="empty-state" wx:if="{{historyList.length === 0}}">
+        <view class="empty-icon-wrap">
           <text class="empty-icon">📋</text>
         </view>
         <text class="empty-title">暂无历史记录</text>
@@ -206,8 +162,7 @@
 
   <!-- 悬浮添加按钮 -->
   <view class="fab-btn" bindtap="showAddModal">
-    <view class="fab-inner"
-    >
+    <view class="fab-inner">
       <text class="fab-icon">+</text>
     </view>
   </view>

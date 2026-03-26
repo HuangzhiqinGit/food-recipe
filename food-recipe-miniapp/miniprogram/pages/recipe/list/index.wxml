@@ -1,34 +1,37 @@
 <view class="container">
-  <!-- 顶部操作栏 -->
-  <view class="action-bar">
-    <view class="btn btn-accent btn-match" bindtap="matchByInventory">
-      <text class="btn-icon">🔍</text>
-      <text>按库存找菜谱</text>
+  <!-- 固定区域：操作栏 + Tab -->
+  <view class="header-fixed">
+    <!-- 顶部操作栏 -->
+    <view class="action-bar">
+      <view class="btn btn-accent btn-match" bindtap="matchByInventory">
+        <text class="btn-icon">🔍</text>
+        <text>按库存找菜谱</text>
+      </view>
+      <view class="btn btn-secondary btn-filter" bindtap="goToFilter">
+        <text>筛选</text>
+      </view>
     </view>
-    <view class="btn btn-secondary btn-filter" bindtap="goToFilter">
-      <text>筛选</text>
+
+    <!-- 标签切换 -->
+    <view class="tab-bar">
+      <view 
+        class="tab-item {{currentTab === 'recommend' ? 'active' : ''}}"
+        bindtap="switchTab"
+        data-tab="recommend"
+      >
+        随机推荐
+      </view>
+      <view 
+        class="tab-item {{currentTab === 'favorite' ? 'active' : ''}}"
+        bindtap="switchTab"
+        data-tab="favorite"
+      >
+        我的收藏
+      </view>
     </view>
   </view>
 
-  <!-- 标签切换 -->
-  <view class="tab-bar">
-    <view 
-      class="tab-item {{currentTab === 'recommend' ? 'active' : ''}}"
-      bindtap="switchTab"
-      data-tab="recommend"
-    >
-      随机推荐
-    </view>
-    <view 
-      class="tab-item {{currentTab === 'favorite' ? 'active' : ''}}"
-      bindtap="switchTab"
-      data-tab="favorite"
-    >
-      我的收藏
-    </view>
-  </view>
-
-  <!-- 菜谱列表 -->
+  <!-- 菜谱列表 - 可滚动 -->
   <view class="recipe-list" wx:if="{{recipeList.length > 0}}">
     <view 
       class="recipe-card" 

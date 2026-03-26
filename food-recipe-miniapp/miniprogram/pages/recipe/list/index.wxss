@@ -6,15 +6,23 @@
   position: relative;
 }
 
-/* 操作栏 - 固定 */
-.action-bar {
+/* 固定头部区域 - 合并操作栏+Tab */
+.header-fixed {
   position: sticky;
   top: 0;
   z-index: 100;
   background: #f8f9fa;
   padding: 24rpx 24rpx 16rpx;
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* 操作栏 */
+.action-bar {
   display: flex;
   gap: 16rpx;
+  margin-bottom: 16rpx;
 }
 
 .action-bar .btn {
@@ -89,15 +97,9 @@
   line-height: 1;
 }
 
-/* 标签栏 - 固定 */
+/* 标签栏 */
 .tab-bar {
-  position: sticky;
-  top: 120rpx;
-  z-index: 99;
-  background: #f8f9fa;
-  padding: 0 24rpx 16rpx;
   display: flex;
-  margin-bottom: 16rpx;
   background: #fff;
   border-radius: 16rpx;
   overflow: hidden;
