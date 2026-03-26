@@ -118,6 +118,8 @@
 .category-filter .all-item {
   flex-shrink: 0;
   background: #fff;
+  border: 2rpx solid rgba(255,255,255,0.5);
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.15);
 }
 
 .category-filter .all-item.active {
@@ -142,8 +144,8 @@
   border-radius: 32rpx;
   font-size: 26rpx;
   color: #6b7280;
-  border: 2rpx solid transparent;
-  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.04);
+  border: 2rpx solid rgba(255,255,255,0.5);
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.15);
 }
 
 .category-item.active {
