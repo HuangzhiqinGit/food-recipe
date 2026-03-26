@@ -91,31 +91,60 @@ Page({
     })
   },
 
-  // 扫描录入食材
+  // 扫描录入食材 - AI识别
   async scanFood() {
-    try {
-      // 调用微信扫码
-      const res = await wx.scanCode({
-        onlyFromCamera: false,
-        scanType: ['barCode', 'qrCode']
-      })
-      
-      wx.showLoading({ title: '识别中...' })
-      
-      // 调用OCR识别（简化版，实际应调用后端OCR）
-      // 这里模拟识别结果
-      setTimeout(() => {
-        wx.hideLoading()
-        wx.showToast({ title: '识别成功', icon: 'success' })
-        // 模拟填充数据
-        this.setData({
-          'form.name': '西红柿',
-          'form.expireDate': '2026-06-01'
-        })
-      }, 1000)
-    } catch (error) {
-      console.error('扫描失败:', error)
-    }
+    // 选择图片来源
+    const res = await wx.showActionSheet({
+      itemList: ['拍照', '从相册选择']
+    }).catch(() => null)
+    
+    if (!res) return
+    
+    const sourceType = res.tapIndex === 0 ? ['camera'] : ['album']
+    
+    wx.chooseMedia({
+      count: 1,
+      mediaType: ['image'],
+      sourceType: sourceType,
+      success: async (chooseRes) => {
+        const tempFilePath = chooseRes.tempFiles[0].tempFilePath
+        
+        wx.showLoading({ title: 'AI识别中...', mask: true })
+        
+        try {
+          // 上传并识别
+          const result = await ocrService.scanAndRecognize(tempFilePath)
+          
+          if (result.code === 200 && result.data) {
+            const { name, category, location, imageUrl } = result.data
+            
+            // 查找分类索引
+            const categoryIndex = this.data.categories.findIndex(c => c.value === category)
+            // 查找位置索引
+            const locationIndex = this.data.locations.indexOf(location)
+            
+            // 更新表单
+            this.setData({
+              'form.name': name || '',
+              'form.category': category || 'vegetable',
+              categoryIndex: categoryIndex >= 0 ? categoryIndex : 0,
+              'form.location': location || '冰箱冷藏',
+              locationIndex: locationIndex >= 0 ? locationIndex : 0,
+              images: imageUrl ? [imageUrl] : []
+            })
+            
+            wx.showToast({ title: '识别成功', icon: 'success' })
+          } else {
+            wx.showToast({ title: '识别失败，请手动填写', icon: 'none' })
+          }
+        } catch (error) {
+          console.error('AI识别失败:', error)
+          wx.showToast({ title: '识别失败，请手动填写', icon: 'none' })
+        } finally {
+          wx.hideLoading()
+        }
+      }
+    })
   },
 
   // 名称输入
