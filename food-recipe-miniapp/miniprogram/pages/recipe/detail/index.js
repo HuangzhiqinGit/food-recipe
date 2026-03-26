@@ -73,8 +73,10 @@ Page({
     }
 
     // 构建确认框内容，展示食材列表
-    const itemsList = missingIngredients.map(item => `• ${item.name} ${item.quantity}${item.unit || ''}`).join('\n')
-    const content = `以下 ${missingIngredients.length} 个食材将加入购物清单：\n\n${itemsList}`
+    const itemsList = missingIngredients.map((item, index) => 
+      `${index + 1}. ${item.name}  ${item.quantity}${item.unit || ''}`
+    ).join('\n')
+    const content = `╔══════════════════╗\n   待补充食材 (${missingIngredients.length})\n╚══════════════════╝\n\n${itemsList}\n\n────────────────────\n确认加入购物清单？`
 
     wx.showModal({
       title: '确认添加',

@@ -159,8 +159,16 @@
 
 .btn-shopping {
   flex: 1;
-  background: var(--primary);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #fff;
+  box-shadow: 0 8rpx 20rpx rgba(102, 126, 234, 0.35);
+  font-weight: 500;
+  letter-spacing: 2rpx;
+}
+
+.btn-shopping:active {
+  transform: scale(0.98);
+  box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.25);
 }
 
 .btn-favorite {

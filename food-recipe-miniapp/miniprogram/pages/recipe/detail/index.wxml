@@ -56,7 +56,7 @@
     </button>
     <button class="btn btn-secondary btn-shopping" bindtap="addToShopping">
       <text class="btn-icon">🛒</text>
-      <text>缺的食材加入清单</text>
+      <text>一键补货</text>
     </button>
     <button class="btn btn-favorite {{recipe.isFavorite ? 'active' : ''}}" bindtap="toggleFavorite">
       <text class="btn-icon">{{recipe.isFavorite ? '⭐' : '☆'}}</text>
