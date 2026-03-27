@@ -1,12 +1,14 @@
 const { showSuccess, showError } = require('../../../utils/util')
 const foodService = require('../../../services/foodService')
 const ocrService = require('../../../services/ocrService')
+const imageService = require('../../../services/imageService')
 
 Page({
   data: {
     isEdit: false,
     foodId: null,
     images: [],
+    rawImageUrl: '', // 原始图片URL（用于保存）
     form: {
       name: '',
       category: 'vegetable',
@@ -64,8 +66,20 @@ Page({
       // 设置位置索引
       const locationIndex = this.data.locations.indexOf(food.location)
 
+      // 获取图片签名URL
+      let displayImageUrl = ''
+      if (food.imageUrl) {
+        try {
+          displayImageUrl = await imageService.getSignedImageUrl(food.imageUrl)
+        } catch (e) {
+          console.error('获取签名URL失败:', e)
+          displayImageUrl = food.imageUrl
+        }
+      }
+
       this.setData({
-        images: food.imageUrl ? [food.imageUrl] : [],
+        images: displayImageUrl ? [displayImageUrl] : [],
+        rawImageUrl: food.imageUrl || '',
         form: {
           name: food.name,
           category: food.category,
@@ -127,6 +141,18 @@ Page({
             // 查找位置索引
             const locationIndex = this.data.locations.indexOf(location)
             
+            // 获取图片签名URL（用于立即显示）
+            let displayImageUrl = ''
+            let rawUrl = imageUrl || ''
+            if (imageUrl) {
+              try {
+                displayImageUrl = await imageService.getSignedImageUrl(imageUrl)
+              } catch (e) {
+                console.error('获取签名URL失败:', e)
+                displayImageUrl = imageUrl
+              }
+            }
+            
             // 更新表单
             this.setData({
               'form.name': name || '',
@@ -134,7 +160,8 @@ Page({
               categoryIndex: categoryIndex >= 0 ? categoryIndex : 0,
               'form.location': location || '冰箱冷藏',
               locationIndex: locationIndex >= 0 ? locationIndex : 0,
-              images: imageUrl ? [imageUrl] : []
+              images: displayImageUrl ? [displayImageUrl] : [],
+              rawImageUrl: rawUrl
             })
             
             wx.showToast({ title: '识别成功', icon: 'success' })
@@ -213,7 +240,7 @@ Page({
 
   // 保存
   async onSave() {
-    const { form, isEdit, foodId, images } = this.data
+    const { form, isEdit, foodId, rawImageUrl } = this.data
 
     // 表单验证
     if (!form.name.trim()) {
@@ -232,7 +259,7 @@ Page({
       unit: form.unit,
       location: form.location,
       expireDate: form.expireDate || null,
-      imageUrl: images.length > 0 ? images[0] : null
+      imageUrl: rawImageUrl || null
     }
 
     try {

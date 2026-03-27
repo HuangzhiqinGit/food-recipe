@@ -22,6 +22,15 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+    default-property-inclusion: non_null
+
+  # 强制 UTF-8 编码
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+      force-response: true
 
 # MyBatis Plus
 mybatis-plus:
@@ -43,14 +52,14 @@ wx:
   appid: wx1234567890abcdef
   secret: your_wx_app_secret_here
 
-# 阿里云OSS配置（可选，不配置则图片上传功能不可用）
-# aliyun:
-#   oss:
-#     endpoint: oss-cn-hangzhou.aliyuncs.com
-#     accessKeyId: your_access_key_id
-#     accessKeySecret: your_access_key_secret
-#     bucketName: your_bucket_name
-#     domain: https://your_bucket_name.oss-cn-hangzhou.aliyuncs.com
+# 阿里云OSS配置（请填写真实的OSS配置）
+aliyun:
+  oss:
+    endpoint: oss-cn-hangzhou.aliyuncs.com
+    accessKeyId: your_access_key_id
+    accessKeySecret: your_access_key_secret
+    bucketName: your_bucket_name
+    domain: https://your_bucket_name.oss-cn-hangzhou.aliyuncs.com
 
 # Moonshot AI 配置（可选，不配置则AI识别使用默认结果）
 # moonshot:

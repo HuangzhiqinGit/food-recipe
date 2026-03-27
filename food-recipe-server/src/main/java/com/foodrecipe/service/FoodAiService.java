@@ -60,7 +60,9 @@ public class FoodAiService {
             result.put("name", aiResult.getOrDefault("name", ""));
             result.put("category", aiResult.getOrDefault("category", "other"));
             result.put("location", aiResult.getOrDefault("location", "冰箱冷藏"));
-            result.put("imageUrl", ossPath);
+            // 拼接完整图片URL
+            String fullImageUrl = ossDomain.endsWith("/") ? ossDomain + ossPath : ossDomain + "/" + ossPath;
+            result.put("imageUrl", fullImageUrl);
             
             log.info("最终返回结果: {}", result);
             return Result.success(result);
