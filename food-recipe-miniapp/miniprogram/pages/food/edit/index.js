@@ -134,24 +134,12 @@ Page({
           console.log('scanAndRecognize 返回:', result)
           
           if (result.code === 200 && result.data) {
-            const { name, category, location, imageUrl } = result.data
+            const { name, category, location, imageUrl, ossPath } = result.data
             
             // 查找分类索引
             const categoryIndex = this.data.categories.findIndex(c => c.value === category)
             // 查找位置索引
             const locationIndex = this.data.locations.indexOf(location)
-            
-            // 获取图片签名URL（用于立即显示）
-            let displayImageUrl = ''
-            let rawUrl = imageUrl || ''
-            if (imageUrl) {
-              try {
-                displayImageUrl = await imageService.getSignedImageUrl(imageUrl)
-              } catch (e) {
-                console.error('获取签名URL失败:', e)
-                displayImageUrl = imageUrl
-              }
-            }
             
             // 更新表单
             this.setData({
@@ -160,8 +148,8 @@ Page({
               categoryIndex: categoryIndex >= 0 ? categoryIndex : 0,
               'form.location': location || '冰箱冷藏',
               locationIndex: locationIndex >= 0 ? locationIndex : 0,
-              images: displayImageUrl ? [displayImageUrl] : [],
-              rawImageUrl: rawUrl
+              images: imageUrl ? [imageUrl] : [],
+              rawImageUrl: ossPath || ''
             })
             
             wx.showToast({ title: '识别成功', icon: 'success' })

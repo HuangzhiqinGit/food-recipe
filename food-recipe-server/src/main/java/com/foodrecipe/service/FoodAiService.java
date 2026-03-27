@@ -60,9 +60,11 @@ public class FoodAiService {
             result.put("name", aiResult.getOrDefault("name", ""));
             result.put("category", aiResult.getOrDefault("category", "other"));
             result.put("location", aiResult.getOrDefault("location", "冰箱冷藏"));
-            // 拼接完整图片URL
-            String fullImageUrl = ossDomain.endsWith("/") ? ossDomain + ossPath : ossDomain + "/" + ossPath;
-            result.put("imageUrl", fullImageUrl);
+            // 返回原始路径（用于保存到数据库）
+            result.put("ossPath", ossPath);
+            // 生成带签名的图片URL（用于立即显示）
+            String signedImageUrl = ossService.generateImageUrl(ossPath, 60);
+            result.put("imageUrl", signedImageUrl);
             
             log.info("最终返回结果: {}", result);
             return Result.success(result);
